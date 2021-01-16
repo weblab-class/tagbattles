@@ -7,4 +7,4 @@ const CardPackSchema = new mongoose.Schema({
 });
 
 // compile model from schema
-module.exports = mongoose.model("card_pack", CardPackSchema);
+module.exports = mongoose.model("CardPack", CardPackSchema);
