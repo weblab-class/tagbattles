@@ -18,16 +18,19 @@ const createGame = (cardPackIDs, playerIDs) => {
   playerIDs.forEach((player_id) => {
     players.push({
 			'_id': player_id,
-			'points' : 0,
-			'responseCards' : getRandomElementsFromArray(responseCards, NUMBER_OF_CARDS),
-    })
-  })
+			'score' : 0,
+      'responseCards' : getRandomElementsFromArray(responseCards, NUMBER_OF_CARDS),
+			'chosenResponse' : '',
+    });
+  });
   
 	return {
     'gameID': gameID,
 		'promptsCards' : promptCards,
 		'responseCards' : responseCards,
 		'players' : players,
+		'promptCard' : '',
+		'judgeID' : players[0]._id,
 	}
 }
 
@@ -38,8 +41,6 @@ const getRandomElementsFromArray = (arr, numberOfElementsToGet) => {
   }
   return randomElements;
 };
-
-
 
 const addPlayerToGame = (player, gameState) => {
   gameState.playerInfo = [...gameState.playerInfo, player];
@@ -67,13 +68,39 @@ const findAllCards = (cardPackIDs) => {
 };
 
 // When a player plays N cards
-const replaceCard = (gameState, playerID, cardIndex) => {
-	gameState.players.forEach((player) => {
-		if (player._id === playerID) {
-			player.responseCards[cardIndex] = getRandomElementsFromArray(gameState.responseCards, 1)[0];
-		}
-  });
+const replaceResponseCard = (gameState, playerID, cardIndex) => {
+	player[getPlayerByID(gameState, playerID)].responseCards[cardIndex] = getRandomElementsFromArray(gameState.responseCards, 1)[0]
   return gameState;
+}
+
+const getNewPromptCard = (gameState) => {
+  return getRandomElementsFromArray(gameState.promptCards, 1)[0];
+}
+
+const assignPromptCard = (gameState, promptCard) => {
+  gameState.promptCard = promptCard;
+  return gameState;
+}
+
+const selectResponseCard = (gameState, playerID, cardIndex) => {
+  const playerIndex = getPlayerByID(gameState, playerID);
+  gameState.players[playerIndex].chosenResponse = gameState.players[playerIndex].responseCards[cardIndex];
+}
+
+const assignWinner = (gameState, winnerID) => {
+  // find the winner by id and increase his score
+  gameState.players[getPlayerByID(gameState, winnerID)].score += 1;
+  // find the judge by id and switch to the next player (note that we need to take the module)
+  gameState.judgeID = gameState.players[(getPlayerByID(gameState, gameState.judgeID) + 1) % gameState.players.length]._id;
+}
+
+// Search for player by ID
+const getPlayerByID = (gameState, ID) => {
+  for (let i = 0; i < gameState.players.length; i++) {
+    if (gameState.players[i]._id === ID) {
+      return i;
+    }
+  }
 }
 
 module.exports = {
@@ -81,5 +108,9 @@ module.exports = {
   getRandomElementsFromArray,
   addPlayerToGame,
   findAllCards,
-  replaceCard,
+  replaceResponseCard,
+  getNewPromptCard,
+  assignPromptCard,
+  assignWinner,
+  selectResponseCard,
 }
