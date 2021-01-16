@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const CardPackSchema = new mongoose.Schema({
   name: String,
-  cards: [String],
+  prompt_cards: [String],
+  response_cards: [String],
 });
 
 // compile model from schema
