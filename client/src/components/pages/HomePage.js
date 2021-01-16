@@ -16,7 +16,7 @@ class HomePage extends Component {
   render() { 
     return (
       <>
-        <Link to="/newgame">
+        <Link to="/play">
             <button>New Game</button>
         </Link>
         <button>Join Game</button>

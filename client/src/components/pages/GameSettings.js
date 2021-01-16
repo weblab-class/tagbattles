@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "@reach/router";
 import "./GameSettings.css";
-
+import { get } from "../../utilities";
 
 class GameSettings extends Component {
   constructor(props) {
@@ -10,13 +10,13 @@ class GameSettings extends Component {
       gameID: null,
       players: [],
       numberOfRounds: null,
-			selectedDecks: "a",
+			selectedDecks: ["a", "b"],
     }
   }
   
   componentDidMount() {
     // Creates a game ID
-    this.setState({gameID:'123'});
+    get("/api/newGameID").then(data => (this.setState({gameID: data.gameID}))).catch(error => console.error(error));
   }
 
   render() { 
@@ -28,12 +28,12 @@ class GameSettings extends Component {
             <button>Start Game</button>
           </Link>
         ) : (
-					<p>Loading Link</p>
+					<p>Creating the room!</p>
 				)}
         <select>
             <option value="a">a</option>
         </select>
-        <p>{this.state.selectedDecks}</p>
+        {this.state.selectedDecks.map((cardPack) => (<p>{cardPack}</p>))}
       </>
     );
   }
