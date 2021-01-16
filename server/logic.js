@@ -66,9 +66,20 @@ const findAllCards = (cardPackIDs) => {
 	}
 };
 
+// When a player plays N cards
+const replaceCard = (gameState, playerID, cardIndex) => {
+	gameState.players.forEach((player) => {
+		if (player._id === playerID) {
+			player.responseCards[cardIndex] = getRandomElementsFromArray(gameState.responseCards, 1)[0];
+		}
+  });
+  return gameState;
+}
+
 module.exports = {
   createGame,
   getRandomElementsFromArray,
   addPlayerToGame,
   findAllCards,
+  replaceCard,
 }
