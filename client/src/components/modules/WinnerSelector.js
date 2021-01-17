@@ -27,20 +27,17 @@ class WinnerSelector extends Component{
     selectCard = (playerID) => {
       this.setState({
         selectedPlayer: playerID,
-      })
+      });
     }
     
     componentDidMount = () => {
-      get("/api/getSubmittedCards", {gameID: this.props.gameID}).then((response) => {
+      get("/api/getSubmittedResponses", {gameID: this.props.gameID}).then((response) => {
         this.setState({
-          playerCards: response.cardInfo,
+          playerCards: response.playerCards,
         })
       }).catch((e) => {
         console.log(e);
-        console.log("Testing 123")
-        this.setState({
-          playerCards: [{playerID: "1", card: "This is a card"}, {playerID: "2", card: "This is a second card"}, {playerID: "3", card: "This is a third card"}],
-        })
+        console.log("Component mounted :O");
       });
     }
 
@@ -57,7 +54,7 @@ class WinnerSelector extends Component{
               />
             )
           ) : null}
-          <button onClick = {this.selectWinner}>Final Card</button> {/* Should be blurred out until they have selected a card */}
+          <button hidden={!this.state.selectedPlayer} onClick = {this.selectWinner}>Final Card</button> {/* Should be blurred out until they have selected a card */}
         </div>
 			)
 		}
