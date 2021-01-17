@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Router } from "@reach/router";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
+import Navbar from "./modules/Navbar.js";
 import GameSettings from "./pages/GameSettings.js";
+import Player from "./pages/Player.js";
 import Judge from "./pages/Judge.js";
 import Game from "./pages/Game.js";
 
@@ -50,6 +52,7 @@ class App extends Component {
   render() {
     return (
       <>
+        <Navbar/>
         <Router>
           <Skeleton
             path="/"
@@ -60,6 +63,7 @@ class App extends Component {
           <GameSettings path="/play" />
           <Game path="/play/:gameID" />
           <Judge path = "/play/judge/:gameID"/>
+          <Player path = "/play/player/:gameID" />
           <NotFound default />
         </Router>
       </>
