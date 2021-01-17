@@ -42,6 +42,16 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
+const utils = require('./utils.js');
+
+router.get("/newGameID", (req, res) => {
+  if (!req.user) res.status(403).send({msg: "Hey, what are you doing here? Go login and play!"});
+  else {
+    let gameID = "";
+    res.send({"gameID" : utils.getRandomID(6)});
+  }
+});
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

@@ -1,0 +1,10 @@
+.Game-ResponseCard{
+  height: 100px;
+  width: 200px;
+  border: 2px solid red;
+  text-align: center;
+  
+}
+.Game-ResponseCard:hover{
+  cursor: pointer;
+}
