@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "@reach/router";
 import "./PromptCardSelector.css";
+import "./DisplayCard.js";
 import { get, post } from "../../utilities";
+import DisplayCard from "./DisplayCard.js";
 
 /**
  * Description of PromptCardSelector
@@ -53,7 +55,7 @@ class PromptCardSelector extends Component{
   render () {
     return (
       <div>
-        <p>{this.state.card ? this.state.card : "Loading plz wait"}</p>
+        {this.state.card ? <DisplayCard text = {this.state.card}/> : <p>Loading</p>}
         <div>
           <button hidden={this.state.selectedCard} onClick = {this.skipCard}>Skip Card</button>
           <button hidden={this.state.selectedCard} onClick = {this.selectCard}>Select Card</button>
