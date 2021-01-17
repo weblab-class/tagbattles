@@ -3,6 +3,7 @@ import { Router } from "@reach/router";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import GameSettings from "./pages/GameSettings.js";
+import Judge from "./pages/Judge.js";
 import Game from "./pages/Game.js";
 
 import "../utilities.css";
@@ -29,7 +30,7 @@ class App extends Component {
         // they are registed in the database, and currently logged in.
         this.setState({ userId: user._id });
       }
-    });
+    }).catch(e => console.log(e));
   }
 
   handleLogin = (res) => {
@@ -58,6 +59,7 @@ class App extends Component {
           />
           <GameSettings path="/play" />
           <Game path="/play/:gameID" />
+          <Judge path = "/play/judge/:gameID"/>
           <NotFound default />
         </Router>
       </>
