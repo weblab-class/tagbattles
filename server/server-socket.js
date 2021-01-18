@@ -33,7 +33,10 @@ module.exports = {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
         const user = getUserFromSocketID(socket.id);
-        removeUser(user, socket);
+        if (user) {
+          removeUser(user, socket);
+          console.log(`${user.name} has disconnected`);
+        }
       });
     });
   },

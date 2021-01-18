@@ -34,8 +34,11 @@ router.get("/whoami", (req, res) => {
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
-  if (req.user) socketManager.addUser(req.user, socketManager.getSocketFromSocketID(req.body.socketid));
-  res.send({});
+  if (req.user) {
+    console.log(req.body.socketid);
+    // console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
+    socketManager.addUser(req.user, req.body.socketid);
+  }
 });
 
 // |------------------------------|
@@ -53,15 +56,14 @@ router.get("/newGameID", (req, res) => {
 
 router.post("/initGameSocket", auth.ensureLoggedIn, (req, res) => {
   if (req.user) {
-    let socket = socketManager.getSocketFromUserID(req.user._id), was_connected = false;
-    if (req.body.gameID in socket.rooms) {
-      was_connected = true;
-    }
-    socket.join(req.body.gameID);
-    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`});
-    res.send({was_connected: was_connected});
+    console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
+    socketManager.getSocketFromSocketID(req.body.socketid).join(req.body.gameID, () => socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`}));
   }
 });
+
+router.post("/test", (req, res) => {
+  res.send({socketid: req.body.socketid});
+})
 
 router.post("/testingsocket", auth.ensureLoggedIn, (req, res) => {
   let socket = socketManager.getSocketFromUserID(req.user._id);
