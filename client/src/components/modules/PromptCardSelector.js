@@ -37,7 +37,7 @@ class PromptCardSelector extends Component{
   }
 
   selectCard = () => {
-    post("/api/newGameID/selectCard", {card: this.state.card}).catch(e => {
+    post("/api/selectCard", {gameID : this.props.gameID, card: this.state.card}).catch(e => {
       console.log(e);
       console.log("selected card");
     }).then(response => {

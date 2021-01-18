@@ -37,6 +37,12 @@ class Player extends Component {
         })
       }
     });
+    // Checks for when we get a card input
+    socket.on("displayCard", (data) => {
+      this.setState({
+        displayCard: data.card,
+      });
+    });
   }
 
   // Figuring out the black card code
@@ -50,7 +56,7 @@ class Player extends Component {
   render() { 
     return (
       <>
-        {this.state.card ? <DisplayCard text = {this.state.card}/> : <p>Loading</p>}
+        {this.state.card ? <DisplayCard text = {this.state.displayCard}/> : <p>Loading</p>}
         {this.state.currentState === 'choosingResponse' ? <ResponseSelector submitResponse= {this.selectedResponse}/> :
         <JudgingReplica />}
       </>
