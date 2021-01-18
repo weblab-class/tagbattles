@@ -17,10 +17,18 @@ class Card extends Component {
 
   render(){
     return (
-      <div onClick = {this.props.selectCard} className = "Game-ResponseCard">
-        <p>{this.props.text}</p>
-        {this.props.isSelected ? (<p>Selected!!!!!</p>) : null}
-      </div> 
+      <>
+        <div onClick = {this.props.selectCard} className = "card-container">
+          <div className = {this.props.isSelected ? "card-inner is-flipped" : "card-inner"}>
+            <div className = "Game-ResponseCard card-face thefront">
+              <p>{this.props.text}</p>
+            </div>
+            <div className = "Game-ResponseCard card-face theback">
+              <p>This card is currently selected.</p>
+            </div>
+          </div>
+        </div> 
+      </>
     )
   }
 }

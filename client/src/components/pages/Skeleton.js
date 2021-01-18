@@ -22,12 +22,6 @@ class Skeleton extends Component {
   render() {
     return (
       <>
-        <Navbar 
-          userId = {this.props.userId} 
-          GOOGLE_CLIENT_ID = {GOOGLE_CLIENT_ID} 
-          handleLogout = {this.props.handleLogout}
-          handleLogin = {this.props.handleLogin}
-        />
         <HomePage />
       </>
     );
