@@ -22,19 +22,28 @@ class Game extends Component {
       post("/api/testingsocket", {gameID: this.state.gameID});
     }
 
+    bar = (socket) => {
+      return new Promise((resolve, reject) => {
+        socket.on("gameUpdate", data => console.log(data));
+        resolve();
+      });
+    }
+
     initGameSocket = () => {
       console.log("initializing game socket...");
       post("/api/initGameSocket", {gameID: this.state.gameID});
     }
 
     componentDidMount() {
-      const socket = io(endpoint);
+      const socket = io(endpoint, {forceNew: true});
       socket.on("connect", () => {
+        console.log(socket.connected);
         post("/api/initsocket", { socketid: socket.id }).then(() => {
-          this.initGameSocket();
-        })
-      });      
-      socket.on("gameUpdate", data => console.log(data));
+          this.bar(socket).then(() => this.initGameSocket());
+          // socket.on("gameUpdate", data => console.log(data));
+        });
+      });
+
     }
 		
     render() {
