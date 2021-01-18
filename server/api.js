@@ -21,6 +21,9 @@ const router = express.Router();
 //initialize socket
 const socketManager = require("./server-socket");
 
+// game logic manager
+const gameManager = require("./gamesManager.js")
+
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -51,6 +54,8 @@ router.get("/newGameID", (req, res) => {
   }
 });
 
+
+
 router.post("/initGameSocket", auth.ensureLoggedIn, (req, res) => {
   if (req.user) {
     let socket = socketManager.getSocketFromUserID(req.user._id), was_connected = false;
@@ -71,10 +76,28 @@ router.post("/testingsocket", auth.ensureLoggedIn, (req, res) => {
   res.send({});
 });
 
+
+router.get('/getNewPromptCard', (req, res) => {
+  const newCard = gameManager.getNewPromptCard(req.gameID);
+  res.send({card: newCard});
+});
+
+router.post('/selectCard', (req, res) => {
+  gameManager.selectPromptCard(req.gameID, req.card);
+  res.send({});
+});
+
+router.get('/getSubmittedResponses', (req, res) => {
+  const responses = gameManager.getChosenResponses(req.gameID);
+  res.send({'playerCards' : responses});
+});
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);
   res.status(404).send({ msg: "API route not found" });
 });
+
+
 
 module.exports = router;

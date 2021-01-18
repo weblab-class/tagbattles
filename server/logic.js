@@ -29,7 +29,7 @@ const createGame = (cardPackIDs, playerIDs) => {
 		'promptsCards' : promptCards,
 		'responseCards' : responseCards,
 		'players' : players,
-		'promptCard' : '',
+    'promptCard' : '',
 		'judgeID' : players[0]._id,
 	}
 }
