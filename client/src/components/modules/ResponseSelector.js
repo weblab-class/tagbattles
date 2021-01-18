@@ -17,24 +17,24 @@ class ResponseSelector extends Component{
     constructor(props){
       super(props);
       this.state = {
-        cards: [{cardID: "1", card: "This is a card"}, {cardID: "2", card: "This is a second card"}, {cardID: "3", card: "This is a third card"}],
+        cards: [{card: "This is a card"}, {card: "This is a second card"}],
         selectedCard: null,
       }
     }
     
     submitCard = () => {
-      post("/api/selectFinalCard", {
+      post("/api/selectFinalResponse", {
           gameID: this.props.gameID, 
           playerID: this.props.playerID, 
-          cardID: this.state.selectedCard
+          card: this.state.selectedCard
         }).then(
           this.props.submitResponse
         ).catch((e) => console.log("selected response"));
     }
 
-    selectCard = (cardID) => {
+    selectCard = (card) => {
       this.setState({
-        selectedCard: cardID,
+        selectedCard: card,
       })
     }
     
@@ -53,12 +53,12 @@ class ResponseSelector extends Component{
     render(){
 			return(
         <div>
-          {this.state.cards ? this.state.cards.map((o)=>
+          {this.state.cards ? this.state.cards.map((o, id)=>
             (
               <Card 
-                key = {o.cardID}
+                key = {id}
                 text={o.card} 
-                isSelected={o.cardID === this.state.selectedCard} 
+                isSelected={o.card === this.state.selectedCard} 
                 selectCard = { () => {this.selectCard(o.cardID)}}
               />
             )

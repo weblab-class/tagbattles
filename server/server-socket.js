@@ -1,7 +1,11 @@
+const gameManager = require('./gamesManager.js');
 let io;
 
 const userToSocketMap = {}; // maps user ID to socket object
 const socketToUserMap = {}; // maps socket ID to user object
+
+const socketToRoomMap = {}; // maps user id to room id
+const roomToSocketsMap = [];
 
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
 const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
@@ -14,14 +18,23 @@ const addUser = (user, socket) => {
     // FIXME: is this the behavior you want?
     oldSocket.disconnect();
     delete socketToUserMap[oldSocket.id];
+    delete socketToRoomMap[oldSocket.id];
   }
 
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
 };
 
+const addUserToRoom = (user, roomid) => {
+  socketToRoomMap[getSocketFromUserID(user._id)] = roomid;
+}
+
 const removeUser = (user, socket) => {
-  if (user) delete userToSocketMap[user._id];
+  if (user) {
+    delete userToSocketMap[user._id];
+  }
+  delete socketToRoomMap[socket._id];
+
   delete socketToUserMap[socket.id];
 };
 
@@ -33,16 +46,25 @@ module.exports = {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
         const user = getUserFromSocketID(socket.id);
-        if (user) {
-          removeUser(user, socket);
-          console.log(`${user.name} has disconnected`);
-        }
+        // io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"onlinePlayers", players:soc});
+        io.in(socketToRoomMap[socket.id]).clients((error, clients) => {
+          if (error) console.log(error);
+          // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
+          gameManager.removePlayerFromGame(socketToRoomMap[socket.id], socketToRoomMap[socket.id]);
+          io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"playerList", players:clients.map(socket => getUserFromSocketID(socket.id))}, (error, message) => {
+            removeUser(user, socket);
+          });
+          
+        });
+        console.log(`player has disconnected from room ${socketToRoomMap[socket.id]}`);
+        
       });
     });
   },
 
   addUser: addUser,
   removeUser: removeUser,
+  addUserToRoom: addUserToRoom,
 
   getSocketFromUserID: getSocketFromUserID,
   getUserFromSocketID: getUserFromSocketID,

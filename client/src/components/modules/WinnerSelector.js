@@ -21,7 +21,7 @@ class WinnerSelector extends Component{
     }
     
     selectWinner = () => {
-      post("/api/selectWinner", {gameID: this.props.gameID, winnerID: this.state.selectedPlayer}).catch((e) => console.log("selected winner"));;
+      post("/api/selectWinnerAndUpdateJudge", {gameID: this.props.gameID, winnerID: this.state.selectedPlayer}).catch((e) => console.log("selected winner"));;
     }
 
     selectCard = (playerID) => {

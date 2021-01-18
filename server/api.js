@@ -60,11 +60,21 @@ router.get("/newGameID", (req, res) => {
 
 
 router.post("/initGameSocket", auth.ensureLoggedIn, (req, res) => {
-  if (req.user) {
-    console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
-    socketManager.getSocketFromSocketID(req.body.socketid).join(req.body.gameID, () => socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`}));
-  }
+  console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
+  socketManager.getSocketFromSocketID(req.body.socketid).join(req.body.gameID, () => {
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`, "type":"playerJoined"});
+    socketManager.addUserToRoom(req.user, req.body.gameID);
+    // socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socket => socketManager.getUserFromSocketID(socket.id))});
+  });
 });
+
+router.post("/playerDisconnected", (req, res) => {
+  console.log("disconnect", user);
+  if (req.user) {
+    console.log(`player ${req.user.name} has disconnected from room ${req.body.gameID}`);
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerDisconnected", msg: `${req.user.name}`});
+  }
+})
 
 router.post("/test", (req, res) => {
   res.send({socketid: req.body.socketid});
@@ -84,8 +94,9 @@ router.get('/getNewPromptCard', (req, res) => {
   res.send({card: newCard});
 });
 
-router.post('/selectCard', (req, res) => {
+router.post('/selectPromptCard', (req, res) => {
   gameManager.selectPromptCard(req.body.gameID, req.body.card);
+  socketManager.getIo().to(req.body.gameID).emit({'type': 'displayCard', 'displayCard' : req.body.card});
   res.send({});
 });
 
@@ -94,17 +105,31 @@ router.get('/getSubmittedResponses', (req, res) => {
   res.send({'playerCards' : responses});
 });
 
-router.post('/selectWinner', (req, res) => {
-  gameManager.selectWinner(req.body.gameID, req.body.winnerID);
-  res.send({});
+router.post('/selectWinnerAndUpdateJudge', (req, res) => {
+  const newJudge = gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
+  socketManager.getIo().to(req.body.gameID).emit({'type': 'judgeUpdate', 'judgeID' : newJudge});
 });
+
+router.post('/selectFinalResponse', (req, res) => {
+  gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.card);
+  const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
+  // We want to send a socket out of the number of thinking players
+  socketManager.getIo().to(req.body.gameID).emit({'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+})
+
+router.post('/startGame', (req, res) => {
+  gameManager.createGame(req.body.gameID, req.body.decks, req.body.players, req.body.rounds);
+})
+
+router.post('/addPlayer', (req, res) => {
+  // This should be where we add players.
+})
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);
   res.status(404).send({ msg: "API route not found" });
 });
-
 
 
 module.exports = router;

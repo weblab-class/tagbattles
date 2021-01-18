@@ -1,0 +1,36 @@
+.Settings-settings-side{
+  width:400px;
+  height:500px;
+  margin-left:5px;
+}
+
+.Settings-container-label{
+  text-align:center;
+}
+
+.Settings-settings-container{
+  border-radius: 20px;
+  background-color: rgba(240,240,240,0.7);
+  padding:20px;
+  height:350px;
+  text-align:center;
+}
+
+.Settings-player-info-container{
+  margin-left: 5px;
+}
+
+.Settings-start-game{
+  display:block;
+  width:100%;
+  border-radius:100px;
+  background-color:rgb(51, 141, 51);
+  margin: 10px auto;
+  border-style:none;
+  color:white;
+  padding:5px;
+}
+
+.Settings-start-game:hover{
+  background-color:rgb(100, 190, 100);
+}

@@ -11,6 +11,7 @@ import { get } from "../../utilities";
  * Proptypes
  * @param {string} gameID to display
  * 
+ * 
  * States
  * @param {} 
  */
@@ -38,7 +39,7 @@ class Judge extends Component {
     return (
       <>
         <PromptCardSelector gameID={this.props.gameID} />
-        {this.currentState === 'selectingWinner' ? <WinnerSelector gameID={this.props.gameID} /> : <p>Waiting for slowpokes</p>}
+        {/*SOMETHIGN*/}{this.props === 'selectingWinner' ? <WinnerSelector gameID={this.props.gameID} /> : <p>Waiting for slowpokes</p>}
       </>
     );
   }
