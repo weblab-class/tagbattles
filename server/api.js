@@ -47,9 +47,28 @@ const utils = require('./utils.js');
 router.get("/newGameID", (req, res) => {
   if (!req.user) res.status(403).send({msg: "Hey, what are you doing here? Go login and play!"});
   else {
-    let gameID = "";
     res.send({"gameID" : utils.getRandomID(6)});
   }
+});
+
+router.post("/initGameSocket", auth.ensureLoggedIn, (req, res) => {
+  if (req.user) {
+    let socket = socketManager.getSocketFromUserID(req.user._id), was_connected = false;
+    if (req.body.gameID in socket.rooms) {
+      was_connected = true;
+    }
+    socket.join(req.body.gameID);
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`});
+    res.send({was_connected: was_connected});
+  }
+});
+
+router.post("/testingsocket", auth.ensureLoggedIn, (req, res) => {
+  let socket = socketManager.getSocketFromUserID(req.user._id);
+  console.log(socket.rooms);
+  console.log(req.body.gameID);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg":"hey man"});
+  res.send({});
 });
 
 // anything else falls to this "not found" case
