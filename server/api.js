@@ -83,13 +83,18 @@ router.get('/getNewPromptCard', (req, res) => {
 });
 
 router.post('/selectCard', (req, res) => {
-  gameManager.selectPromptCard(req.gameID, req.card);
+  gameManager.selectPromptCard(req.body.gameID, req.body.card);
   res.send({});
 });
 
 router.get('/getSubmittedResponses', (req, res) => {
   const responses = gameManager.getChosenResponses(req.gameID);
   res.send({'playerCards' : responses});
+});
+
+router.post('/selectWinner', (req, res) => {
+  gameManager.selectWinner(req.body.gameID, req.body.winnerID);
+  res.send({});
 });
 
 // anything else falls to this "not found" case

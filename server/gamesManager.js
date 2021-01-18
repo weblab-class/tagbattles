@@ -30,7 +30,7 @@ const selectPromptCard = (gameID, card) => {
 const getChosenResponses = (gameID) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
-    let responses =  gameID[index].players.map(
+    let responses =  allGames[index].players.map(
       (player) => {
         return {'playerID' : player._id, card:player.chosenResponse}
       }
@@ -40,7 +40,16 @@ const getChosenResponses = (gameID) => {
   return 0;
 }
 
+const selectWinner = (gameID, winnerID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    logic.assignWinner(allGames[index], winnerID);
+  }
+  return 0;
+}
+
 module.exports = {
   getNewPromptCard,
-  selectPromptCard
+  selectPromptCard,
+  getChosenResponses
 }
