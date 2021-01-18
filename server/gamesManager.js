@@ -51,5 +51,6 @@ const selectWinner = (gameID, winnerID) => {
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
-  getChosenResponses
+  getChosenResponses,
+  selectWinner,
 }
