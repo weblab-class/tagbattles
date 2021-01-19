@@ -15,7 +15,7 @@ class WinnerSelector extends Component{
     constructor(props){
       super(props);
       this.state = {
-        playerCards: [{playerID: "1", card: "This is a card"}, {playerID: "2", card: "This is a second card"}, {playerID: "3", card: "This is a third card"}],
+        playerCards: [],
         selectedPlayer: null,
       }
     }
