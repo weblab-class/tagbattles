@@ -51,6 +51,7 @@ const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
   for(let i = 0 ;i<allGames[index].players.length; i++){
     allGames[index].players[i].chosenResponse = null;
   }
+  allGames[index].promptCard = null;
   return allGames[index].judgeID;
 }
 
@@ -80,10 +81,10 @@ const getPlayerCards = (gameID, playerID) => {
   return -1;
 }
 
-const createGameIfNonExistant = async (gameID) => {
+const createGameIfNonExistant = (gameID) => {
   const index = getParticularGameIndex(gameID)
   if (index === -1) {
-    await allGames.push(await logic.createGame(gameID));
+    allGames.push(logic.createGame(gameID));
   }
   console.log("The game is stored at", getParticularGameIndex(gameID));
 }

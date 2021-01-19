@@ -28,7 +28,7 @@ class ResponseSelector extends Component{
           playerID: this.props.userID, 
           card: this.state.selectedCard
         }).then(
-          this.props.submitResponse
+          this.props.submitResponse()
         ).catch((e) => console.log("selected response"));
     }
 

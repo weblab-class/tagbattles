@@ -22,6 +22,7 @@ class Game extends Component {
         players: [],
         currentState: null,
         leaderboard: null,
+        joinedGame: false,
         // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
@@ -90,19 +91,34 @@ class Game extends Component {
         this.setState({userID: me._id})
         if (this.state.userID) {
           post("/api/test", {socketid:socket.id}).then((data) => {
-            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}})
-            });
+            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
+              console.log('starting game')
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
+                console.log('made game');
+                this.setState({
+                  joinedGame:true
+                });
+              });
+            })
           });
         }
-
       });
       
       this.listenToServer();
       console.log(socket);
       if (this.state.userID) {
         post("/api/test", {socketid:socket.id}).then((data) => {
-          post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id});
+          post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() =>{
+            console.log('fakegame game')
+            get("/api/whoami").then(me => {
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
+                console.log('made game');
+                this.setState({
+                  joinedGame:true
+                });
+              });
+            })
+          });
         });
       }
       
@@ -118,7 +134,16 @@ class Game extends Component {
           console.log("hey in initsocket");
           post("/api/test", {socketid:socket.id}).then(() => {
             console.log("in test");
-            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {console.log("in init"); this.listenToServer();});
+            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
+              console.log("in init"); this.listenToServer();
+              console.log('starting game')
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
+                console.log('made game');
+                this.setState({
+                  joinedGame:true
+                });
+              });  
+            });
           });
         });
       });
@@ -147,7 +172,7 @@ class Game extends Component {
           <div>{player.name}: {player.score}</div>
           ))}</div> : 
           <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
-          <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction}/>}
+          <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction} joinedGame = {this.state.joinedGame}/>}
         </div>
       );
     }

@@ -44,8 +44,7 @@ class Player extends Component {
     return (
       <>
         {this.props.displayCard ? <DisplayCard text = {this.props.displayCard}/> : <p>Loading</p>}
-        {this.state.currentState === 0 ? <ResponseSelector displayingCard = {this.props.displayCard} submitResponse= {this.selectedResponse} gameID = {this.props.gameID} userID = {this.props.userID}/> :
-        <JudgingReplica />}
+        {<ResponseSelector displayingCard = {this.props.displayCard} submitResponse= {this.selectedResponse} gameID = {this.props.gameID} userID = {this.props.userID}/>}
       </>
     );
   }

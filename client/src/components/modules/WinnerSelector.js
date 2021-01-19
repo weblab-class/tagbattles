@@ -36,7 +36,7 @@ class WinnerSelector extends Component{
       });
     }
     
-    componentDidMount = () => {
+    componentDidUpdate = () => {
       get("/api/getSubmittedResponses", {gameID: this.props.gameID}).then((response) => {
         this.setState({
           playerCards: response.playerCards,
@@ -60,7 +60,7 @@ class WinnerSelector extends Component{
               />
             )
           ) : null}
-          <button hidden={!this.state.selectedPlayer} onClick = {this.selectWinner}>Final Card</button> {/* Should be blurred out until they have selected a card */}
+          <button hidden={!this.state.selectedPlayer} onClick = {this.selectWinner}>Final Card</button>
         </div>
 			)
 		}

@@ -24,7 +24,7 @@ class Lobby extends Component {
         <h1>Lobby</h1>
         <div className = "Lobby-game-container">
           <PlayerList players = {this.props.players}/>
-          <Settings startGame = {this.props.startGame} deckList = {this.props.deckList}/>
+          <Settings joinedGame = {this.props.joinedGame} startGame = {this.props.startGame} deckList = {this.props.deckList}/>
         </div>
         <div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>
       </div>

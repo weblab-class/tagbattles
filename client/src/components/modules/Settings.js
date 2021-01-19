@@ -51,6 +51,7 @@ class Settings extends Component {
   }
 
   render() {
+    console.log("joinedGame", this.props.joinedGame);
     const rounds = [2,3,4,5,6,7,8,9,10];
     return (
       <div className = "Settings-settings-side">
@@ -64,7 +65,7 @@ class Settings extends Component {
           <select value = {this.state.deck} name = "deck-select" onChange = {this.onDeckChange}>
             {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
           </select>
-          <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}>Start Game</button>
+           {this.props.joinedGame ? <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}>Enter Game</button> : <p>Creating your game</p>}
         </div>
       </div>
     )

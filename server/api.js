@@ -132,10 +132,15 @@ router.post('/selectFinalResponse', (req, res) => {
 })
 
 // Also creates game. HAX
-router.post('/addPlayer', async (req, res) => {
+router.post('/addPlayer', (req, res) => {
   // If the game currently has nobody in it, we will call createGame
-  await gameManager.createGameIfNonExistant(req.body.gameID);
+  console.log('started game creation')
+  gameManager.createGameIfNonExistant(req.body.gameID);
+  console.log("created game")
+  
   gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
+  console.log("added player to game")
+  res.send({})
 })
 
 router.post('/startGame', async (req, res) => {
