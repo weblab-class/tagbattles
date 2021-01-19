@@ -22,7 +22,7 @@ const getNewPromptCard = (gameID) => {
 const selectPromptCard = (gameID, card) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
-    logic.assignPromptCard(allGames[index])
+    logic.assignPromptCard(allGames[index], card)
   }
   return 0;
 }
