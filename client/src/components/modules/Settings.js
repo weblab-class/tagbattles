@@ -64,7 +64,7 @@ class Settings extends Component {
           <select value = {this.state.deck} name = "deck-select" onChange = {this.onDeckChange}>
             {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
           </select>
-          <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, this.state.deck)}>Start Game</button>
+          <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}>Start Game</button>
         </div>
       </div>
     )

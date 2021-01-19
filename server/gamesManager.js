@@ -68,6 +68,13 @@ const createGame = (gameID, decks, players, rounds) => {
   allGames.push(logic.createGame(gameID, decks, players, rounds));
 }
 
+const getJudge = (gameID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    return allGames[index].judgeID;
+  }
+  return -1;
+}
 const addPlayerToGame = (gameID, player) => {
   // Checks if they are part of the game already
   // If so then just set their information to active again
@@ -120,5 +127,6 @@ module.exports = {
   getNumberOfThinkingPlayers,
   createGame,
   addPlayerToGame,
-  removePlayerFromGame
+  removePlayerFromGame,
+  getJudge
 }

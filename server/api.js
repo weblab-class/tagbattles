@@ -64,7 +64,8 @@ router.get("/newGameID", (req, res) => {
 
 router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
   console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
-  socketManager.getSocketFromSocketID(req.body.socketid).join(req.body.gameID, () => {
+  const socket = socketManager.getSocketFromSocketID(req.body.socketid);
+  socket.join(req.body.gameID, () => {
 
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`, "type":"playerJoined"});
 
@@ -119,6 +120,10 @@ router.post('/selectFinalResponse', (req, res) => {
 
 router.post('/startGame', (req, res) => {
   gameManager.createGame(req.body.gameID, req.body.decks, req.body.players, req.body.rounds);
+  // Get the first judge and send that out
+  let newJudge = gameManager.getJudge(req.body.gameID)
+  socketManager.getIo().to(req.body.gameID).emit({'type': 'judgeUpdate', 'judgeID' : newJudge});
+  res.send({});
 })
 
 router.get('/getDeckNames', (req, res) => {
@@ -126,7 +131,9 @@ router.get('/getDeckNames', (req, res) => {
 })
 
 router.post('/addPlayer', (req, res) => {
-  // This should be where we add players.
+  gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name}).then((stuff) => {
+    console.log(`Added ${req.body.player.name}`);
+  })
 })
 
 // anything else falls to this "not found" case

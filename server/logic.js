@@ -59,7 +59,7 @@ const findAllCards = (cardPackNames) => {
 	// Collect all black and white cards from the card packs
 	let promptCards = ["a", "b", "c"];
   let responseCards = ['d', 'e', 'f'];
-  cardPackIDs.forEach(cardPackName => {
+  cardPackNames.forEach(cardPackName => {
     CardPacks.findOne({'name' : cardPackName}).then((CardPack) => {
 			if (CardPack) {
         promptCards = [...promptCards, ...CardPack.prompt_cards];
