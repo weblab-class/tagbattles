@@ -20,13 +20,17 @@ class HomePage extends Component {
     return (
       <>
       {this.state.gameID ? (
-        <Link to={"/play/" + this.state.gameID}>
-          <button >Start Game</button>
-        </Link>
+        <>
+          <Link to={"/play/" + this.state.gameID}>
+            <button >Start Game</button>
+          </Link>
+          <Link to={"/join/"}>
+            <button>Join Game</button>
+          </Link>
+        </>
       ) : (
         <p>Please log in and refresh!</p>
       )}
-        <button>Join Game</button>
       </>
     );
   }

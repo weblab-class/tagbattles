@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import Navbar from "./modules/Navbar.js";
 import GameSettings from "./pages/GameSettings.js";
+import JoinGame from "./pages/JoinGame.js";
 import Game from "./pages/Game.js";
 
 import "../utilities.css";
@@ -59,6 +60,7 @@ class App extends Component {
           />
           {/* <GameSettings path="/play" /> */}
           <Game path="/play/:gameID" />
+          <JoinGame path = "/join/"/>
           <NotFound default />
         </Router>
       </>

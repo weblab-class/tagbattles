@@ -1,0 +1,33 @@
+.JoinGame-join-button{
+  margin-top:10px;
+  border-radius: 10px;
+  padding:2px 8px;
+  background-color: rgb(51, 141, 51);
+}
+
+.JoinGame-join-button:hover{
+  background-color: rgb(100, 190, 100);
+}
+
+.JoinGame-button-text{
+  color:white;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.JoinGame-container{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:column;
+  height: 100vh;
+}
+
+.JoinGame-window{
+  background-color:rgba(240,240,240,0.5);
+  border-radius: 20px;
+  padding:10px 20px 50px 20px;
+  height:100px;
+  width:300px;
+  text-align:center;
+}
