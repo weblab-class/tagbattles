@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import { get, post } from "../../utilities";
 import './Settings.css';
-import cards from "../../../../a_lot_of_cards.js";
+// import cards from "../../../../a_lot_of_cards.js";
 
 /**
  * Description of WinnerSelector
@@ -12,18 +13,27 @@ import cards from "../../../../a_lot_of_cards.js";
 class Settings extends Component {
   constructor(props) {
     super(props);
-    let uniqueTypes = []
-    for(let i =0 ; i < cards.length; i++){
-      if(!uniqueTypes.includes(cards[i].expansion)){
-        uniqueTypes.push(cards[i].expansion);
-      }
-    }
-    console.log(uniqueTypes);
+    // let uniqueTypes = []
+    // for(let i =0 ; i < cards.length; i++){
+    //   if(!uniqueTypes.includes(cards[i].expansion)){
+    //     uniqueTypes.push(cards[i].expansion);
+    //   }
+    // }
+    // console.log(uniqueTypes);
     this.state = {
       rounds: "3",
-      deck: "Base",
-      decks: uniqueTypes,
+      deck: "",
+      decks: [],
     }
+  }
+
+  componentDidMount(){
+    get("/api/getDeckNames").then((data) => {
+      this.setState({
+        deck: data.map(cardPack => cardPack.name)[0],
+        decks: data.map(cardPack => cardPack.name),
+      });
+    });
   }
 
   onRoundsChange = (newRound) => {
@@ -52,7 +62,7 @@ class Settings extends Component {
           </select>
           <h4 className = "Settings-settings-label">Deck</h4>
           <select value = {this.state.deck} name = "deck-select" onChange = {this.onDeckChange}>
-            {this.state.decks.map((card) => <option key = {card} value = {card}>{card}</option>)}
+            {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
           </select>
           <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, this.state.deck)}>Start Game</button>
         </div>

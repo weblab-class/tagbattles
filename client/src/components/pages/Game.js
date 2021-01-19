@@ -6,7 +6,7 @@ import { socket } from "../../client-socket.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
-import cards from "../../../../a_lot_of_cards.js";
+// import cards from "../../../../a_lot_of_cards.js";
 
 class Game extends Component {
     constructor(props) {
@@ -14,9 +14,9 @@ class Game extends Component {
       this.state = {
         // THESE ALL SHOULD BE A PROP UNLESS MAYBE PLAYERS CAN BE AFTER THE GAME HAS STARTED
         gameID: window.location.pathname.substring(6), 
-        players: [{name: "Dude", _id:143}, {name: "Man", _id:123}, {name:"Sir", _id:123}],
+        players: [],
         currentState: null,
-        deckList: cards,
+        // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
       }
@@ -44,6 +44,7 @@ class Game extends Component {
         console.log(data);
         switch(data.type) {
           case "playerList":
+            console.log(data.players);
             this.setState({
               players: data.players,
             });

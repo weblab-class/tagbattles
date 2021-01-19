@@ -4,7 +4,7 @@ let io;
 const userToSocketMap = {}; // maps user ID to socket object
 const socketToUserMap = {}; // maps socket ID to user object
 
-const socketToRoomMap = {}; // maps user id to room id
+const socketToRoomMap = {}; // maps socket id to room id
 const roomToSocketsMap = [];
 
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
@@ -20,13 +20,15 @@ const addUser = (user, socket) => {
     delete socketToUserMap[oldSocket.id];
     delete socketToRoomMap[oldSocket.id];
   }
-
+  console.log(`now ${user.name} has ${socket.id}`)
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
 };
 
 const addUserToRoom = (user, roomid) => {
-  socketToRoomMap[getSocketFromUserID(user._id)] = roomid;
+  if (user && getSocketFromUserID(user._id)) {
+    socketToRoomMap[getSocketFromUserID(user._id).id] = roomid;
+  }
 }
 
 const removeUser = (user, socket) => {
@@ -34,7 +36,6 @@ const removeUser = (user, socket) => {
     delete userToSocketMap[user._id];
   }
   delete socketToRoomMap[socket._id];
-
   delete socketToUserMap[socket.id];
 };
 
@@ -46,15 +47,13 @@ module.exports = {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
         const user = getUserFromSocketID(socket.id);
-        // io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"onlinePlayers", players:soc});
-        io.in(socketToRoomMap[socket.id]).clients((error, clients) => {
+        console.log(user);
+        io.in(socketToRoomMap[socket.id]).clients(async (error, clients) => {
           if (error) console.log(error);
           // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
           gameManager.removePlayerFromGame(socketToRoomMap[socket.id], socketToRoomMap[socket.id]);
-          io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"playerList", players:clients.map(socket => getUserFromSocketID(socket.id))}, (error, message) => {
-            removeUser(user, socket);
-          });
-          
+          await io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => getUserFromSocketID(socketid))});
+          removeUser(user, socket);
         });
         console.log(`player has disconnected from room ${socketToRoomMap[socket.id]}`);
         

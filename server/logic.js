@@ -5,10 +5,10 @@ const NUMBER_OF_CARDS = 10;
 // Creates a game and adds it to the gameStates
 // should add round_time afterward
 // card_pack_ids is a list
-const createGame = (gameID, cardPackIDs, players, rounds) => {
+const createGame = (gameID, cardPackNames, players, rounds) => {
   
 	// Collect all black and white cards from the card packs
-  const allCards = findAllCards(cardPackIDs);
+  const allCards = findAllCards(cardPackNames);
   const promptCards = allCards['promptCards'];
 	const responseCards = allCards['responseCards'];
 	
@@ -55,12 +55,12 @@ const addPlayerToGame = (gameState, player) => {
   return gameState;
 }
 
-const findAllCards = (cardPackIDs) => {
+const findAllCards = (cardPackNames) => {
 	// Collect all black and white cards from the card packs
 	let promptCards = ["a", "b", "c"];
   let responseCards = ['d', 'e', 'f'];
-  cardPackIDs.forEach(cardPackID => {
-    CardPacks.findById(cardPackID).then((CardPack) => {
+  cardPackIDs.forEach(cardPackName => {
+    CardPacks.findOne({'name' : cardPackName}).then((CardPack) => {
 			if (CardPack) {
         promptCards = [...promptCards, ...CardPack.prompt_cards];
         responseCards = [...responseCards, ...CardPack.response_cards];

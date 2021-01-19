@@ -24,6 +24,9 @@ const socketManager = require("./server-socket");
 // game logic manager
 const gameManager = require("./gamesManager.js")
 
+// Card packs
+const CardPack = require("./models/card_pack.js");
+
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -40,7 +43,7 @@ router.post("/initsocket", (req, res) => {
   if (req.user) {
     console.log(req.body.socketid);
     // console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
-    socketManager.addUser(req.user, req.body.socketid);
+    socketManager.addUser(req.user, socketManager.getSocketFromSocketID(req.body.socketid));
   }
 });
 
@@ -59,22 +62,19 @@ router.get("/newGameID", (req, res) => {
 
 
 
-router.post("/initGameSocket", auth.ensureLoggedIn, (req, res) => {
+router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
   console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
   socketManager.getSocketFromSocketID(req.body.socketid).join(req.body.gameID, () => {
+
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`, "type":"playerJoined"});
+
     socketManager.addUserToRoom(req.user, req.body.gameID);
-    // socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socket => socketManager.getUserFromSocketID(socket.id))});
+
+    socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
+      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => socketManager.getUserFromSocketID(socketid))});
+    });
   });
 });
-
-router.post("/playerDisconnected", (req, res) => {
-  console.log("disconnect", user);
-  if (req.user) {
-    console.log(`player ${req.user.name} has disconnected from room ${req.body.gameID}`);
-    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerDisconnected", msg: `${req.user.name}`});
-  }
-})
 
 router.post("/test", (req, res) => {
   res.send({socketid: req.body.socketid});
@@ -119,6 +119,10 @@ router.post('/selectFinalResponse', (req, res) => {
 
 router.post('/startGame', (req, res) => {
   gameManager.createGame(req.body.gameID, req.body.decks, req.body.players, req.body.rounds);
+})
+
+router.get('/getDeckNames', (req, res) => {
+  CardPack.find({}, {name:1, _id:0}).then((cardPackNames) => res.send(cardPackNames));
 })
 
 router.post('/addPlayer', (req, res) => {

@@ -65,13 +65,13 @@ const getNumberOfThinkingPlayers = (gameID) => {
 }
 
 const createGame = (gameID, decks, players, rounds) => {
-  allGames.push(logic.createGame(gameID, decks, players, rounds))
+  allGames.push(logic.createGame(gameID, decks, players, rounds));
 }
 
 const addPlayerToGame = (gameID, player) => {
   // Checks if they are part of the game already
   // If so then just set their information to active again
-  const index = getParticularGameIndex(gameID)
+  const index = getParticularGameIndex(gameID);
   if (index === -1) return;
   let i = -1;
   for (i = 0; i < allGames[index].inactivePlayers.length; ++i) {
