@@ -1,8 +1,15 @@
 .JoinGame-join-button{
-  margin-top:10px;
+  width:100%;
+  font-family: "Source Serif Pro", arial, sans-serif;
+  border-width: 0;
   border-radius: 10px;
-  padding:2px 8px;
+  padding-top:2px;
+  padding-bottom:2px;
   background-color: rgb(51, 141, 51);
+}
+
+.JoinGame-extra-margin{
+  margin-top:14px;
 }
 
 .JoinGame-join-button:hover{
@@ -30,4 +37,10 @@
   height:100px;
   width:300px;
   text-align:center;
+}
+
+.JoinGame-error-message{
+  color:red;
+  font-size:11px;
+  margin:0;
 }

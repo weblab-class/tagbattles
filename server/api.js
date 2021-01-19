@@ -156,6 +156,9 @@ router.get('/getDeckNames', (req, res) => {
   CardPack.find({}, {name:1, _id:0}).then((cardPackNames) => res.send(cardPackNames));
 })
 
+router.get('/getGameID', (req,res) => {
+  res.send({index: gameManager.getParticularGameIndex(req.query.id)});
+})
 
 router.get('/getPlayerCards', (req, res) => {
   let responseCards = gameManager.getPlayerCards(req.query.gameID, req.query.playerID);

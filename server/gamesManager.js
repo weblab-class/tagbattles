@@ -198,6 +198,7 @@ module.exports = {
   getChosenResponses,
   selectWinnerAndUpdateJudge,
   selectFinalResponse,
+  getParticularGameIndex,
   incrementPlayerPoints,
   checkMoreRounds,
   getNumberOfThinkingPlayers,
