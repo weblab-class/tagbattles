@@ -168,9 +168,7 @@ class Game extends Component {
       return (
         <div>
           {this.state.currentState ? (this.state.currentState === "judge" ? <Judge numThinkingPlayers = {this.state.numThinkingPlayers} gameID = {this.state.gameID} userID = {this.state.userID}/>: 
-          (this.state.currentState === "gameEnd" ? <div><h2>Leaderboard</h2>{this.state.leaderboard.map((player) => (
-          <div>{player.name}: {player.score}</div>
-          ))}</div> : 
+          (this.state.currentState === "gameEnd" ? <h1>Game over</h1> : 
           <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
           <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction} joinedGame = {this.state.joinedGame}/>}
         </div>
