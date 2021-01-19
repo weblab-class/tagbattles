@@ -20,6 +20,10 @@
 - Update this README file ;)
 - Update the package.json file with your app name :) (line 2)
 
+## Credits
+
+Got Apples2Apples cards here: https://github.com/andrew12/apples/blob/master/src/cards.js
+
 ## Socket stuff
 Note: we'll be getting to this in lecture in week 2, so don't worry if you don't know it yet
 
