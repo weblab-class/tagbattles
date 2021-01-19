@@ -3,6 +3,7 @@ import { Link } from "@reach/router";
 import "./Game.css";
 import Lobby from "../modules/Lobby.js";
 import { socket } from "../../client-socket.js";
+import Leaderboard from "../modules/Leaderboard.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
@@ -168,7 +169,9 @@ class Game extends Component {
       return (
         <div>
           {this.state.currentState ? (this.state.currentState === "judge" ? <Judge numThinkingPlayers = {this.state.numThinkingPlayers} gameID = {this.state.gameID} userID = {this.state.userID}/>: 
-          (this.state.currentState === "gameEnd" ? <h1>Game over</h1> : 
+          (this.state.currentState === "gameEnd" ? 
+            <Leaderboard leaderboard = {this.state.leaderboard}/>
+          : 
           <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
           <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction} joinedGame = {this.state.joinedGame}/>}
         </div>

@@ -163,8 +163,9 @@ const checkMoreRounds = (gameID) => {
   if(index===-1){
     return;
   }
+  console.log(allGames[index].rounds)
   allGames[index].rounds--;
-  return allGames[index].rounds !== 0;
+  return allGames[index].rounds > 0;
 }
 
 const getLeaderboard = (gameID) => {
@@ -182,12 +183,15 @@ const getLeaderboard = (gameID) => {
     maxIndex = 0;
     maxScore = 0;
     for(let j =0 ;j<playerCopy.length; j++){
-      if(players[i].score > maxScore){
-        maxScore = players[i].score;
-        maxIndex = i;
+      if(playerCopy[j].score > maxScore){
+        maxScore = playerCopy[j].score;
+        maxIndex = j;
       }
     }
+    console.log(maxIndex, maxScore);
     retList.push(playerCopy.splice(maxIndex,1)[0]);
+    console.log("retList: ", retList)
+    console.log("playerList: ", playerCopy, "\n")
   }
   return retList;
 }
