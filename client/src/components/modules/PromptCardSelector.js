@@ -21,34 +21,23 @@ class PromptCardSelector extends Component{
   }
   componentDidMount() {
     get("/api/getNewPromptCard", {gameID : this.props.gameID}).then(data => (this.setState({card: data.card}))).catch(e => {
-      this.setState({
-        card: "test1",
-      })
+      console.log(e);
     });
   }
 
   skipCard = () => {
 		get("/api/getNewPromptCard", {gameID : this.props.gameID}).then(data => (this.setState({card: data.card}))).catch(e => {
       console.error(e)
-      this.setState({
-        card: "test2",
-      })
     });
   }
 
   selectCard = () => {
-    post("/api/selectCard", {gameID : this.props.gameID, card: this.state.card}).catch(e => {
-      console.log(e);
-      console.log("selected card");
-    }).then(response => {
+    post("/api/selectPromptCard", {gameID : this.props.gameID, card: this.state.card}).then(response => {
       this.setState({
         selectedCard : true,
       })
     }).catch(e => {
       console.log(e);
-      this.setState({
-        selectedCard: true,
-      })
     });
   }
 

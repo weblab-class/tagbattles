@@ -10,7 +10,7 @@ import { get } from "../../utilities";
  *
  * Proptypes
  * @param {string} gameID to display
- * 
+ * @param {number} numThinkingPlayers
  * 
  * States
  * @param {} 
@@ -20,18 +20,11 @@ class Judge extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentState : 'promptSelector' // Store this information as a cookie because we don't want people refreshing and ending up in a different state
+
     }
   }
   
   componentDidMount() {
-    socket.on("thinkingPlayers", (data) => {
-      if (data.thinkingPlayers === 0) {
-        this.setState({
-          currrentState: 'selectingWinner'
-        })
-      }
-    });
   }
 
   // Selecting the 
@@ -39,7 +32,7 @@ class Judge extends Component {
     return (
       <>
         <PromptCardSelector gameID={this.props.gameID} />
-        {/*SOMETHIGN*/}{this.props === 'selectingWinner' ? <WinnerSelector gameID={this.props.gameID} /> : <p>Waiting for slowpokes</p>}
+        {this.props.numThinkingPlayers === 0 ? <WinnerSelector gameID={this.props.gameID} /> : <p>Waiting for slowpokes</p>}
       </>
     );
   }

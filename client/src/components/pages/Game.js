@@ -21,6 +21,7 @@ class Game extends Component {
         gameID: window.location.pathname.substring(6), 
         players: [],
         currentState: null,
+        leaderboard: null,
         // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
@@ -34,7 +35,6 @@ class Game extends Component {
     startGame = (rounds, decks) => {
       post("/api/startGame", {
         'gameID' : this.state.gameID,
-        'players' : this.state.players, // Here we want to pass _id and name. It looks like we cannot get this from the client side.
         'rounds' : rounds,
         'decks' : decks
       }).then((data) =>{
@@ -52,7 +52,8 @@ class Game extends Component {
             });
             break;
           case "judgeUpdate":
-            if (this.state.playerID === data.judgeID) {
+            console.log(data.judgeID);
+            if (this.state.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
               })
@@ -64,13 +65,20 @@ class Game extends Component {
             break;
           case "numThinkingPlayers":
             this.setState({
-              thinkingPlayers: data.numThinkingPlayers
+              numThinkingPlayers: data.numThinkingPlayers
             });
           case "displayCard":
             this.setState({
               displayCard: data.displayCard
             })
             break;
+          case "gameEnded":
+            console.log("Game has ended");
+            console.log("leaderboard: ", data.leaderboard);
+            this.setState({
+              currentState: "gameEnd",
+              leaderboard: data.leaderboard,
+            })
           default:
             break;
         }
@@ -82,10 +90,14 @@ class Game extends Component {
         this.setState({userID: me._id})
         if (this.state.userID) {
           post("/api/test", {socketid:socket.id}).then((data) => {
-            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id});
+            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}})
+            });
           });
         }
+
       });
+      
       this.listenToServer();
       console.log(socket);
       if (this.state.userID) {
@@ -93,6 +105,7 @@ class Game extends Component {
           post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id});
         });
       }
+      
     }
     
     handleLogin = (res) => {
@@ -103,13 +116,14 @@ class Game extends Component {
         console.log(this.state.userID);
         post("/api/initsocket", { socketid: socket.id }).then(() => {
           console.log("hey in initsocket");
-          post("/api/test", {socketid:socket.id}).then((data) => {
+          post("/api/test", {socketid:socket.id}).then(() => {
             console.log("in test");
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {console.log("in init"); this.listenToServer();});
           });
         });
       });
     }
+
     render() {
       console.log("USER ID IS ", this.state.userID);
       if (!this.state.userID) {
@@ -128,8 +142,11 @@ class Game extends Component {
       }
       return (
         <div>
-          {this.state.currentState ? (this.state.currentState === "judge" ? <Judge gameID = {this.state.gameID}/>: 
-          <Player gameID = {this.state.gameID}/>) : 
+          {this.state.currentState ? (this.state.currentState === "judge" ? <Judge numThinkingPlayers = {this.state.numThinkingPlayers} gameID = {this.state.gameID} userID = {this.state.userID}/>: 
+          (this.state.currentState === "gameEnd" ? <div><h2>Leaderboard</h2>{this.state.leaderboard.map((player) => (
+          <div>{player.name}: {player.score}</div>
+          ))}</div> : 
+          <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
           <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction}/>}
         </div>
       );

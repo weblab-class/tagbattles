@@ -39,7 +39,7 @@ class Skeleton extends Component {
               className="NavBar-link NavBar-login"
             />
           )}
-        <HomePage />
+        <HomePage userID={this.props.userId} />
       </>
     );
   }

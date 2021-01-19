@@ -46,16 +46,17 @@ module.exports = {
     io.on("connection", (socket) => {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
-        const user = getUserFromSocketID(socket.id);
+        const user = getUserFromSocketID(socket.id), room = socketToRoomMap[socket.id];
         console.log(user);
-        io.in(socketToRoomMap[socket.id]).clients(async (error, clients) => {
+        io.in(room).clients(async (error, clients) => {
           if (error) console.log(error);
           // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
-          gameManager.removePlayerFromGame(socketToRoomMap[socket.id], socketToRoomMap[socket.id]);
-          await io.to(socketToRoomMap[socket.id]).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => getUserFromSocketID(socketid))});
+          await console.log("DISCONNECT", user, room);
+          if (user) await gameManager.removePlayerFromGame(room, user._id);
+          await io.to(room).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => getUserFromSocketID(socketid))});
           removeUser(user, socket);
         });
-        console.log(`player has disconnected from room ${socketToRoomMap[socket.id]}`);
+        console.log(`player has disconnected from room ${room}`);
         
       });
     });

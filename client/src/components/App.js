@@ -57,7 +57,7 @@ class App extends Component {
             handleLogout={this.handleLogout}
             userId={this.state.userId}
           />
-          <GameSettings path="/play" />
+          {/* <GameSettings path="/play" /> */}
           <Game path="/play/:gameID" />
           <NotFound default />
         </Router>

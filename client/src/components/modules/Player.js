@@ -25,30 +25,17 @@ class Player extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentState: 'choosingResponse',
+      currentState: 0,
     }
   }
   
   componentDidMount() {
-    socket.on("thinkingPlayers", (data) => {
-      if (data.thinkingPlayers === 0) {
-        this.setState({
-          currrentState: 'judging'
-        })
-      }
-    });
-    // Checks for when we get a card input
-    socket.on("displayCard", (data) => {
-      this.setState({
-        displayCard: data.card,
-      });
-    });
   }
 
   // Figuring out the black card code
   selectedResponse = () => {
     this.setState({
-      currentState : 'judging'    
+      currentState : 1    
     })
   }
 
@@ -56,8 +43,8 @@ class Player extends Component {
   render() { 
     return (
       <>
-        {this.state.card ? <DisplayCard text = {this.state.displayCard}/> : <p>Loading</p>}
-        {this.state.currentState === 'choosingResponse' ? <ResponseSelector submitResponse= {this.selectedResponse}/> :
+        {this.props.displayCard ? <DisplayCard text = {this.props.displayCard}/> : <p>Loading</p>}
+        {this.state.currentState === 0 ? <ResponseSelector displayingCard = {this.props.displayCard} submitResponse= {this.selectedResponse} gameID = {this.props.gameID} userID = {this.props.userID}/> :
         <JudgingReplica />}
       </>
     );

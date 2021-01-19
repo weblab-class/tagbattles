@@ -17,7 +17,7 @@ class ResponseSelector extends Component{
     constructor(props){
       super(props);
       this.state = {
-        cards: [{card: "This is a card"}, {card: "This is a second card"}],
+        cards: ["This is a card","This is a second card"],
         selectedCard: null,
       }
     }
@@ -25,7 +25,7 @@ class ResponseSelector extends Component{
     submitCard = () => {
       post("/api/selectFinalResponse", {
           gameID: this.props.gameID, 
-          playerID: this.props.playerID, 
+          playerID: this.props.userID, 
           card: this.state.selectedCard
         }).then(
           this.props.submitResponse
@@ -39,13 +39,14 @@ class ResponseSelector extends Component{
     }
     
     componentDidMount = () => {
-      get("/api/getPlayerCards", {gameID: this.props.gameID, playerID: this.props.playerID}).then((response) => {
+      console.log(this.props.gameID);
+      get("/api/getPlayerCards", {gameID: this.props.gameID, playerID: this.props.userID}).then((response) => {
         this.setState({
           cards : response.cards,
         })
       }).catch(e => {
         this.setState({
-          cards: [{cardID: "1", card: "This is a card p"}, {cardID: "2", card: "This is a second card p; "}, {cardID: "3", card: "This is a third card p"}],
+          cards: ["This is a card p","This is a second card p; ","This is a third card p"],
         })
       })
     }
@@ -53,17 +54,18 @@ class ResponseSelector extends Component{
     render(){
 			return(
         <div>
+          {console.log(this.state.cards)}
           {this.state.cards ? this.state.cards.map((o, id)=>
             (
               <Card 
                 key = {id}
-                text={o.card} 
-                isSelected={o.card === this.state.selectedCard} 
-                selectCard = { () => {this.selectCard(o.cardID)}}
+                text={o} 
+                isSelected={o === this.state.selectedCard} 
+                selectCard = { () => {this.selectCard(o)}}
               />
             )
           ) : null}
-          <button hidden={!this.state.selectedCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
+          <button hidden={!this.state.selectedCard && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
         </div>
 			)
 		}

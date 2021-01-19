@@ -4,7 +4,7 @@ allGames = []
 
 const getParticularGameIndex = (gameID) => {
   for (let i = 0; i < allGames.length; i++) {
-    if (allGames[i].gameID === ID) {
+    if (allGames[i].gameID === gameID) {
       return i;
     }
   }
@@ -13,6 +13,7 @@ const getParticularGameIndex = (gameID) => {
 
 const getNewPromptCard = (gameID) => {
   const index = getParticularGameIndex(gameID)
+  console.log(gameID, index);
   if (index !== -1) {
     return logic.getNewPromptCard(allGames[index])
   }
@@ -30,11 +31,13 @@ const selectPromptCard = (gameID, card) => {
 const getChosenResponses = (gameID) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
-    let responses =  allGames[index].players.map(
-      (player) => {
-        return {'playerID' : player._id, card:player.chosenResponse}
+    let responses = []
+    for (let i = 0; i < allGames[index].players.length; i++) {
+      player = allGames[index].players[i]
+      if (player.chosenResponse && player._id !== allGames[index].judgeID) {
+        responses.push({'playerID' : player._id, card:player.chosenResponse})
       }
-    );
+    }
     return responses;
   }
   return [];
@@ -44,6 +47,9 @@ const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
+  }
+  for(let i = 0 ;i<allGames[index].players.length; i++){
+    allGames[index].players[i].chosenResponse = null;
   }
   return allGames[index].judgeID;
 }
@@ -64,8 +70,31 @@ const getNumberOfThinkingPlayers = (gameID) => {
   return -1;
 }
 
-const createGame = (gameID, decks, players, rounds) => {
-  allGames.push(logic.createGame(gameID, decks, players, rounds));
+const getPlayerCards = (gameID, playerID) => {
+  console.log(gameID);
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    return logic.getPlayerCards(allGames[index], playerID);
+  }
+  console.log("did not find the game");
+  return -1;
+}
+
+const createGameIfNonExistant = async (gameID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index === -1) {
+    await allGames.push(await logic.createGame(gameID));
+  }
+  console.log("The game is stored at", getParticularGameIndex(gameID));
+}
+
+const addSettingsAndStart = async (gameID, decks, rounds) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    await logic.addSettingsToGame(allGames[index], decks, rounds);
+    logic.startGame(allGames[index]);
+  }
+  return -1;
 }
 
 const getJudge = (gameID) => {
@@ -84,15 +113,12 @@ const addPlayerToGame = (gameID, player) => {
   for (i = 0; i < allGames[index].inactivePlayers.length; ++i) {
     _player = allGames[index].inactivePlayers[i]
     if (player._id === _player._id) {
-      // Set that player to active
+      // Set that player to active and remove them from the
       allGames[index].players.push(_player);
+      allGames[index].inactivePlayers.splice(i, 1);
+      return 0;
       break;
     }
-  }
-  if (i === -1) {
-    // Remove the player from the inactive players list
-    allGames[index].inactivePlayers.splice(i, 1);
-    return 0;
   }
   // If not add them to the game
   logic.addPlayerToGame(allGames[index], player)
@@ -106,6 +132,7 @@ const removePlayerFromGame = (gameID, playerID) => {
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
+    player.chosenResponse = null;
     if (playerID=== player._id) {
       // Set that player to active
       allGames[index].inactivePlayers.push(player);
@@ -118,15 +145,66 @@ const removePlayerFromGame = (gameID, playerID) => {
   return 0;
 }
 
+const incrementPlayerPoints = (gameID, winnerID) => {
+  const index = getParticularGameIndex(gameID)
+  if( index === -1) return;
+  for(let i = 0; i<allGames[index].players.length; i++){
+    player = allGames[index].players[i];
+    if(winnerID === player._id){
+      allGames[index].players[i].score += 1;
+    }
+  }
+  return 0;
+}
+
+const checkMoreRounds = (gameID) => {
+  const index = getParticularGameIndex(gameID)
+  if(index===-1){
+    return;
+  }
+  allGames[index].rounds--;
+  return allGames[index].rounds !== 0;
+}
+
+const getLeaderboard = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  players = allGames[index].players;
+  playerCopy = []
+  retList = [];
+  for(let i =0; i<players.length;i++){
+    playerCopy.push(players[i]);
+  }
+  for(let i= 0; i<players.length; i++){
+    maxIndex = 0;
+    maxScore = 0;
+    for(let j =0 ;j<playerCopy.length; j++){
+      if(players[i].score > maxScore){
+        maxScore = players[i].score;
+        maxIndex = i;
+      }
+    }
+    retList.push(playerCopy.splice(maxIndex,1)[0]);
+  }
+  return retList;
+}
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
   getChosenResponses,
   selectWinnerAndUpdateJudge,
   selectFinalResponse,
+  incrementPlayerPoints,
+  checkMoreRounds,
   getNumberOfThinkingPlayers,
-  createGame,
+  createGameIfNonExistant,
   addPlayerToGame,
   removePlayerFromGame,
-  getJudge
+  getJudge,
+  addSettingsAndStart,
+  getPlayerCards,
+  getLeaderboard,
 }
