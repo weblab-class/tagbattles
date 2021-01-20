@@ -32,7 +32,7 @@ class Lobby extends Component {
             displayPlayerError = {this.props.displayPlayerError}
           />
         </div>
-        <div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>
+        {/*<div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>*/}
       </div>
     )
   }

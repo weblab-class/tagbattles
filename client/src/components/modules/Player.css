@@ -3,3 +3,7 @@
   flex-direction:column;
   align-items:center;
 }
+
+.Player-selected-card-display{
+  text-align: center;
+}

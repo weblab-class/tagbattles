@@ -26,6 +26,7 @@ class Player extends Component {
     super(props);
     this.state = {
       currentState: 0,
+      currentCard: null,
     }
   }
   
@@ -34,9 +35,10 @@ class Player extends Component {
   }
 
   // Figuring out the black card code
-  selectedResponse = () => {
+  selectedResponse = (selectedCard) => {
     this.setState({
-      currentState : 1    
+      currentState : 1,
+      currentCard: selectedCard,
     })
   }
 
@@ -44,8 +46,24 @@ class Player extends Component {
   render() { 
     return (
       <div className = "Player-container">
-        {this.props.displayCard ? <DisplayCard text = {this.props.displayCard}/> : <p>Loading</p>}
-        {<ResponseSelector displayingCard = {this.props.displayCard} submitResponse= {this.selectedResponse} gameID = {this.props.gameID} userID = {this.props.userID}/>}
+        {this.props.displayCard ? 
+          <>
+            <DisplayCard text = {this.props.displayCard} type = {0}/>
+            {this.state.currentState === 0 ?
+              <ResponseSelector 
+                displayingCard = {this.props.displayCard} 
+                submitResponse= {this.selectedResponse} 
+                gameID = {this.props.gameID} 
+                userID = {this.props.userID}
+              />
+            :
+              <div className = "Player-selected-card-display">
+                <h2>Selected Card:</h2>
+                <DisplayCard text = {this.state.currentCard} type = {1}/>
+              </div>
+            }
+          </>
+          : <p>Loading</p>}
       </div>
     );
   }
