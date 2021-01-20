@@ -3,6 +3,8 @@ import { Link } from "@reach/router";
 import GoogleLogin, { GoogleLogout } from "react-google-login";
 import "./Navbar.css";
 
+const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
+
 /*
 *
 */
@@ -23,16 +25,17 @@ class Navbar extends Component {
 					<ul className = "nav-list">
 						<li><Link to  ="/play" className = "NavBar-link">New Game</Link></li>
 						<li><Link to = "/play/gameID" className = "NavBar-link">Join Game</Link></li>
+            {this.props.userId?<li><Link to = {`/profile/${this.props.userId}`} className = "NavBar-link">Profile</Link></li>:null}
             <li>{this.props.userId ? (
               <GoogleLogout
-                clientId={this.props.GOOGLE_CLIENT_ID}
+                clientId={GOOGLE_CLIENT_ID}
                 buttonText="Logout"
                 onLogoutSuccess={this.props.handleLogout}
                 onFailure={(err) => console.log(err)}
               />
               ) : (
               <GoogleLogin
-                clientId={this.props.GOOGLE_CLIENT_ID}
+                clientId={GOOGLE_CLIENT_ID}
                 buttonText="Login"
                 onSuccess={this.props.handleLogin}
                 onFailure={(err) => console.log(err)}
