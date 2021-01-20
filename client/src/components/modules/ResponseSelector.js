@@ -55,16 +55,18 @@ class ResponseSelector extends Component{
 			return(
         <div>
           {console.log(this.state.cards)}
-          {this.state.cards ? this.state.cards.map((o, id)=>
-            (
-              <Card 
-                key = {id}
-                text={o} 
-                isSelected={o === this.state.selectedCard} 
-                selectCard = { () => {this.selectCard(o)}}
-              />
-            )
-          ) : null}
+          <div className = "ResponseSelector-cards-container">
+            {this.state.cards ? this.state.cards.map((o, id)=>
+              (
+                <Card 
+                  key = {id}
+                  text={o} 
+                  isSelected={o === this.state.selectedCard} 
+                  selectCard = { () => {this.selectCard(o)}}
+                />
+              )
+            ) : null}
+          </div>
           <button hidden={!this.state.selectedCard && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
         </div>
 			)
