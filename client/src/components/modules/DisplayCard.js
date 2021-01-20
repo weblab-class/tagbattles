@@ -6,6 +6,7 @@ import "./DisplayCard.css";
  *
  * Proptypes
  * @param {string} text to display
+ * @param {number} type, 0 = black, 1 = white
  */
 class DisplayCard extends Component {
   constructor(props){
@@ -17,8 +18,8 @@ class DisplayCard extends Component {
   
   render () {
     return (
-      <div className = "DisplayCard-card-container">
-        <p className = "DisplayCard-card-text">{this.props.text}</p>
+      <div className = {this.props.type===0 ? "DisplayCard-card-container" : "Game-ResponseCard"}>
+        <p>{this.props.text}</p>
       </div>
     )
   }

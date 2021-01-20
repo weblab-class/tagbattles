@@ -44,7 +44,7 @@ class PromptCardSelector extends Component{
   render () {
     return (
       <div className = "PromptCardSelector-container">
-        {this.state.card ? <DisplayCard text = {this.state.card}/> : <p>Loading</p>}
+        {this.state.card ? <DisplayCard text = {this.state.card} type = {0}/> : <p>Loading</p>}
         <div>
           <button hidden={this.state.selectedCard} onClick = {this.skipCard}>Skip Card</button>
           <button hidden={this.state.selectedCard} onClick = {this.selectCard}>Select Card</button>
