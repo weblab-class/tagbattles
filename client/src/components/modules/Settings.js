@@ -9,6 +9,7 @@ import './Settings.css';
  * Proptypes
  * @param {function} startGame to display
  * @param {array} deckList
+ * @param {boolean} displayPlayerError
  */
 class Settings extends Component {
   constructor(props) {
@@ -65,7 +66,18 @@ class Settings extends Component {
           <select value = {this.state.deck} name = "deck-select" onChange = {this.onDeckChange}>
             {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
           </select>
-           {this.props.joinedGame ? <button className = "Settings-start-game" onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}>Enter Game</button> : <p>Creating your game</p>}
+           {this.props.joinedGame ? 
+            <>
+              <button 
+                className = "Settings-start-game" 
+                onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}
+              >
+                Enter Game
+              </button> 
+              <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 2 players to start</p>
+            </>
+          : 
+            <p>Creating your game</p>}
         </div>
       </div>
     )

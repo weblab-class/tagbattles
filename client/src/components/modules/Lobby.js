@@ -11,6 +11,7 @@ import './Lobby.css';
  * @param {function} startGame
  * @param {function} testFunction
  * @param {array} deckList
+ * @param {boolean} displayPlayerError
  * 
  */
 class Lobby extends Component {
@@ -24,7 +25,12 @@ class Lobby extends Component {
         <h1>Lobby</h1>
         <div className = "Lobby-game-container">
           <PlayerList players = {this.props.players}/>
-          <Settings joinedGame = {this.props.joinedGame} startGame = {this.props.startGame} deckList = {this.props.deckList}/>
+          <Settings 
+            joinedGame = {this.props.joinedGame} 
+            startGame = {this.props.startGame} 
+            deckList = {this.props.deckList}
+            displayPlayerError = {this.props.displayPlayerError}
+          />
         </div>
         <div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>
       </div>

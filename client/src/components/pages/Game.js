@@ -24,6 +24,7 @@ class Game extends Component {
         currentState: null,
         leaderboard: null,
         joinedGame: false,
+        displayPlayerError: false,
         // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
@@ -35,13 +36,20 @@ class Game extends Component {
     }
 
     startGame = (rounds, decks) => {
-      post("/api/startGame", {
-        'gameID' : this.state.gameID,
-        'rounds' : rounds,
-        'decks' : decks
-      }).then((data) =>{
-        console.log("started game");
-      })
+      if(this.state.players.length > 1){
+        post("/api/startGame", {
+          'gameID' : this.state.gameID,
+          'rounds' : rounds,
+          'decks' : decks
+        }).then((data) =>{
+          console.log("started game");
+        })
+      }
+      else{
+        this.setState({
+          displayPlayerError: true,
+        })
+      }
     }
 
     listenToServer = () => {
@@ -51,6 +59,7 @@ class Game extends Component {
           case "playerList":
             this.setState({
               players: data.players,
+              displayPlayerError: false,
             });
             break;
           case "judgeUpdate":
@@ -173,7 +182,13 @@ class Game extends Component {
             <Leaderboard leaderboard = {this.state.leaderboard}/>
           : 
           <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
-          <Lobby players = {this.state.players} startGame = {this.startGame} testFunction = {this.testFunction} joinedGame = {this.state.joinedGame}/>}
+          <Lobby 
+            players = {this.state.players} 
+            startGame = {this.startGame} 
+            testFunction = {this.testFunction} 
+            joinedGame = {this.state.joinedGame}
+            displayPlayerError = {this.state.displayPlayerError}
+          />}
         </div>
       );
     }
