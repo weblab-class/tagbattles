@@ -176,7 +176,7 @@ class Game extends Component {
         );
       }
       return (
-        <div>
+        <div className = "Game-game-container">
           {this.state.currentState ? (this.state.currentState === "judge" ? <Judge numThinkingPlayers = {this.state.numThinkingPlayers} gameID = {this.state.gameID} userID = {this.state.userID}/>: 
           (this.state.currentState === "gameEnd" ? 
             <Leaderboard leaderboard = {this.state.leaderboard}/>
