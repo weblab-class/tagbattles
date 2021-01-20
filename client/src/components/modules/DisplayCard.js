@@ -17,8 +17,8 @@ class DisplayCard extends Component {
   
   render () {
     return (
-      <div>
-        <p>{this.props.text}</p>
+      <div className = "DisplayCard-card-container">
+        <p className = "DisplayCard-card-text">{this.props.text}</p>
       </div>
     )
   }

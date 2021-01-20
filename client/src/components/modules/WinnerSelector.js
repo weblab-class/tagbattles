@@ -49,17 +49,19 @@ class WinnerSelector extends Component{
 
     render(){
 			return(
-        <div>
-          {this.state.playerCards ? this.state.playerCards.map((o)=>
-            (
-              <Card 
-                key = {o.playerID}
-                text={o.card} 
-                isSelected={o.playerID === this.state.selectedPlayer} 
-                selectCard = { () => {this.selectCard(o.playerID)}}
-              />
-            )
-          ) : null}
+        <div className = "WinnerSelector-container">
+          <div className = "WinnerSelector-cards-container">
+            {this.state.playerCards ? this.state.playerCards.map((o)=>
+              (
+                <Card 
+                  key = {o.playerID}
+                  text={o.card} 
+                  isSelected={o.playerID === this.state.selectedPlayer} 
+                  selectCard = { () => {this.selectCard(o.playerID)}}
+                />
+              )
+            ) : null}
+          </div>
           <button hidden={!this.state.selectedPlayer} onClick = {this.selectWinner}>Final Card</button>
         </div>
 			)

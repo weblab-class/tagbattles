@@ -1,0 +1,12 @@
+.DisplayCard-card-container{
+  background-color:rgb(20,20,20);
+  width:200px;
+  height:100px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin:10px;
+}
+
+.DisplayCard-card-text{
+  color:white;
+}

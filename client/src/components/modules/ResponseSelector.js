@@ -53,7 +53,7 @@ class ResponseSelector extends Component{
 
     render(){
 			return(
-        <div>
+        <div className = "ResponseSelector-container">
           {console.log(this.state.cards)}
           <div className = "ResponseSelector-cards-container">
             {this.state.cards ? this.state.cards.map((o, id)=>

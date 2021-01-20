@@ -30,6 +30,7 @@ class Player extends Component {
   }
   
   componentDidMount() {
+
   }
 
   // Figuring out the black card code
@@ -42,10 +43,10 @@ class Player extends Component {
   // Selecting the 
   render() { 
     return (
-      <>
+      <div className = "Player-container">
         {this.props.displayCard ? <DisplayCard text = {this.props.displayCard}/> : <p>Loading</p>}
         {<ResponseSelector displayingCard = {this.props.displayCard} submitResponse= {this.selectedResponse} gameID = {this.props.gameID} userID = {this.props.userID}/>}
-      </>
+      </div>
     );
   }
 }
