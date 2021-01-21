@@ -12,6 +12,7 @@ import "../utilities.css";
 import { socket } from "../client-socket.js";
 
 import { get, post } from "../utilities";
+import DeckCreator from "./pages/DeckCreator.js";
 
 /**
  * Define the "App" component as a class.
@@ -66,6 +67,7 @@ class App extends Component {
           {/* <GameSettings path="/play" /> */}
           <Game path="/play/:gameID" />
           <JoinGame path = "/join/"/>
+          <DeckCreator path="/create" />
           <NotFound default />
         </Router>
       </>
