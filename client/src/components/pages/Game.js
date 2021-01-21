@@ -96,8 +96,9 @@ class Game extends Component {
       });
     }
 
-    componentDidMount() {
-      get("/api/whoami").then(me => {
+    async componentDidMount() {
+      console.log(socket);
+      await get("/api/whoami").then(me => {
         this.setState({userID: me._id})
         if (this.state.userID) {
           post("/api/test", {socketid:socket.id}).then((data) => {
@@ -114,24 +115,7 @@ class Game extends Component {
         }
       });
       
-      this.listenToServer();
-      console.log(socket);
-      if (this.state.userID) {
-        post("/api/test", {socketid:socket.id}).then((data) => {
-          post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() =>{
-            console.log('fakegame game')
-            get("/api/whoami").then(me => {
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
-                console.log('made game');
-                this.setState({
-                  joinedGame:true
-                });
-              });
-            })
-          });
-        });
-      }
-      
+      this.listenToServer();      
     }
     
     handleLogin = (res) => {

@@ -54,12 +54,8 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 
 const utils = require('./utils.js');
-
 router.get("/newGameID", (req, res) => {
-  if (!req.user) res.status(403).send({msg: "Hey, what are you doing here? Go login and play!"});
-  else {
-    res.send({"gameID" : utils.getRandomID(6)});
-  }
+  res.send({"gameID" : utils.getRandomID(6)});
 });
 
 

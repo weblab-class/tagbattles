@@ -13,23 +13,29 @@ class HomePage extends Component {
   }
   
   componentDidMount() {
-   get("/api/newGameID").then(data => (this.setState({gameID: data.gameID}))).catch(error => console.error(error));
+    get("/api/newGameID").then(data => (this.setState({gameID: data.gameID}))).catch(error => console.error(error));
   }
 
+  requireLogin = () => {
+    alert("Please log in first");
+  }
   render() { 
     return (
       <>
-      {this.state.gameID ? (
+      {this.props.userID ? (
         <>
           <Link to={"/play/" + this.state.gameID}>
-            <button >Start Game</button>
+            <button>Start Game</button>
           </Link>
           <Link to={"/join/"}>
             <button>Join Game</button>
           </Link>
         </>
       ) : (
-        <p>Please log in and refresh!</p>
+        <>
+        <button onClick={this.requireLogin}>Start Game</button>
+        <button onClick={this.requireLogin}>Join Game</button>
+        </>
       )}
       </>
     );
