@@ -40,13 +40,13 @@ class App extends Component {
     const userToken = res.tokenObj.id_token;
     post("/api/login", { token: userToken }).then((user) => {
       this.setState({ userId: user._id });
-      post("/api/initsocket", { socketid: socket.id });
-    });
+      post("/api/initsocket", { socketid: socket.id }).catch((e)=>console.log(e));
+    }).catch((e)=>console.log(e));
   };
 
   handleLogout = () => {
     this.setState({ userId: undefined });
-    post("/api/logout");
+    post("/api/logout").catch((e)=>console.log(e));
   };
 
   render() {

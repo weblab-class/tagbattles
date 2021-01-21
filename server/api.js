@@ -165,6 +165,29 @@ router.get('/getPlayerCards', (req, res) => {
   res.send({cards: responseCards}); 
 }) 
 
+
+router.get('/isNameUnique', (req, res) => {
+  CardPack.find({'name' : req.query.name}).then((CardPack) => {
+    if (CardPack.length > 0) {
+      res.send({isUnique: false});
+    }
+    else {
+      res.send({isUnique : true});
+    }
+  });
+})
+
+router.post('/submitDeck', (req, res) => {
+  const newDeck = new CardPack({
+    name: req.body.name,
+    prompt_cards : req.body.prompt_cards,
+    response_cards: req.body.response_cards,
+  })
+
+  newDeck.save().then(()=> {res.send({}); console.log("added deck")})
+  res.send({})
+})
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);
