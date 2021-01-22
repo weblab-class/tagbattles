@@ -6,6 +6,7 @@ const PlayerSchema = new mongoose.Schema({
   hatChoice: Number,
   mouthChoice: Number,
   colorChoice: Number,
+  eyeChoice: Number,
 });
 
 // compile model from schema

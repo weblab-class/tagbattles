@@ -23,6 +23,10 @@
   width: 30px;
 }
 
+.Profile-avatar-arrow:hover{
+  fill:gray;
+}
+
 .Profile-avatar-container{
   background-color: rgb(250,240,240);
   width:200px;
