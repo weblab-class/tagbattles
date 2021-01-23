@@ -43,7 +43,7 @@ import beanie from "../../public/hats/beanie.svg";
 import blueCap from "../../public/hats/bluecap.svg";
 import femaleHair from "../../public/hats/femalehair.svg";
 import trim from "../../public/hats/trim.svg";
-import redCap from "../../public/hats/redCap.svg";
+import redCap from "../../public/hats/redcap.svg";
 
 const bodyColors = [redBody, blackBody, brownBody, blueBody, purpleBody, orangeBody, greenBody, yellowBody, pinkBody, whiteBody, cyanBody];
 const whiteMouths = [whiteD, whiteSad,whiteSmile,whiteFrown,whiteStraight, whiteO];
