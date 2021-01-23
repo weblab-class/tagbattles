@@ -1,0 +1,27 @@
+.EditableCard-parent{
+
+    display: inline-block;   
+    margin-top: 15px;
+    width: 100%;   
+    background-color: rgb(185, 117, 33);
+    border-radius: 3px;
+}
+.EditableCard-trashImage{
+
+    display: inline-block;  
+    width: 12px; 
+    height: 15px;  
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.EditableCard-textInput{ 
+
+    display: inline-block;  
+    width: 90%;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    object-position: 10%;
+}

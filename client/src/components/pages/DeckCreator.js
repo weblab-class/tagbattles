@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import EditableCard from "../modules/EditableCard.js"
 import GoogleLogin from "react-google-login";
 import { get, post } from "../../utilities.js";
+import plus from "../../public/plus.png";
+import "./DeckCreator.css"
 const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
 
 
@@ -58,17 +60,19 @@ class DeckCreator extends Component {
         }
     }
 
-    
+    createNewID() { 
+        return Math.random() * 1000000000 // gets a random number to use as ID
+    }
 
     handleCardChange(value, index, card_type) {
         this.setState({
-            [card_type]: [...this.state[card_type].slice(0, index), value, ...this.state[card_type].slice(index+1)]
+            [card_type]: [...this.state[card_type].slice(0, index), {card: value, id: this.state[card_type][index].id}, ...this.state[card_type].slice(index+1)]
         })
     }
 
     handleCardAddition(card_type) {
         this.setState({
-            [card_type]: [...this.state[card_type], ""]
+            [card_type]: [...this.state[card_type], {card: "", id: this.createNewID()}]
         })
     }
 
@@ -83,6 +87,7 @@ class DeckCreator extends Component {
     }
 
     handeCardRemoval(index, card_type) {
+        console.log(index);
         this.setState({
             [card_type]: [...this.state[card_type].slice(0, index), ...this.state[card_type].slice(index+1)]
         })
@@ -92,25 +97,25 @@ class DeckCreator extends Component {
     render() {
       return (
         <>
-            
-            <p>Your deck will be called</p>
+            <span>Deck Name:
             <input type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event)} />
-            <p>{this.state.error_message}</p>
-            <div>
-                <div>
-                    <button onClick={()=>this.handleCardAddition('prompt_cards')}>AddPrompt</button>
-                    {this.state.prompt_cards.map((text, id) => (
-                        <EditableCard key={id} text={text} 
+            </span>
+            <span> Oops! {this.state.error_message}</span>
+            <div className="u-flex">
+                <div className="u-flexColumn deck-subContainer">
+                    <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} />
+                    {this.state.prompt_cards.map((content, id) => (
+                        <EditableCard key={content.id} text={content.card} 
                             onDelete={()=>this.handeCardRemoval(id, 'prompt_cards')} 
-                            onChange={(data)=>this.handleCardChange(data.target.value, id, 'prompt_cards')} />
+                            onChange={(data)=>this.handleCardChange(data, id, 'prompt_cards')} />
                     ))}
                 </div>
-                <div>
-                    <button onClick={()=>this.handleCardAddition('response_cards')}>AddResponse</button>
-                    {this.state.response_cards.map((text, id) => (
-                        <EditableCard key={id} text={text} 
+                <div className="u-flexColumn deck-subContainer">
+                <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                    {this.state.response_cards.map((content, id) => (
+                        <EditableCard key={content.id} text={content.card} 
                             onDelete={()=>this.handeCardRemoval(id, 'response_cards')} 
-                            onChange={(data)=>this.handleCardChange(data.target.value, id, 'response_cards')} />
+                            onChange={(data)=>this.handleCardChange(data, id, 'response_cards')} />
                     ))}
                 </div>
             </div>

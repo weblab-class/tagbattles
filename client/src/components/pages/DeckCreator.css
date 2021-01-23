@@ -1,0 +1,24 @@
+.u-flex {
+    display: flex;
+    margin-top: 15px;
+    justify-content: space-between;
+}
+
+.u-flexColumn {
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    flex-direction: column;
+}
+
+.deck-subContainer {
+    flex-grow: 1;
+    flex-basis: 0%;
+}
+
+.DeckCreator-plus {
+    margin-left: auto;
+    margin-right: auto;
+    width: 25px; 
+    height: 25px;  
+}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import "./EditableCard.css";
+import trash from "../../public/trash.png";
 /**
  * @props
  * 
@@ -21,10 +22,12 @@ class EditableCard extends Component {
 
     render() {
       return (
-        <>
-            <img src="../trash.jpeg" alt="Delete" onClick={this.props.onDelete} />
-            <input type="text" value={this.props.text} onChange={(data)=>{this.props.onChange(data)}} />
-        </>
+        
+        <div className="EditableCard-parent">
+            <span contentEditable="true" className="EditableCard-textInput" type="text" 
+              onInput={(data)=>{this.props.onChange(data.currentTarget.textContent)}} value={this.props.text} />
+            <img className="EditableCard-trashImage" src={trash} alt="Delete" onClick={this.props.onDelete} />
+        </div>
       );
     }
   }
