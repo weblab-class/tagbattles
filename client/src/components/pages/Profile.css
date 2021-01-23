@@ -19,13 +19,6 @@
   justify-content:space-around;
   height:200px;
 }
-.Profile-avatar-arrow{
-  width: 30px;
-}
-
-.Profile-avatar-arrow:hover{
-  fill:gray;
-}
 
 .Profile-avatar-container{
   background-color: rgb(250,240,240);

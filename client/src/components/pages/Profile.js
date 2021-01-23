@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { get, post } from "../../utilities.js";
 import './Profile.css';
 
 //Icons
@@ -6,6 +7,7 @@ import leftArrow from '../modules/icons/left-arrow.svg';
 import rightArrow from '../modules/icons/right-arrow.svg';
 import RightArrow from '../modules/icons/right-arrow.js';
 import LeftArrow from '../modules/icons/left-arrow.js';
+import Avatar from '../modules/Avatar.js';
 
 //Bodies
 import redBody from "../../public/bodies/redbody.svg";
@@ -76,88 +78,101 @@ class Profile extends Component {
   }
 
   componentDidMount(){
+    get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
+      console.log(data);
+      this.setState({
+        bio: data.bio,
+        favoriteCard: data.favCard,
+        hatID: data.hatID,
+        eyeID: data.eyeID,
+        name: data.name,
+        colorID: data.colorID,
+        mouthID: data.mouthID,
+      });
 
+    })
   }
 
   onBioChange = (e) => {
+
   }
 
   toggleLeftHat = () => {
     const newHat = this.state.hatID-1<0 ? hats.length-1 : this.state.hatID-1;
-    this.setState((prevState) => {
-      return {
-        hatID: newHat,
-      }
-    });
+    post("/api/setPlayerHat", {userID: this.props.playerID, hatID: newHat}).then((data)=>{
+      this.setState({
+        hatID: data.hatID,
+      });
+    })
   }
 
   toggleLeftColor = () => {
     const newColor = this.state.colorID-1<0 ? bodyColors.length-1 : this.state.colorID-1;
-    this.setState((prevState) => {
-      return {
-        colorID: newColor,
-      }
-    });
+    post("/api/setPlayerColor", {userID: this.props.playerID, colorID: newColor}).then((data)=>{
+      this.setState({
+        colorID: data.colorID,
+      });
+    })
   }
 
   toggleLeftEye = () => {
     const newEye = this.state.eyeID-1<0 ? blackEyes.length-1 : this.state.eyeID-1;
-    this.setState((prevState) => {
-      return {
-        eyeID: newEye,
-      }
-    });
+    post("/api/setPlayerEye", {userID: this.props.playerID, eyeID: newEye}).then((data)=>{
+      this.setState({
+        eyeID: data.eyeID,
+      });
+    })
   }
 
   toggleLeftMouth = () => {
     const newMouth = this.state.mouthID-1<0 ? blackMouths.length-1 : this.state.mouthID-1;
-    this.setState((prevState) => {
-      return {
-        mouthID: newMouth,
-      }
-    });
+    post("/api/setPlayerMouth", {userID: this.props.playerID, mouthID: newMouth}).then((data)=>{
+      this.setState({
+        mouthID: data.mouthID,
+      });
+    })
   }
 
   toggleRightHat = ()=>{
     const newHat = (this.state.hatID+1)%hats.length;
-    this.setState((prevState) => {
-      return {
-        hatID: newHat,
-      }
+    post("/api/setPlayerHat", {userID: this.props.playerID, hatID: newHat}).then((data)=>{
+      this.setState({
+        hatID: data.hatID,
+      });
     })
   }
 
   toggleRightColor = () => {
     const newColor = (this.state.colorID+1)%bodyColors.length;
-    this.setState((prevState) => {
-      return {
-        colorID: newColor,
-      }
+    post("/api/setPlayerColor", {userID: this.props.playerID, colorID: newColor}).then((data)=>{
+      this.setState({
+        colorID: data.colorID,
+      });
     })
   }
 
   toggleRightEye = () => {
     const newEye = (this.state.eyeID+1)%blackEyes.length;
-    this.setState((prevState) => {
-      return {
-        eyeID: newEye,
-      }
+    post("/api/setPlayerEye", {userID: this.props.playerID, eyeID: newEye}).then((data)=>{
+      this.setState({
+        eyeID: data.eyeID,
+      });
     })
   }
 
   toggleRightMouth = () => {
     const newMouth = (this.state.mouthID+1)%blackMouths.length;
-    this.setState((prevState) => {
-      return {
-        mouthID: newMouth,
-      }
+    post("/api/setPlayerMouth", {userID: this.props.playerID, mouthID: newMouth}).then((data)=>{
+      this.setState({
+        mouthID: data.mouthID,
+      });
     })
   }
 
   render(){
     return(
       <div className = "Profile-container">
-        <h1 className = "Profile-username">{this.props.playerID}</h1>
+        <h1 className = "Profile-username">{this.state.name}</h1>
         <div className = "Profile-avatar-customizer">
           <div className = "Profile-toggle-container">
             <LeftArrow func = {this.toggleLeftHat}/>
@@ -165,20 +180,14 @@ class Profile extends Component {
             <LeftArrow func = {this.toggleLeftMouth}/>
             <LeftArrow func = {this.toggleLeftColor}/>
           </div>
-          <div className = "Profile-avatar-container">
-            <div className = "Profile-body">
-              <img src = {bodyColors[this.state.colorID]} alt = "skin" className = "Profile-avatar-part"/>
-            </div>
-            <div className = "Profile-hat">
-              <img src = {hats[this.state.hatID]} alt = "hat" className = "Profile-avatar-part"/>
-            </div>
-            <div className = "Profile-mouth">
-              <img src = {blackMouths[this.state.mouthID]} alt = "mouth" className = "Profile-avatar-part"/>
-            </div>
-            <div className = "Profile-eyes">
-              <img src = {blackEyes[this.state.eyeID]} alt = "eyes" className = "Profile-avatar-part"/>
-            </div>
-          </div>
+          <Avatar
+            colorID = {this.state.colorID}
+            width = {"200px"}
+            height = {"200px"}
+            mouthID = {this.state.mouthID}
+            hatID = {this.state.hatID}
+            eyeID = {this.state.eyeID}
+          />
           <div className  ="Profile-toggle-container">
             <RightArrow func = {this.toggleRightHat}/>
             <RightArrow func = {this.toggleRightEye}/>

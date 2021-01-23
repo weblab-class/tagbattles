@@ -1,0 +1,33 @@
+.Avatar-avatar-container{
+  background-color: rgb(250,240,240);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid black;
+  border-width: thin;
+  margin-left:5px;
+  margin-right:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.Avatar-body{
+  position: absolute;
+}
+.Avatar-hat{
+  position: absolute;
+}
+
+.Avatar-eyes{
+  position:absolute;
+}
+
+.Avatar-mouth{
+  position: absolute;
+}
+
+.Avatar-avatar-part{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+}
