@@ -26,6 +26,8 @@ class Game extends Component {
         leaderboard: null,
         joinedGame: false,
         displayPlayerError: false,
+        rounds: 3,
+        deck: "Apples2Apples",
         // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
@@ -40,8 +42,8 @@ class Game extends Component {
       if(this.state.players.length > 1){
         post("/api/startGame", {
           'gameID' : this.state.gameID,
-          'rounds' : rounds,
-          'decks' : decks
+          'rounds' : this.state.rounds,
+          'decks' : [this.state.deck],
         }).then((data) =>{
           console.log("started game");
         })
@@ -91,12 +93,28 @@ class Game extends Component {
               currentState: "gameEnd",
               leaderboard: data.leaderboard,
             })
+            break;
           case "updateHost":
             console.log("Host Updated");
             console.log(data.host);
             this.setState({
               host: data.host,
             })
+            break;
+          case "roundsUpdate":
+            console.log("Rounds Updated");
+            console.log(data.rounds);
+            this.setState({
+              rounds: data.rounds,
+            });
+            break;
+          case "deckUpdate":
+            console.log("Deck Updated");
+            console.log(data.deck);
+            this.setState({
+              deck: data.deck,
+            })
+            break;
           default:
             console.log("Missing event");
             break;
@@ -117,6 +135,18 @@ class Game extends Component {
                 this.setState({
                   joinedGame:true
                 });
+                get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
+                  console.log("ROUNDSAFDSF: ",roundsData.rounds);
+                  this.setState({
+                    rounds: roundsData.rounds,
+                  })
+                  get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
+                    console.log("DECKASDF:",deckData.deck);
+                    this.setState({
+                      deck: deckData.deck,
+                    })
+                  })
+                })
               });
             })
           });
@@ -181,6 +211,10 @@ class Game extends Component {
             joinedGame = {this.state.joinedGame}
             displayPlayerError = {this.state.displayPlayerError}
             host = {this.state.host}
+            userID = {this.state.userID}
+            gameID = {this.state.gameID}
+            rounds = {this.state.rounds}
+            deck = {this.state.deck}
           />}
         </div>
       );

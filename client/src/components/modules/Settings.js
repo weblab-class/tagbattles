@@ -10,6 +10,10 @@ import './Settings.css';
  * @param {function} startGame to display
  * @param {array} deckList
  * @param {boolean} displayPlayerError
+ * @param {String} host
+ * @param {String} gameID
+ * @param {Number} rounds
+ * @param {String} deck
  */
 class Settings extends Component {
   constructor(props) {
@@ -38,17 +42,21 @@ class Settings extends Component {
   }
 
   onRoundsChange = (newRound) => {
-    console.log(this.state.rounds);
-    this.setState({
-      rounds: newRound.target.value,
-    })
+    post("/api/updateRounds", {gameID: this.props.gameID, rounds: newRound.target.value}).then((newStuff) => {
+      console.log(newStuff);
+      this.setState({
+        rounds: newStuff
+      });
+    });
   }
 
   onDeckChange = (newDeck) => {
-    console.log(this.state.deck);
-    this.setState({
-      deck: newDeck.target.value,
-    })
+    post("/api/updateDeck", {gameID: this.props.gameID, deck: newDeck.target.value}).then((newStuff) => {
+      console.log(newStuff);
+      this.setState({
+        deck: newStuff,
+      });
+    });
   }
 
   render() {
@@ -59,25 +67,39 @@ class Settings extends Component {
         <h2 className = "Settings-container-label">Settings</h2>
         <div className = "Settings-settings-container">
           <h4 className = "Settings-settings-label">Rounds</h4>
-          <select value = {this.state.rounds} name = "rounds-select" onChange = {this.onRoundsChange}>
+          {this.props.host?
+          <select value = {this.props.rounds} name = "rounds-select" onChange = {this.onRoundsChange}>
             {rounds.map((num) => <option key = {`${num}`} value = {`${num}`}>{num}</option>)}
           </select>
+          :
+            <p className = "Settings-settings-value">{this.props.rounds}</p>
+          }
           <h4 className = "Settings-settings-label">Deck</h4>
-          <select value = {this.state.deck} name = "deck-select" onChange = {this.onDeckChange}>
-            {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
-          </select>
-           {this.props.joinedGame ? 
+          {this.props.host?
+            <select value = {this.props.deck} name = "deck-select" onChange = {this.onDeckChange}>
+              {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
+            </select>
+          :
+            <p className = "Settings-settings-value">{this.props.deck}</p>
+          }
+          {this.props.host?(
             <>
-              <button 
-                className = "Settings-start-game" 
-                onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}
-              >
-                Enter Game
-              </button> 
-              <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 2 players to start</p>
-            </>
-          : 
-            <p>Creating your game</p>}
+            {this.props.joinedGame ? 
+              <>
+                <button 
+                  className = "Settings-start-game" 
+                  onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}
+                >
+                  Enter Game
+                </button> 
+                <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 2 players to start</p>
+              </>
+            : 
+              <p>Creating your game</p>}
+            </>)
+          :
+            <p className = "Settings-inactive-button">Waiting for Host...</p>
+          }
         </div>
       </div>
     )

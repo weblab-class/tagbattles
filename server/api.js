@@ -248,6 +248,26 @@ router.post("/incrementPlayerWins", (req, res) => {
   })
 })
 
+router.post("/updateRounds", (req, res) => {
+  const newRounds = gameManager.updateGameRounds(req.body.gameID, req.body.rounds);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "roundsUpdate", rounds: newRounds});
+  res.send({newRounds});
+})
+
+router.post("/updateDeck", (req, res) => {
+  const newDeck = gameManager.updateGameDeck(req.body.gameID, req.body.deck);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "deckUpdate", deck: newDeck});
+  res.send({newDeck});
+})
+
+router.get("/getRounds", (req, res) => {
+  res.send({rounds: gameManager.getGameRounds(req.query.gameID)});
+})
+
+router.get("/getDeck", (req, res) => {
+  res.send({deck: gameManager.getGameDeck(req.query.gameID)})
+})
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

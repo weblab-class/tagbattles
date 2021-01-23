@@ -217,6 +217,42 @@ const getLeaderboard = (gameID) => {
   return retList;
 }
 
+const updateGameRounds = (gameID, numRounds) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  allGames[index].rounds = numRounds;
+  console.log("gameIDadsgadsg:", gameID);
+  return allGames[index].rounds;
+}
+
+const updateGameDeck = (gameID, deck) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  allGames[index].deck = deck;
+  return allGames[index].deck;
+}
+
+const getGameDeck = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index===-1){
+    return;
+  }
+  return allGames[index].deck;
+}
+
+const getGameRounds = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index===-1){
+    return;
+  }
+  console.log("gameIDASD a:", gameID)
+  return allGames[index].rounds;
+}
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
@@ -235,4 +271,8 @@ module.exports = {
   getPlayerCards,
   getLeaderboard,
   getHost,
+  updateGameRounds,
+  updateGameDeck,
+  getGameDeck,
+  getGameRounds,
 }

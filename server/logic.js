@@ -24,6 +24,8 @@ const createGame = (gameID) => {
     'players' : [],
     'inactivePlayers' : [],
     'host' : '',
+    'rounds' : 3,
+    'deck': 'Apples2Apples',
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,

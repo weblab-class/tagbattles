@@ -13,6 +13,10 @@ import './Lobby.css';
  * @param {array} deckList
  * @param {boolean} displayPlayerError
  * @param {String} host
+ * @param {String} userID
+ * @param {String} gameID
+ * @param {Number} rounds
+ * @param {String} deck
  * 
  */
 class Lobby extends Component {
@@ -24,6 +28,8 @@ class Lobby extends Component {
     return (
       <div className = "Lobby-gamesettings-container">
         {console.log("Players inasdf adsf :",this.props.players)}
+        {console.log("HOSTID: ", this.props.host)}
+        {console.log("PLAYERID: ", this.props.userID)}
         <h1>Lobby</h1>
         <div className = "Lobby-game-container">
           <PlayerList players = {this.props.players} host = {this.props.host}/>
@@ -32,6 +38,10 @@ class Lobby extends Component {
             startGame = {this.props.startGame} 
             deckList = {this.props.deckList}
             displayPlayerError = {this.props.displayPlayerError}
+            host = {this.props.host === this.props.userID}
+            gameID = {this.props.gameID}
+            rounds = {this.props.rounds}
+            deck = {this.props.deck}
           />
         </div>
         {/*<div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>*/}
