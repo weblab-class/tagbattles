@@ -4,13 +4,10 @@ import GoogleLogin from "react-google-login";
 import { get, post } from "../../utilities.js";
 import plus from "../../public/plus.png";
 import "./DeckCreator.css"
-const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
-
 
 /**
  * @props
  * 
- * {Deck}: Pass in a deck.
  * 
  * Structure:
  *  --Deck builder screen.
@@ -22,7 +19,7 @@ class DeckCreator extends Component {
       super(props);
       this.state = {
         error_message: "You need at least one card!",
-        deck_name: "",
+        deck_name: "Enter Deck Name",
         prompt_cards: [], // Stored as a list of strings
         response_cards: [],
       }
@@ -41,21 +38,22 @@ class DeckCreator extends Component {
         }
         else{
             this.setState({
-                error_message: "Name is taken, try something else",
+                error_message: "Name is taken, try something else!",
             })
             console.log("returned f")
             return false;
         }
     }
 
-    handleDeckNameChange(event) {
+    handleDeckNameChange(text) {
+        
         this.setState({
-            deck_name: event.target.value
+            deck_name: text
         }, () => this.areCardsValid())
     }
 
     createNewID() { 
-        return Math.random() * 1000000000 // gets a random number to use as temp ID
+        return Math.random() * 1000000000 // gets a random number to use as temp ID. HACK
     }
 
     handleCardChange(value, index, card_type) {
@@ -75,7 +73,7 @@ class DeckCreator extends Component {
 
     async areCardsValid(){
         if (this.state.prompt_cards.length === 0 && this.state.response_cards.length === 0) {
-            this.setState({error_message: "You need some cards."}); return;
+            this.setState({error_message: "You need at least one card."}); return;
         }
         for (let i = 0; i < this.state.prompt_cards.length; i++) {
             if (!this.isCardValid(this.state.prompt_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
@@ -84,7 +82,7 @@ class DeckCreator extends Component {
             if (!this.isCardValid(this.state.response_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
         }
         if (this.state.deck_name.length < 4) {
-            this.setState({error_message: "Name too short. Need > 3 characters!"})
+            this.setState({error_message: "Deck name too short. Need > 3 characters!"})
             return ;
         }
         else{ 
@@ -124,11 +122,12 @@ class DeckCreator extends Component {
     render() {
       return (
         <>
-            <span>Deck Name:
-            <input type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event)} />
-            </span>
-            <span>  {this.state.error_message ? "Oops! " + this.state.error_message : null}</span>
-            {!this.state.error_message ? <button onClick={()=>this.submitDeck()}>SubmitDeck</button> : <p>Correct errors to submit</p>}
+            <div className="DeckCreator-deck-name-container">
+                <input className="DeckCreator-deck-name-input DeckCreator-deck-name" contentEditable="true" type="text" value={this.state.deck_name} onInput={(event)=>this.handleDeckNameChange(event.target.value)} value={this.state.deck_name} />
+            </div>
+           
+            {this.state.error_message ? <span>Oops! {this.state.error_message}</span> : null }
+            <span>{!this.state.error_message ? <button className = "DeckCreator-submit-deck" onClick={()=>this.submitDeck()}>SubmitDeck</button> : null}</span>
             <div className="u-flex">
                 <div className="u-flexColumn deck-subContainer">
                     <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} />
@@ -140,7 +139,7 @@ class DeckCreator extends Component {
                     ))}
                 </div>
                 <div className="u-flexColumn deck-subContainer">
-                <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
                     {this.state.response_cards.map((content, id) => (
                         <EditableCard key={content.id} text={content.card} 
                             type="response"

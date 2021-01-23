@@ -19,6 +19,48 @@
 .DeckCreator-plus {
     margin-left: auto;
     margin-right: auto;
+    border-radius: 20px;
     width: 25px; 
     height: 25px;  
+}
+
+.DeckCreator-plus:hover{
+
+    transform: scale(1.2); 
+    background-color:rgb(191, 219, 191);
+}
+.DeckCreator-submit-deck{
+    display: inline-block;
+    width:100%;
+    border-radius:100px;
+    background-color:rgb(51, 141, 51);
+    margin: 10px auto;
+    border-style:none;
+    color:white;
+    padding:5px;
+}
+
+
+.DeckCreator-submit-deck:hover{
+    background-color:rgb(100, 190, 100);
+}
+
+.DeckCreator-deck-name-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.DeckCreator-deck-name{
+
+    width: 90%;
+    padding: 20px;
+    text-align: center;
+    font-size: 64px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.DeckCreator-deck-name-input {
+    border-radius: 20px;
 }

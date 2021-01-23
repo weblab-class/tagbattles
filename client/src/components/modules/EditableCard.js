@@ -28,9 +28,7 @@ class EditableCard extends Component {
     }
 
     render() {
-      console.log("EditableCard-parent EditableCard-parent-"+ (this.isValid(this.props.text) ?this.props.type : "invalid"))
       return (
-        
         <div className={"EditableCard-parent EditableCard-parent-"+ (this.isValid(this.props.text) ?this.props.type : "invalid")}>
             <span contentEditable="true" className={"EditableCard-textInput EditableCard-textInput-"+this.props.type} type="text" 
               onInput={(data)=>{this.props.onChange(data.currentTarget.textContent)}} value={this.props.text} />

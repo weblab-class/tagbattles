@@ -1,9 +1,11 @@
 .EditableCard-parent{
-
     display: inline-block;   
     margin-top: 15px;
     width: 100%;
-    border-radius: 3px;
+    border-radius: 10px;
+}
+.EditableCard-parent:hover{
+    transform: scale(1.01);
 }
 .EditableCard-trashImage{
 
@@ -11,16 +13,21 @@
     width: 12px; 
     height: 15px;  
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 5px auto;
     margin-top: auto;
     margin-bottom: auto;
 }
+
+.EditableCard-trashImage:hover{
+    transform: scale(1.2);
+}
 .EditableCard-textInput{ 
     display: inline-block;  
-    width: 90%;
+    width: 80%;
     margin-left: 15px;
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-right: 5px;
     object-position: 10%;
 }
 
