@@ -12,6 +12,7 @@ import './Lobby.css';
  * @param {function} testFunction
  * @param {array} deckList
  * @param {boolean} displayPlayerError
+ * @param {String} host
  * 
  */
 class Lobby extends Component {
@@ -22,9 +23,10 @@ class Lobby extends Component {
   render() {
     return (
       <div className = "Lobby-gamesettings-container">
+        {console.log("Players inasdf adsf :",this.props.players)}
         <h1>Lobby</h1>
         <div className = "Lobby-game-container">
-          <PlayerList players = {this.props.players}/>
+          <PlayerList players = {this.props.players} host = {this.props.host}/>
           <Settings 
             joinedGame = {this.props.joinedGame} 
             startGame = {this.props.startGame} 

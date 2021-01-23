@@ -27,6 +27,9 @@ const gameManager = require("./gamesManager.js")
 // Card packs
 const CardPack = require("./models/card_pack.js");
 
+// Card
+const Card = require("./models/card.js");
+
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -54,8 +57,12 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 
 const utils = require('./utils.js');
+
 router.get("/newGameID", (req, res) => {
-  res.send({"gameID" : utils.getRandomID(6)});
+  if (!req.user) res.status(403).send({msg: "Hey, what are you doing here? Go login and play!"});
+  else {
+    res.send({"gameID" : utils.getRandomID(6)});
+  }
 });
 
 
@@ -122,7 +129,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
 router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.card);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
-  console.log("insserver", numberOfThinkingPlayers);
+  console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
 })
@@ -134,9 +141,10 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   await gameManager.createGameIfNonExistant(req.body.gameID);
   console.log("created game")
   
-  await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
+  gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
   console.log("added player to game")
-  res.send({})
+  res.send({});
 })
 
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
@@ -161,7 +169,6 @@ router.get('/getPlayerCards', auth.ensureLoggedIn, async (req, res) => {
   res.send({cards: responseCards}); 
 }) 
 
-
 router.get('/isNameUnique', (req, res) => {
   CardPack.find({'name' : req.query.name}).then((CardPack) => {
     if (CardPack.length > 0) {
@@ -170,18 +177,75 @@ router.get('/isNameUnique', (req, res) => {
     else {
       res.send({isUnique : true});
     }
-  });
+  })
 })
-
 router.post('/submitDeck', (req, res) => {
   const newDeck = new CardPack({
     name: req.body.name,
     prompt_cards : req.body.prompt_cards,
     response_cards: req.body.response_cards,
   })
-
   newDeck.save().then(()=> {res.send({}); console.log("added deck")})
   res.send({})
+})
+// player info
+
+router.get("/getPlayer", (req, res) => {
+  User.find({_id: req.query.userID}).then((player) => {
+    res.send(player[0]);
+  })
+})
+
+router.post("/setPlayerHat", (req, res) => {
+  User.updateOne({_id: req.body.userID}, {hatID: req.body.hatID}).then((data)=>{
+    User.find({_id: req.body.userID}).then((user) => {
+      console.log(user);
+      res.send(user[0]);
+    })
+  });
+})
+
+router.post("/setPlayerColor", (req,res) => {
+  User.updateOne({_id: req.body.userID}, {colorID: req.body.colorID}).then((data)=>{
+    User.find({_id: req.body.userID}).then((user) => {
+      console.log(user);
+      res.send(user[0]);
+    })
+  });
+})
+
+router.post("/setPlayerMouth", (req,res) => {
+  User.updateOne({_id: req.body.userID}, {mouthID: req.body.mouthID}).then((data)=>{
+    User.find({_id: req.body.userID}).then((user) => {
+      console.log(user);
+      res.send(user[0]);
+    })
+  });
+})
+
+router.post("/setPlayerEye", (req,res) => {
+  User.updateOne({_id: req.body.userID}, {eyeID: req.body.eyeID}).then((data)=>{
+    User.find({_id: req.body.userID}).then((user) => {
+      console.log(user);
+      res.send(user[0]);
+    })
+  });
+})
+
+router.post("/incrementPlayerWins", (req, res) => {
+  User.find({userID: req.user._id}).then((players) => {
+    if(players.length === 0){
+      res.send({message: "no such player"});
+    }
+    else{
+      User.updateOne({userID: req.user._id}, {gameWins: players[0].gameWins+1}).then((data) => {
+        res.send(data);
+      })
+    }
+  }).catch((error)=>{
+    console.log(error);
+    res.send({});
+  })
 })
 
 // anything else falls to this "not found" case

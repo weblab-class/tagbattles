@@ -18,7 +18,17 @@ class Navbar extends Component {
   }
 
   componentDidMount() {
-   get("/api/newGameID").then(data => (this.setState({gameID: data.gameID}))).catch(error => console.error(error));
+   get("/api/newGameID").then(data => {
+     (this.setState({gameID: data.gameID}));
+     console.log("Game ID: ",this.state.gameID);
+    }).catch(error => console.error(error));
+  }
+
+  setNewGameID = () => {
+    get("/api/newGameID").then(data => {
+      (this.setState({gameID: data.gameID}));
+      console.log("Game ID: ",this.state.gameID);
+     }).catch(error => console.error(error));
   }
 
   render(){

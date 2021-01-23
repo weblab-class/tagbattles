@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import EditableCard from "../modules/EditableCard.js"
 import GoogleLogin from "react-google-login";
 import { get, post } from "../../utilities.js";
+import plus from "../../public/plus.png";
+import "./DeckCreator.css"
 const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
 
 
@@ -19,56 +21,81 @@ class DeckCreator extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        error_message: "Name must be atleast 4 characters",
+        error_message: "You need at least one card!",
         deck_name: "",
         prompt_cards: [], // Stored as a list of strings
         response_cards: [],
       }
     }
-    isNameUnique(name) {
-        get("/api/isNameUnique", {name: name}).then((res)=>{
-            if(res.isUnique) {
-                this.setState({
-                    error_message: null,
-                })
-            }
-            else{
-                this.setState({
-                    error_message: "Name is taken, try something else",
-                })
-            }
-        }).catch((e)=>console.log(e))
+
+    async isNameUnique(name) {
+        console.log("eh")
+        let res = await get("/api/isNameUnique", {name: name})
+    
+        if(res.isUnique) {
+            this.setState({
+                error_message: null,
+            })
+            console.log("returned t")
+            return true;
+        }
+        else{
+            this.setState({
+                error_message: "Name is taken, try something else",
+            })
+            console.log("returned f")
+            return false;
+        }
     }
+
     handleDeckNameChange(event) {
         this.setState({
             deck_name: event.target.value
-        })
-        if(event.target.value.length < 4) {
-            this.setState({
-                error_message: "Name must be atleast 4 characters",
-            })
-        }
-        else if(event.target.value.length > 20) {
-            this.setState({
-                error_message: "Name is too long"
-            })
-        }
-        else {
-            this.isNameUnique(event.target.value)
-        }
+        }, () => this.areCardsValid())
     }
 
-    
+    createNewID() { 
+        return Math.random() * 1000000000 // gets a random number to use as temp ID
+    }
 
     handleCardChange(value, index, card_type) {
         this.setState({
-            [card_type]: [...this.state[card_type].slice(0, index), value, ...this.state[card_type].slice(index+1)]
-        })
+            [card_type]: [...this.state[card_type].slice(0, index), {card: value, id: this.state[card_type][index].id}, ...this.state[card_type].slice(index+1)]
+        }, () => this.areCardsValid())
     }
 
     handleCardAddition(card_type) {
         this.setState({
-            [card_type]: [...this.state[card_type], ""]
+            [card_type]: [...this.state[card_type], {card: "", id: this.createNewID()}]
+        }, () => this.areCardsValid())
+    }
+    isCardValid(card) {
+        return /\S/.test(card) && card.length > 0;
+    }
+
+    async areCardsValid(){
+        if (this.state.prompt_cards.length === 0 && this.state.response_cards.length === 0) {
+            this.setState({error_message: "You need some cards."}); return;
+        }
+        for (let i = 0; i < this.state.prompt_cards.length; i++) {
+            if (!this.isCardValid(this.state.prompt_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
+        }
+        for (let i = 0; i < this.state.response_cards.length; i++) {
+            if (!this.isCardValid(this.state.response_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
+        }
+        if (this.state.deck_name.length < 4) {
+            this.setState({error_message: "Name too short. Need > 3 characters!"})
+            return ;
+        }
+        else{ 
+            let valid = await this.isNameUnique(this.state.deck_name)
+            console.log(valid);
+            if (!valid) {
+                return ;
+            }
+        }
+        this.setState({
+            error_message: null
         })
     }
 
@@ -83,38 +110,45 @@ class DeckCreator extends Component {
     }
 
     handeCardRemoval(index, card_type) {
+        console.log(index);
         this.setState({
             [card_type]: [...this.state[card_type].slice(0, index), ...this.state[card_type].slice(index+1)]
-        })
+        }, () => this.areCardsValid())
+    }
+
+    componentDidMount() {
+        this.areCardsValid();
     }
 
 
     render() {
       return (
         <>
-            
-            <p>Your deck will be called</p>
+            <span>Deck Name:
             <input type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event)} />
-            <p>{this.state.error_message}</p>
-            <div>
-                <div>
-                    <button onClick={()=>this.handleCardAddition('prompt_cards')}>AddPrompt</button>
-                    {this.state.prompt_cards.map((text, id) => (
-                        <EditableCard key={id} text={text} 
+            </span>
+            <span>  {this.state.error_message ? "Oops! " + this.state.error_message : null}</span>
+            {!this.state.error_message ? <button onClick={()=>this.submitDeck()}>SubmitDeck</button> : <p>Correct errors to submit</p>}
+            <div className="u-flex">
+                <div className="u-flexColumn deck-subContainer">
+                    <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} />
+                    {this.state.prompt_cards.map((content, id) => (
+                        <EditableCard key={content.id} text={content.card} 
+                            type="prompt"
                             onDelete={()=>this.handeCardRemoval(id, 'prompt_cards')} 
-                            onChange={(data)=>this.handleCardChange(data.target.value, id, 'prompt_cards')} />
+                            onChange={(data)=>this.handleCardChange(data, id, 'prompt_cards')} />
                     ))}
                 </div>
-                <div>
-                    <button onClick={()=>this.handleCardAddition('response_cards')}>AddResponse</button>
-                    {this.state.response_cards.map((text, id) => (
-                        <EditableCard key={id} text={text} 
+                <div className="u-flexColumn deck-subContainer">
+                <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                    {this.state.response_cards.map((content, id) => (
+                        <EditableCard key={content.id} text={content.card} 
+                            type="response"
                             onDelete={()=>this.handeCardRemoval(id, 'response_cards')} 
-                            onChange={(data)=>this.handleCardChange(data.target.value, id, 'response_cards')} />
+                            onChange={(data)=>this.handleCardChange(data, id, 'response_cards')} />
                     ))}
                 </div>
             </div>
-            {!this.state.error_message ? <button onClick={()=>this.submitDeck()}>SubmitDeck</button> : <p>Correct errors to submit</p>}
         </>
       );
     }

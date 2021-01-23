@@ -125,6 +125,12 @@ const addPlayerToGame = (gameID, player) => {
   }
   // If not add them to the game
   logic.addPlayerToGame(allGames[index], player)
+
+  // Set host if only one player
+  if(allGames[index].players.length === 1){
+    console.log("Place 2: ",player._id);
+    allGames[index].host = player._id;
+  }
   return 0;
 }
 
@@ -142,12 +148,27 @@ const removePlayerFromGame = (gameID, playerID) => {
       break;
     }
   }
-
   // Remove that player from the actives list.
   console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
   console.log('after', allGames[index]);
+
+  //Assign new host if player was host and game is still going
+  if(allGames[index].players.length > 0 && playerID === allGames[index].host){
+    console.log("Going into if statement");
+    console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
+    console.log(allGames[index].host);
+  }
   return 0;
+}
+
+const getHost = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  return allGames[index].host;
 }
 
 const incrementPlayerPoints = (gameID, winnerID) => {
@@ -217,4 +238,5 @@ module.exports = {
   addSettingsAndStart,
   getPlayerCards,
   getLeaderboard,
+  getHost,
 }
