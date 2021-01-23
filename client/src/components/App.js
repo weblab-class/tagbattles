@@ -6,6 +6,7 @@ import Navbar from "./modules/Navbar.js";
 import GameSettings from "./pages/GameSettings.js";
 import JoinGame from "./pages/JoinGame.js";
 import Game from "./pages/Game.js";
+import Profile from "./pages/Profile.js";
 
 import "../utilities.css";
 
@@ -68,6 +69,7 @@ class App extends Component {
           <Game path="/play/:gameID" />
           <JoinGame path = "/join/"/>
           <DeckCreator path="/create" />
+          <Profile path = "/profile/:playerID"/>
           <NotFound default />
         </Router>
       </>

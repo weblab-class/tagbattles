@@ -1,0 +1,93 @@
+.Profile-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.Profile-username{
+  text-align:center;
+  font-size:50px;
+}
+.Profile-avatar-customizer{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:center;
+}
+.Profile-toggle-container{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-around;
+  height:200px;
+}
+.Profile-avatar-arrow{
+  width: 30px;
+}
+
+.Profile-avatar-arrow:hover{
+  fill:gray;
+}
+
+.Profile-avatar-container{
+  background-color: rgb(250,240,240);
+  width:200px;
+  height:200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid black;
+  border-width: thin;
+  margin-left:5px;
+  margin-right:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.Profile-body{
+  position: absolute;
+  width:200px;
+  height:200px;
+}
+.Profile-hat{
+  position: absolute;
+  width:200px;
+  height:200px;
+}
+
+.Profile-eyes{
+  position:absolute;
+  width:200px;
+  height:200px;
+}
+
+.Profile-mouth{
+  position: absolute;
+  width:200px;
+  height:200px;
+}
+
+.Profile-avatar-part{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+}
+
+.Profile-bio-container{
+
+}
+.Profile-bio-edit-box{
+}
+.Profile-bio-text{
+
+}
+.Profile-bio-icons{
+  position: absolute;
+}
+.Profile-bio-icon{
+
+}
+.Profile-favorite-card-box{
+
+}
+.Profile-card-button{
+
+}

@@ -18,7 +18,17 @@ class Navbar extends Component {
   }
 
   componentDidMount() {
-   get("/api/newGameID").then(data => (this.setState({gameID: data.gameID}))).catch(error => console.error(error));
+   get("/api/newGameID").then(data => {
+     (this.setState({gameID: data.gameID}));
+     console.log("Game ID: ",this.state.gameID);
+    }).catch(error => console.error(error));
+  }
+
+  setNewGameID = () => {
+    get("/api/newGameID").then(data => {
+      (this.setState({gameID: data.gameID}));
+      console.log("Game ID: ",this.state.gameID);
+     }).catch(error => console.error(error));
   }
 
   render(){
@@ -31,7 +41,7 @@ class Navbar extends Component {
         </div>
         <div className = "nav-links">
 					<ul className = "nav-list">
-						<li><Link to  = {"/play/" + this.state.gameID} className = "NavBar-link">New Game</Link></li>
+						<li><Link to  = {"/play/" + this.state.gameID} className = "NavBar-link" onClick = {this.setNewGameID}>New Game</Link></li>
 						<li><Link to = "/join/" className = "NavBar-link">Join Game</Link></li>
             {this.props.userId?<li><Link to = {`/profile/${this.props.userId}`} className = "NavBar-link">Profile</Link></li>:null}
             <li>{this.props.userId ? (
