@@ -77,7 +77,7 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
     socketManager.addUserToRoom(req.user, req.body.gameID);
 
     socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
-      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => socketManager.getUserFromSocketID(socketid))});
+      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList",players:clients.map(socketid => socketManager.getUserFromSocketID(socketid))});
     });
   });
   res.send({});
@@ -142,8 +142,9 @@ router.post('/addPlayer', (req, res) => {
   console.log("created game")
   
   gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
   console.log("added player to game")
-  res.send({})
+  res.send({});
 })
 
 router.post('/startGame', async (req, res) => {

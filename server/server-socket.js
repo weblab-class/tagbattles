@@ -53,7 +53,8 @@ module.exports = {
           // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
           await console.log("DISCONNECT", user, room);
           if (user) await gameManager.removePlayerFromGame(room, user._id);
-          await io.to(room).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => getUserFromSocketID(socketid))});
+          await io.to(room).emit("gameUpdate", {type:"playerList",players:clients.map(socketid => getUserFromSocketID(socketid))});
+          await io.to(room).emit("gameUpdate", {type:"updateHost", host:gameManager.getHost(room)})
           removeUser(user, socket);
         });
         console.log(`player has disconnected from room ${room}`);

@@ -7,6 +7,7 @@ import './PlayerList.css';
  *
  * Proptypes
  * @param {array} players to display
+ * @param {String} host
  */
 class PlayerList extends Component {
   constructor(props){
@@ -15,11 +16,13 @@ class PlayerList extends Component {
 
   render() {
     let playerList = "Loading...";
+    console.log(this.props);
     if (this.props.players.length > 0) {
-      playerList = this.props.players.map((player, id) => 
+      playerList = this.props.players.map((player) => 
         <PlayerListItem 
-          key = {id}
+          key = {player._id}
           player = {player}
+          type = {this.props.host === player._id ? "Host" : "Player"}
         />
       )
     }

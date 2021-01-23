@@ -21,6 +21,7 @@ class Game extends Component {
         userID: null,
         gameID: window.location.pathname.substring(6), 
         players: [],
+        host: "",
         currentState: null,
         leaderboard: null,
         joinedGame: false,
@@ -90,7 +91,14 @@ class Game extends Component {
               currentState: "gameEnd",
               leaderboard: data.leaderboard,
             })
+          case "updateHost":
+            console.log("Host Updated");
+            console.log(data.host);
+            this.setState({
+              host: data.host,
+            })
           default:
+            console.log("Missing event");
             break;
         }
       });
@@ -172,6 +180,7 @@ class Game extends Component {
             testFunction = {this.testFunction} 
             joinedGame = {this.state.joinedGame}
             displayPlayerError = {this.state.displayPlayerError}
+            host = {this.state.host}
           />}
         </div>
       );
