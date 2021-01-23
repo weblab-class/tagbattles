@@ -126,7 +126,7 @@ router.post('/selectWinnerAndUpdateJudge', (req, res) => {
 router.post('/selectFinalResponse', (req, res) => {
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.card);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
-  console.log("insserver", numberOfThinkingPlayers);
+  console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players
   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
 })
