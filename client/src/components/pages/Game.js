@@ -19,6 +19,7 @@ class Game extends Component {
       this.state = {
         // THESE ALL SHOULD BE A PROP UNLESS MAYBE PLAYERS CAN BE AFTER THE GAME HAS STARTED
         userID: null,
+        userName: null,
         gameID: window.location.pathname.substring(6), 
         players: [],
         currentState: null,
@@ -99,8 +100,9 @@ class Game extends Component {
     async componentDidMount() {
       console.log(socket);
       await get("/api/whoami").then(me => {
-        this.setState({userID: me._id})
-        if (this.state.userID) {
+        if (!me) return console.log("WTF YOU SHOULD HAVE LOGGED IN");
+        this.setState({userID: me._id, userName: me.name});
+        if (me._id) {
           post("/api/test", {socketid:socket.id}).then((data) => {
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
               console.log('starting game')
@@ -121,8 +123,8 @@ class Game extends Component {
     handleLogin = (res) => {
       console.log(`Logged in as ${res.profileObj.name}`);
       const userToken = res.tokenObj.id_token;
-      post("/api/login", { token: userToken }).then((user) => {
-        this.setState({ userID: user._id });
+      post("/api/login", { token: userToken }).then(async (user) => {
+        this.setState({ userID: user._id, userName: user.name});
         console.log(this.state.userID);
         post("/api/initsocket", { socketid: socket.id }).then(() => {
           console.log("hey in initsocket");
@@ -131,7 +133,7 @@ class Game extends Component {
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
               console.log("in init"); this.listenToServer();
               console.log('starting game')
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.state.userID, name: this.state.userName}}).then((res) => {
                 console.log('made game');
                 this.setState({
                   joinedGame:true

@@ -64,9 +64,11 @@ const selectFinalResponse = (gameID, playerID, card) => {
 }
 
 const getNumberOfThinkingPlayers = (gameID) => {
-  const index = getParticularGameIndex(gameID)
+  const index = getParticularGameIndex(gameID);
   if (index !== -1) {
+    console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
     return logic.getNumberOfThinkingPlayers(allGames[index]);
+    
   }
   return -1;
 }
@@ -142,7 +144,9 @@ const removePlayerFromGame = (gameID, playerID) => {
   }
 
   // Remove that player from the actives list.
+  console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
+  console.log('after', allGames[index]);
   return 0;
 }
 

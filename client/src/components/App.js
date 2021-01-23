@@ -67,7 +67,7 @@ class App extends Component {
           />
           {/* <GameSettings path="/play" /> */}
           <Game path="/play/:gameID" />
-          <JoinGame path = "/join/"/>
+          <JoinGame path = "/play/"/>
           <DeckCreator path="/create" />
           <Profile path = "/profile/:playerID"/>
           <NotFound default />
