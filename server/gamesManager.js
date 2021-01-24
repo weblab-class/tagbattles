@@ -43,6 +43,20 @@ const getChosenResponses = (gameID) => {
   return [];
 }
 
+
+const getChosenResponse = (gameID, playerID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    for (let i = 0; i < allGames[index].players.length; i++) {
+      player = allGames[index].players[i]
+      if (player.chosenResponse && player._id === playerID) {
+        return player.chosenResponse
+      }
+    }
+  }
+  return {card: null};
+}
+
 const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
@@ -279,6 +293,7 @@ module.exports = {
   getNewPromptCard,
   selectPromptCard,
   getChosenResponses,
+  getChosenResponse,
   selectWinnerAndUpdateJudge,
   selectFinalResponse,
   getParticularGameIndex,

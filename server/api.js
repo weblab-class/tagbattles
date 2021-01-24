@@ -101,7 +101,7 @@ router.get('/getNewPromptCard', auth.ensureLoggedIn, async (req, res) => {
 
 router.post('/selectPromptCard', auth.ensureLoggedIn, async (req, res) => {
   const promptCard = gameManager.selectPromptCard(req.body.gameID);
-  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'displayCard', 'displayCard' : promptCard});
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : promptCard});
   res.send({});
 });
 
@@ -123,12 +123,20 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
   res.send({})
 });
 
+router.post('/selectTentativeWinner', auth.ensureLoggedIn, async (req, res) => {
+  console.log("reached api");
+  const response = gameManager.getChosenResponse(req.body.gameID, req.body.playerID);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": response});
+});
+
 router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
+  console.log('submitted card', req.body.cardIndex);
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.cardIndex);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
   console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+  res.send({});
 })
 
 // Also creates game. HAX
