@@ -9,6 +9,12 @@
     margin-left: 10px;
     margin-right: 10px;
     flex-direction: column;
+    align-items: center;
+}
+
+.u-flexRow {
+    display: flex;
+    justify-content: center;
 }
 
 .deck-subContainer {
@@ -17,8 +23,81 @@
 }
 
 .DeckCreator-plus {
+    margin-top: 25px;
+    display: inline-block;
     margin-left: auto;
     margin-right: auto;
+    border-radius: 20px;
     width: 25px; 
-    height: 25px;  
+    height: 25px;
+}
+
+.DeckCreator-plus-text {
+    width: 150px;
+    height: auto;
+    padding: 10px;
+    margin-top: -5px;
+    margin-left: 5px;
+    text-align: center;
+    display: inline;
+    position: absolute;
+    opacity: 0;
+    transition: opacity .2s ease-out;
+    border-radius: 4px;
+    color: rgb(204, 187, 187);
+    background-color: rgb(46, 37, 37);
+}
+
+.DeckCreator-plus:hover + .DeckCreator-plus-text{
+    opacity: 1;
+}
+
+.DeckCreator-center {
+    display: flex;
+    justify-content: center;
+}
+.DeckCreator-submit-deck{
+    display: inline-block;
+    width:60%;
+    border-radius:100px;
+    background-color:rgb(51, 141, 51);
+    margin: 10px auto;
+    border-style:none;
+    color:white;
+    padding:5px;
+}
+
+.DeckCreator-submit-deck-invalid{
+    display: inline-block;   
+    width:60%;
+    border-radius:100px;
+    background-color:rgb(136, 73, 48);
+    margin: 10px auto;
+    border-style:none;
+    color:white;
+    padding:5px;
+}
+
+.DeckCreator-submit-deck:hover{
+    background-color:rgb(100, 190, 100);
+}
+
+.DeckCreator-deck-name-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.DeckCreator-deck-name{
+
+    width: 90%;
+    padding: 20px;
+    text-align: center;
+    font-size: 64px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.DeckCreator-deck-name-input {
+    border-radius: 20px;
 }
