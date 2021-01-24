@@ -1,26 +1,49 @@
 .card-container{
   width:200px;
-  height:100px;
-  margin: 10px;
+  min-height:100px;
+  height: auto;
+  margin: 40px 20px;
 }
 
 .card-inner{
   position:relative;
   width: 200px;
-  height:100px;
-  transition: transform 1s;
+  min-height:100px;
+  height: auto;
   transform-style: preserve-3d;
   cursor: pointer;
 }
 
-.card-inner.is-flipped{
-  transform: rotateY(180deg);
+.card-ResponseCard{
+  background-color: rgb(208, 215, 223);
+  width:200px;
+  min-height:100px;
+  height: auto;
+  padding: 5px 10px;
+  border-radius: 15px;
+  color:black;
 }
+
+.card-inner.is-flipped{
+  transform: scale(1.1);
+  animation: scaleT 0.3s ease;
+  z-index: 1;
+}
+
+@keyframes scaleT {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+  }
 
 .card-face{
   position:absolute;
   width:200px;
-  height:100px;
+  min-height:100px;
+  height: auto;
   backface-visibility: hidden;
   overflow: hidden;
   border-radius:10px;
@@ -30,6 +53,3 @@
   justify-content: center;
 }
 
-.theback{
-  transform: rotateY(180deg);
-}

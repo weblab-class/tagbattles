@@ -1,13 +1,3 @@
-.Game-ResponseCard{
-  background-color:rgb(240,240,240);
-  width:200px;
-  height:100px;
-  padding: 5px 10px;
-  border-radius: 15px;
-  color:black;
-  border: 2px solid red; 
-}
-
 .Game-game-container{
   height: calc(100vh - 60px);
 }

@@ -20,11 +20,8 @@ class Card extends Component {
       <>
         <div onClick = {this.props.selectCard} className = "card-container">
           <div className = {this.props.isSelected ? "card-inner is-flipped" : "card-inner"}>
-            <div className = "Game-ResponseCard card-face thefront">
+            <div className = "card-ResponseCard card-face thefront">
               <p>{this.props.text}</p>
-            </div>
-            <div className = "Game-ResponseCard card-face theback">
-              <p>This card is currently selected.</p>
             </div>
           </div>
         </div> 
