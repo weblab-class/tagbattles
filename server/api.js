@@ -103,8 +103,8 @@ router.get('/getNewPromptCard', auth.ensureLoggedIn, async (req, res) => {
 });
 
 router.post('/selectPromptCard', auth.ensureLoggedIn, async (req, res) => {
-  gameManager.selectPromptCard(req.body.gameID, req.body.card);
-  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'displayCard', 'displayCard' : req.body.card});
+  const promptCard = gameManager.selectPromptCard(req.body.gameID);
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'displayCard', 'displayCard' : promptCard});
   res.send({});
 });
 
@@ -127,7 +127,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
 });
 
 router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
-  gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.card);
+  gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.cardIndex);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
   console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players

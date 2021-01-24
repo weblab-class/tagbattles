@@ -23,7 +23,7 @@ const getNewPromptCard = (gameID) => {
 const selectPromptCard = (gameID, card) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
-    logic.assignPromptCard(allGames[index], card)
+    return allGames[index].promptCard;
   }
   return 0;
 }
@@ -55,10 +55,12 @@ const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
   return allGames[index].judgeID;
 }
 
-const selectFinalResponse = (gameID, playerID, card) => {
+const selectFinalResponse = (gameID, playerID, cardIndex) => {
+  console.log(cardIndex, "index");
+  if (cardIndex > 10 || cardIndex <= 0) return 0;
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
-    logic.selectResponseCard(allGames[index], playerID, card);
+    logic.selectResponseCard(allGames[index], playerID, cardIndex);
   }
   return 0;
 }

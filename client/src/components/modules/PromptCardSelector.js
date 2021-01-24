@@ -32,7 +32,7 @@ class PromptCardSelector extends Component{
   }
 
   selectCard = () => {
-    post("/api/selectPromptCard", {gameID : this.props.gameID, card: this.state.card}).then(response => {
+    post("/api/selectPromptCard", {gameID : this.props.gameID}).then(response => {
       this.setState({
         selectedCard : true,
       })

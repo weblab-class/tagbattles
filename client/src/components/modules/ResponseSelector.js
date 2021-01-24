@@ -26,15 +26,15 @@ class ResponseSelector extends Component{
       post("/api/selectFinalResponse", {
           gameID: this.props.gameID, 
           playerID: this.props.userID, 
-          card: this.state.selectedCard
+          cardIndex: this.state.selectedCardIndex,
         }).then(
-          this.props.submitResponse(this.state.selectedCard)
+          this.props.submitResponse(this.state.cards[this.state.selectedCardIndex])
         ).catch((e) => console.log("selected response"));
     }
 
-    selectCard = (card) => {
+    selectCard = (cardIndex) => {
       this.setState({
-        selectedCard: card,
+        selectedCardIndex: cardIndex,
       })
     }
     
@@ -51,6 +51,10 @@ class ResponseSelector extends Component{
       })
     }
 
+    createNewID() { 
+      return Math.random() * 1000000000 // gets a random number to use as temp ID. HACK
+    }
+
     render(){
 			return(
         <div className = "ResponseSelector-container">
@@ -59,15 +63,15 @@ class ResponseSelector extends Component{
             {this.state.cards ? this.state.cards.map((o, id)=>
               (
                 <Card 
-                  key = {id}
+                  key = {this.createNewID()}
                   text={o} 
-                  isSelected={o === this.state.selectedCard} 
-                  selectCard = { () => {this.selectCard(o)}}
+                  isSelected={id === this.state.selectedCardIndex} 
+                  selectCard = { () => {this.selectCard(id)}}
                 />
               )
             ) : null}
           </div>
-          <button hidden={!this.state.selectedCard && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
+          <button hidden={!this.state.selectedCardIndex && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
         </div>
 			)
 		}

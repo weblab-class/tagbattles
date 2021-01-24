@@ -52,7 +52,7 @@ class Player extends Component {
             {this.state.currentState === 0 ?
               <ResponseSelector 
                 displayingCard = {this.props.displayCard} 
-                submitResponse= {this.selectedResponse} 
+                submitResponse= {(card) => this.selectedResponse(card)} 
                 gameID = {this.props.gameID} 
                 userID = {this.props.userID}
               />

@@ -89,27 +89,25 @@ const findAllCards = async (cardPackNames) => {
 };
 
 // When a player plays N cards
-const replaceResponseCard = (gameState, playerID, card) => {  
+const replaceResponseCard = (gameState, playerID, cardIndex) => {  
   // Gets the card index
   let playerIndex = getPlayerByID(gameState, playerID);
-  let cardIndex = getCardByText(gameState.players[playerIndex].responseCards, card)
   gameState.players[playerIndex].responseCards[cardIndex] = getRandomElementsFromArray(gameState.responseCards, 1)[0]
   return gameState;
 }
 
 const getNewPromptCard = (gameState) => {
-  return getRandomElementsFromArray(gameState.promptCards, 1)[0];
+  const card = getRandomElementsFromArray(gameState.promptCards, 1)[0];
+  gameState.promptCard = card;
+  return card;
 }
 
-const assignPromptCard = (gameState, promptCard) => {
-  gameState.promptCard = promptCard;
-  return gameState;
-}
-
-const selectResponseCard = (gameState, playerID, card) => {
+const selectResponseCard = (gameState, playerID, cardIndex) => {
   const playerIndex = getPlayerByID(gameState, playerID);
-  gameState.players[playerIndex].chosenResponse = card;
-  replaceResponseCard(gameState, playerID, card);
+  console.log(cardIndex)
+  console.log("gameState.players[playerIndex].responseCards[cardIndex]", gameState.players[playerIndex].responseCards[cardIndex])
+  gameState.players[playerIndex].chosenResponse = gameState.players[playerIndex].responseCards[cardIndex];
+  replaceResponseCard(gameState, playerID, cardIndex);
 }
 
 const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
@@ -122,6 +120,7 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
 const getNumberOfThinkingPlayers = (gameState) => {
   let numberOfThinkingPlayers = gameState.players.length - 1;
   for (let i = 0; i < gameState.players.length; i++) {
+    console.log(gameState.players[i].chosenResponse, gameState.players[i].name)
     if(gameState.players[i].chosenResponse) {
       numberOfThinkingPlayers -= 1;
     }
@@ -158,7 +157,6 @@ module.exports = {
   findAllCards,
   replaceResponseCard,
   getNewPromptCard,
-  assignPromptCard,
   assignWinnerAndUpdateJudge,
   selectResponseCard,
   getNumberOfThinkingPlayers,
