@@ -23,13 +23,11 @@ class EditableCard extends Component {
       }
     }
     
-    isValid(card) {
-      return /\S/.test(card) && card.length > 0;
-    }
 
     render() {
+      console.log(this.props.isValid)
       return (
-        <div className={"EditableCard-parent EditableCard-parent-"+ (this.isValid(this.props.text) ?this.props.type : "invalid")}>
+        <div className={"EditableCard-card-container EditableCard-parent-"+ (this.props.isValid ? this.props.type : "invalid")}>
             <span contentEditable="true" className={"EditableCard-textInput EditableCard-textInput-"+this.props.type} type="text" 
               onInput={(data)=>{this.props.onChange(data.currentTarget.textContent)}} value={this.props.text} />
             <img className="EditableCard-trashImage" src={trash} alt="Delete" onClick={this.props.onDelete} />

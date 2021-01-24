@@ -17,9 +17,10 @@ import "./DeckCreator.css"
 class DeckCreator extends Component {
     constructor(props) {
       super(props);
+      this.MAX_CARD_LENGTH = 300;
       this.state = {
         error_message: "You need at least one card!",
-        deck_name: "Enter Deck Name",
+        deck_name: "",
         prompt_cards: [], // Stored as a list of strings
         response_cards: [],
       }
@@ -46,7 +47,6 @@ class DeckCreator extends Component {
     }
 
     handleDeckNameChange(text) {
-        
         this.setState({
             deck_name: text
         }, () => this.areCardsValid())
@@ -67,8 +67,9 @@ class DeckCreator extends Component {
             [card_type]: [...this.state[card_type], {card: "", id: this.createNewID()}]
         }, () => this.areCardsValid())
     }
+
     isCardValid(card) {
-        return /\S/.test(card) && card.length > 0;
+        return /\S/.test(card) && card.length > 0 && card.length < this.MAX_CARD_LENGTH
     }
 
     async areCardsValid(){
@@ -76,13 +77,17 @@ class DeckCreator extends Component {
             this.setState({error_message: "You need at least one card."}); return;
         }
         for (let i = 0; i < this.state.prompt_cards.length; i++) {
-            if (!this.isCardValid(this.state.prompt_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
+            if (!this.isCardValid(this.state.prompt_cards[i].card)){ 
+                this.setState({error_message: "Some cards seem to be empty or too long!"}); return;
+            }
         }
         for (let i = 0; i < this.state.response_cards.length; i++) {
-            if (!this.isCardValid(this.state.response_cards[i].card)){ this.setState({error_message: "No empty cards allowed!"}); return;}
+            if (!this.isCardValid(this.state.response_cards[i].card)){ 
+                this.setState({error_message: "Some cards seem to be empty or too long!"}); return;
+            }
         }
         if (this.state.deck_name.length < 4) {
-            this.setState({error_message: "Deck name too short. Need > 3 characters!"})
+            this.setState({error_message: "Deck name too short. Need at least 4 characters!"})
             return ;
         }
         else{ 
@@ -123,7 +128,7 @@ class DeckCreator extends Component {
       return (
         <>
             <div className="DeckCreator-deck-name-container">
-                <input className="DeckCreator-deck-name-input DeckCreator-deck-name" contentEditable="true" type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event.target.value)} value={this.state.deck_name} />
+                <input  placeholder="Enter Deck Name" className="DeckCreator-deck-name-input DeckCreator-deck-name" contentEditable="true" type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event.target.value)} value={this.state.deck_name} />
             </div>
             <div className="DeckCreator-center">
                 <button className = {"DeckCreator-submit-deck"+(!this.state.error_message ? "" : "-invalid")} 
@@ -140,12 +145,12 @@ class DeckCreator extends Component {
                     </span>
 
                     {this.state.prompt_cards.map((content, id) => (
-                        <EditableCard key={content.id} text={content.card} 
+                        <EditableCard isValid={this.isCardValid(content.card)} key={content.id} text={content.card} 
                             type="prompt"
                             onDelete={()=>this.handeCardRemoval(id, 'prompt_cards')} 
                             onChange={(data)=>this.handleCardChange(data, id, 'prompt_cards')} />
                     ))}
-                    {this.state.prompt_cards.length > 5 ?                     <span>
+                    {this.state.prompt_cards.length > 5 ? <span>
                     <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} aria-describedby="yeet"/>
                     <span className="DeckCreator-plus-text">Add prompt cards</span>
                     </span> : null}
@@ -158,7 +163,7 @@ class DeckCreator extends Component {
                         <span className="DeckCreator-plus-text">Add response cards</span>
                     </div>
                     {this.state.response_cards.map((content, id) => (
-                        <EditableCard key={content.id} text={content.card} 
+                        <EditableCard isValid={this.isCardValid(content.card)} key={content.id} text={content.card} 
                             type="response"
                             onDelete={()=>this.handeCardRemoval(id, 'response_cards')} 
                             onChange={(data)=>this.handleCardChange(data, id, 'response_cards')} />
