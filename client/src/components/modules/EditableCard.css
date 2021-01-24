@@ -3,6 +3,17 @@
     margin-top: 15px;
     width: 100%;
     border-radius: 10px;
+    animation: slide 0.3s ease;
+}
+@keyframes slide {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 .EditableCard-parent:hover{
     transform: scale(1.01);

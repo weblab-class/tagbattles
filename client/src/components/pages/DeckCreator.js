@@ -123,29 +123,53 @@ class DeckCreator extends Component {
       return (
         <>
             <div className="DeckCreator-deck-name-container">
-                <input className="DeckCreator-deck-name-input DeckCreator-deck-name" contentEditable="true" type="text" value={this.state.deck_name} onInput={(event)=>this.handleDeckNameChange(event.target.value)} value={this.state.deck_name} />
+                <input className="DeckCreator-deck-name-input DeckCreator-deck-name" contentEditable="true" type="text" value={this.state.deck_name} onChange={(event)=>this.handleDeckNameChange(event.target.value)} value={this.state.deck_name} />
             </div>
-           
-            {this.state.error_message ? <span>Oops! {this.state.error_message}</span> : null }
-            <span>{!this.state.error_message ? <button className = "DeckCreator-submit-deck" onClick={()=>this.submitDeck()}>SubmitDeck</button> : null}</span>
+            <div className="DeckCreator-center">
+                <button className = {"DeckCreator-submit-deck"+(!this.state.error_message ? "" : "-invalid")} 
+                    onClick={!this.state.error_message ? ()=>this.submitDeck() : null}>
+                    {!this.state.error_message ? "Submit!" : this.state.error_message}
+                </button>
+            </div>
             <div className="u-flex">
                 <div className="u-flexColumn deck-subContainer">
-                    <img class="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} />
+                    
+                    <span>
+                    <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} aria-describedby="yeet"/>
+                    <span className="DeckCreator-plus-text">Add prompt cards</span>
+                    </span>
+
                     {this.state.prompt_cards.map((content, id) => (
                         <EditableCard key={content.id} text={content.card} 
                             type="prompt"
                             onDelete={()=>this.handeCardRemoval(id, 'prompt_cards')} 
                             onChange={(data)=>this.handleCardChange(data, id, 'prompt_cards')} />
                     ))}
+                    {this.state.prompt_cards.length > 5 ?                     <span>
+                    <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('prompt_cards')} aria-describedby="yeet"/>
+                    <span className="DeckCreator-plus-text">Add prompt cards</span>
+                    </span> : null}
+
+                    
                 </div>
                 <div className="u-flexColumn deck-subContainer">
-                <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                    <div>
+                        <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                        <span className="DeckCreator-plus-text">Add response cards</span>
+                    </div>
                     {this.state.response_cards.map((content, id) => (
                         <EditableCard key={content.id} text={content.card} 
                             type="response"
                             onDelete={()=>this.handeCardRemoval(id, 'response_cards')} 
                             onChange={(data)=>this.handleCardChange(data, id, 'response_cards')} />
                     ))}
+                    {this.state.response_cards.length > 5 ? 
+                    <div>
+                        <img className="DeckCreator-plus" src={plus} onClick={()=>this.handleCardAddition('response_cards')} />
+                        <span className="DeckCreator-plus-text">Add response cards</span>
+                    </div>
+                    : null}
+                    
                 </div>
             </div>
         </>
