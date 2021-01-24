@@ -11,7 +11,7 @@ const Logo = (props) => {
   return (
     <div onClick = {props.func} className = "Logo-container">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="1043px"
-        height="580.9px" viewBox="0 0 1043 580.9" className = "Icon-icon-styling Logo-styling">
+        height="580.9px" viewBox="0 0 1043 580.9" className = "Logo-styling">
       <defs>
       </defs>
       <g>
