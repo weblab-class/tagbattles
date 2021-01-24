@@ -1,3 +1,23 @@
 .Game-game-container{
   height: calc(100vh - 60px);
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+}
+
+.Game-rightBar{
+  width:20%;
+  height:calc(100vh - 60px);
+  min-width:300px;
+  background-color:tan;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border-bottom-left-radius: 10px;
+  border-left: solid black;
+  border-width:thin;
+}
+
+.Game-main-container{
+  width:80%;
 }

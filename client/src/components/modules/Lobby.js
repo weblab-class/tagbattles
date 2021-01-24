@@ -34,7 +34,7 @@ class Lobby extends Component {
         {console.log("PLAYERID: ", this.props.userID)}
         <h1>Lobby</h1>
         <div className = "Lobby-game-container">
-          <PlayerList players = {this.props.players} host = {this.props.host}/>
+          {/*<PlayerList players = {this.props.players} host = {this.props.host}/>*/}
           <Settings 
             joinedGame = {this.props.joinedGame} 
             startGame = {this.props.startGame} 
@@ -45,12 +45,12 @@ class Lobby extends Component {
             rounds = {this.props.rounds}
             deck = {this.props.deck}
           />
-          <GameChat
+          {/*<GameChat
             userID = {this.props.userID}
             gameID = {this.props.gameID}
             userName = {this.props.userName}
             chats = {this.props.chats}
-          />
+          />*/}
         </div>
         {/*<div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>*/}
       </div>

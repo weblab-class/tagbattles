@@ -1,10 +1,9 @@
 .PlayerList-players-side{
-  width:400px;
-  height:500px;
+  height:50%;
 }
 
 .PlayerList-players-container{
-  border-radius:20px;
+  /*border-radius:20px;*/
   background-color: rgba(240,240,240,0.7);
   height:350px;
   padding:20px;
@@ -12,4 +11,5 @@
 
 .PlayerList-container-label{
   text-align:center;
+  margin:0;
 }

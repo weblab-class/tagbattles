@@ -38,11 +38,13 @@ class GameChat extends Component {
   }
 
   submitMessage = () => {
-    post("/api/postChatMessage", {gameID: this.props.gameID, userID: this.props.userID, message: this.state.newMessage, name: this.props.userName}).then((data) => {
-      this.setState({
-        newMessage: "",
-      })
-    });
+    if(this.state.newMessage.length > 0){
+      post("/api/postChatMessage", {gameID: this.props.gameID, userID: this.props.userID, message: this.state.newMessage, name: this.props.userName}).then((data) => {
+        this.setState({
+          newMessage: "",
+        })
+      });
+    }
   }
 
   render(){

@@ -7,6 +7,8 @@ import Leaderboard from "../modules/Leaderboard.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
+import PlayerList from '../modules/PlayerList.js';
+import GameChat from '../modules/GameChat.js';
 
 import GoogleLogin from "react-google-login";
 const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
@@ -215,25 +217,53 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {this.state.currentState ? (this.state.currentState === "judge" ? <Judge numThinkingPlayers = {this.state.numThinkingPlayers} gameID = {this.state.gameID} userID = {this.state.userID}/>: 
-          (this.state.currentState === "gameEnd" ? 
-            <Leaderboard leaderboard = {this.state.leaderboard}/>
-          : 
-          <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
-          <Lobby 
-            players = {this.state.players} 
-            startGame = {this.startGame} 
-            testFunction = {this.testFunction} 
-            joinedGame = {this.state.joinedGame}
-            displayPlayerError = {this.state.displayPlayerError}
-            host = {this.state.host}
-            userID = {this.state.userID}
-            gameID = {this.state.gameID}
-            rounds = {this.state.rounds}
-            deck = {this.state.deck}
-            userName = {this.state.userName}
-            chats = {this.state.chats}
-          />}
+          <div className = "Game-main-container">
+            {this.state.currentState ? 
+              (this.state.currentState === "judge" ? 
+                <Judge 
+                  numThinkingPlayers = {this.state.numThinkingPlayers} 
+                  gameID = {this.state.gameID} 
+                  userID = {this.state.userID}
+                />
+              : 
+                (this.state.currentState === "gameEnd" ? 
+                  <Leaderboard leaderboard = {this.state.leaderboard}/>
+                : 
+                  <Player 
+                    gameID = {this.state.gameID} 
+                    displayCard = {this.state.displayCard} 
+                    userID = {this.state.userID}/>
+                )
+              ) 
+            : 
+              <Lobby 
+                players = {this.state.players} 
+                startGame = {this.startGame} 
+                testFunction = {this.testFunction} 
+                joinedGame = {this.state.joinedGame}
+                displayPlayerError = {this.state.displayPlayerError}
+                host = {this.state.host}
+                userID = {this.state.userID}
+                gameID = {this.state.gameID}
+                rounds = {this.state.rounds}
+                deck = {this.state.deck}
+                userName = {this.state.userName}
+                chats = {this.state.chats}
+              />
+            }
+          </div>
+          <div className = "Game-rightBar">
+            <PlayerList 
+              players = {this.state.players} 
+              host = {this.state.host}
+            />
+            <GameChat
+              userID = {this.state.userID}
+              gameID = {this.state.gameID}
+              userName = {this.state.userName}
+              chats = {this.state.chats}
+            />
+          </div>
         </div>
       );
     }
