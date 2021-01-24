@@ -29,7 +29,8 @@ const createGame = (gameID) => {
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,
-    'promptCards' : null
+    'promptCards' : null,
+    'chat': [],
   }
 } 
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PlayerList from "./PlayerList.js";
 import Settings from "./Settings.js";
+import GameChat from './GameChat.js';
 import './Lobby.css';
 
 /**
@@ -17,6 +18,7 @@ import './Lobby.css';
  * @param {String} gameID
  * @param {Number} rounds
  * @param {String} deck
+ * @param {String} userName
  * 
  */
 class Lobby extends Component {
@@ -42,6 +44,12 @@ class Lobby extends Component {
             gameID = {this.props.gameID}
             rounds = {this.props.rounds}
             deck = {this.props.deck}
+          />
+          <GameChat
+            userID = {this.props.userID}
+            gameID = {this.props.gameID}
+            userName = {this.props.userName}
+            chats = {this.props.chats}
           />
         </div>
         {/*<div className="Game-ResponseCard u-textCenter" onClick={this.props.testFunction}>Some response card</div>*/}

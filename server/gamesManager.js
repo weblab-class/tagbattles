@@ -257,6 +257,22 @@ const getGameRounds = (gameID) => {
   return allGames[index].rounds;
 }
 
+const addToChat = (gameID, userID, message, name) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  allGames[index].chat.push({userID: userID, message: message, name:name});
+}
+
+const getChat = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  return allGames[index].chat;
+}
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
@@ -279,4 +295,6 @@ module.exports = {
   updateGameDeck,
   getGameDeck,
   getGameRounds,
+  addToChat,
+  getChat,
 }

@@ -1,0 +1,8 @@
+.Confirm-styling{
+  height:16px;
+  fill:rgb(25, 216, 34);
+}
+
+.Confirm-styling:hover{
+  fill:rgb(107, 235, 91);
+}

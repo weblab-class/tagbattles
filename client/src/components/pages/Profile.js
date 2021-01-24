@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities.js";
+import EditIcon from '../modules/icons/edit.js';
+import CloseButton from '../modules/icons/close.js';
+import ConfirmButton from "../modules/icons/confirm.js";
 import './Profile.css';
 
 //Icons
@@ -72,29 +75,65 @@ class Profile extends Component {
       eyeID: 0,
       name: "",
       colorID: 0,
+      userID: "",
+      userName: "",
       mouthID: 0,
       decks: [],
     }
   }
 
   componentDidMount(){
-    get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
-      console.log(data);
-      this.setState({
-        bio: data.bio,
-        favoriteCard: data.favCard,
-        hatID: data.hatID,
-        eyeID: data.eyeID,
-        name: data.name,
-        colorID: data.colorID,
-        mouthID: data.mouthID,
-      });
-
+    get("/api/whoami").then(me => {
+      if (!me){
+        this.setState({userID: null, userName: null});
+      }
+      else{
+        this.setState({userID: me._id, userName: me.name});
+      }
+    }).then(()=>{
+      get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
+        console.log(data);
+        this.setState({
+          bio: data.bio,
+          favoriteCard: data.favCard,
+          hatID: data.hatID,
+          eyeID: data.eyeID,
+          name: data.name,
+          colorID: data.colorID,
+          mouthID: data.mouthID,
+        });
+      })
     })
   }
 
   onBioChange = (e) => {
+    this.setState({
+      bio: e.target.value,
+    })
+  }
 
+  editBio = () => {
+    this.setState({
+      changingBio: true,
+    })
+  }
+
+  saveBio = () => {
+    post("/api/postNewBio", {userID: this.state.userID, bio: this.state.bio}).then((data) => {
+      this.setState({
+        changingBio: false,
+        bio: data.bio,
+      })
+    })
+  }
+
+  closeBioEdit = () => {
+    get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
+      this.setState({
+        bio: data.bio,
+        changingBio: false,
+      })
+    })
   }
 
   toggleLeftHat = () => {
@@ -174,12 +213,16 @@ class Profile extends Component {
       <div className = "Profile-container">
         <h1 className = "Profile-username">{this.state.name}</h1>
         <div className = "Profile-avatar-customizer">
-          <div className = "Profile-toggle-container">
-            <LeftArrow func = {this.toggleLeftHat}/>
-            <LeftArrow func = {this.toggleLeftEye}/>
-            <LeftArrow func = {this.toggleLeftMouth}/>
-            <LeftArrow func = {this.toggleLeftColor}/>
-          </div>
+          {this.state.userID === this.props.playerID?
+            <div className = "Profile-toggle-container">
+              <LeftArrow func = {this.toggleLeftHat}/>
+              <LeftArrow func = {this.toggleLeftEye}/>
+              <LeftArrow func = {this.toggleLeftMouth}/>
+              <LeftArrow func = {this.toggleLeftColor}/>
+            </div>
+          :
+            null
+          }
           <Avatar
             colorID = {this.state.colorID}
             width = {"200px"}
@@ -188,34 +231,51 @@ class Profile extends Component {
             hatID = {this.state.hatID}
             eyeID = {this.state.eyeID}
           />
-          <div className  ="Profile-toggle-container">
-            <RightArrow func = {this.toggleRightHat}/>
-            <RightArrow func = {this.toggleRightEye}/>
-            <RightArrow func = {this.toggleRightMouth}/>
-            <RightArrow func = {this.toggleRightColor}/>
-          </div>
+          {this.state.userID === this.props.playerID?
+            <div className  ="Profile-toggle-container">
+              <RightArrow func = {this.toggleRightHat}/>
+              <RightArrow func = {this.toggleRightEye}/>
+              <RightArrow func = {this.toggleRightMouth}/>
+              <RightArrow func = {this.toggleRightColor}/>
+            </div>
+          :
+            null
+          }
         </div>
         <div className = "Profile-bio-container">
-          <div className = "Profile-bio-icons">
-            {
-              this.state.changingBio ? 
-                <>
-                  <img src = "" alt = "close" className = "Profile-bio-icon"/>
-                  <img src = "" alt = "confirm" className = "Profile-bio-icon"/>
-                </>
-              :
-                <img src = "" alt = "edit" className = "Profile-bio-icon"/>
-            }
-          </div>
-          <h2>Biography</h2>
-          <div className = "Profile-bio-edit-box">
-            {
-              this.state.changingBio ? 
-                <input className = "Profile-bio-text" type = "text" value = {this.state.bio} onChange = {this.onBioChange}></input>
-              :
+          {this.state.userID === this.props.playerID?
+            <>
+              <h2 className = "Profile-bio-title">Biography</h2>
+              <hr></hr>
+              <div className = "Profile-bio-edit-box">
+                {
+                  this.state.changingBio ? 
+                    <textarea className = "Profile-bio-text-edit" type = "text" value = {this.state.bio} onChange = {this.onBioChange} placeholder = "Add a bio"/>
+                  :
+                    <p className = "Profile-bio-text">{this.state.bio}</p>
+                }
+              <div className = "Profile-bio-icons">
+                {
+                  this.state.changingBio ? 
+                    <>
+                      <ConfirmButton func = {this.saveBio}/>
+                      <CloseButton func = {this.closeBioEdit}/>
+                    </>
+                  :
+                    <EditIcon func = {this.editBio}/>
+                }
+              </div>
+              </div>
+            </>
+          :
+            <>
+              <h2 className = "Profile-bio-title">Biography</h2>
+              <hr></hr>
+              <div className = "Profile-bio-edit-box">
                 <p className = "Profile-bio-text">{this.state.bio}</p>
-            }
-          </div>
+              </div>
+            </>
+          }
         </div>
         <div className = "Profile-favorite-card-box">
           <h2>Favorite Card</h2>

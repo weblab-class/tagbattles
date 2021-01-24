@@ -1,0 +1,8 @@
+.CloseButton-styling{
+  fill:red;
+  height:16px;
+}
+
+.CloseButton-styling:hover{
+  fill: rgb(240,100,100);
+}

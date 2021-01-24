@@ -238,7 +238,7 @@ router.post("/incrementPlayerWins", (req, res) => {
       res.send({message: "no such player"});
     }
     else{
-      User.updateOne({userID: req.user._id}, {gameWins: players[0].gameWins+1}).then((data) => {
+      User.updateOne({_id: req.body.userID}, {gameWins: players[0].gameWins+1}).then((data) => {
         res.send(data);
       })
     }
@@ -266,6 +266,32 @@ router.get("/getRounds", (req, res) => {
 
 router.get("/getDeck", (req, res) => {
   res.send({deck: gameManager.getGameDeck(req.query.gameID)})
+})
+
+router.get("/getChatMessages", (req, res) => {
+  res.send({chat: gameManager.getChat(req.query.gameID)});
+})
+
+router.post("/postChatMessage", (req, res) => {
+  gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
+  res.send({message: req.body.message});
+})
+
+router.post("/postNewBio", (req, res) => {
+  User.updateOne({_id: req.body.userID}, {bio: req.body.bio}).then((data) => {
+    User.find({_id: req.body.userID}).then((user) => {
+      console.log(user);
+      res.send({bio: user[0].bio});
+    })
+  })
+})
+
+router.get("/getBio", (req, res) => {
+  User.find({_id: req.body.userID}).then((user) => {
+    console.log(user);
+    res.send({bio: user[0].bio});
+  })
 })
 
 // anything else falls to this "not found" case
