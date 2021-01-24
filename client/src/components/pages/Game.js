@@ -26,6 +26,7 @@ class Game extends Component {
         players: [],
         host: "",
         currentState: null,
+        judgeID: "",
         leaderboard: null,
         chats: [],
         joinedGame: false,
@@ -74,10 +75,12 @@ class Game extends Component {
             if (this.state.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
+                judgeID: data.judgeID,
               })
             } else {
               this.setState({
                 currentState: 'player',
+                judgeID: data.judgeID,
               })
             }
             break;
@@ -256,6 +259,8 @@ class Game extends Component {
             <PlayerList 
               players = {this.state.players} 
               host = {this.state.host}
+              stage = {this.state.currentState}
+              judgeID = {this.state.judgeID}
             />
             <GameChat
               userID = {this.state.userID}

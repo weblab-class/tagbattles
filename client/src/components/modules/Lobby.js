@@ -32,7 +32,6 @@ class Lobby extends Component {
         {console.log("Players inasdf adsf :",this.props.players)}
         {console.log("HOSTID: ", this.props.host)}
         {console.log("PLAYERID: ", this.props.userID)}
-        <h1>Lobby</h1>
         <div className = "Lobby-game-container">
           {/*<PlayerList players = {this.props.players} host = {this.props.host}/>*/}
           <Settings 

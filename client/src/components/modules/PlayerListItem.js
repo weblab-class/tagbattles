@@ -5,6 +5,7 @@ import Avatar from './Avatar.js';
 /**
  * props
  * @param {Object} player
+ * @param {String} label
  */
 class PlayerListItem extends Component {
   constructor(props){
@@ -31,6 +32,7 @@ class PlayerListItem extends Component {
   render(){
     return(
       <div className = "PlayerListItem-player-container">
+        {console.log("STAGE:ASDFa ", this.props.stage)}
         <div className = "PlayerListItem-player-image-container">
           <Avatar
             colorID = {this.state.colorID}
@@ -43,8 +45,12 @@ class PlayerListItem extends Component {
         </div> 
         <div className = "PlayerListItem-player-info-container">
           <h3 className = "PlayerListItem-name-label">{this.props.player.name}</h3>
-          <p className = "PlayerListItem-points-label">{this.props.player.points} points</p>
-          <span className = "PlayerListItem-label-icon">{this.props.type}</span>
+          {this.props.stage ?
+            <p className = "PlayerListItem-points-label">{this.props.player.points} points</p>
+          :
+            null
+          }
+          <span className = "PlayerListItem-label-icon">{this.props.label}</span>
         </div>
       </div>
     )
