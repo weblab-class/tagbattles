@@ -1,0 +1,42 @@
+.GameChat-chat-container{
+  width:400px;
+  height:500px;
+}
+
+.GameChat-chat-title{
+  text-align:center;
+}
+
+.GameChat-message-container{
+  border-bottom: 2px solid black;
+  width:100%;
+  height:320px;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+  overflow-y: scroll;
+}
+
+.GameChat-content-container{
+  border-radius:10px;
+  background-color: rgba(240,240,240,0.7);
+  height:350px;
+}
+
+.GameChat-text-input-container{
+  width:100%;
+  display:flex;
+  flex-direction:row;
+  border-bottom-left-radius:10px;
+}
+
+.GameChat-text-input{
+  width:80%;
+  resize: none;
+  border-bottom-left-radius:10px;
+}
+
+.GameChat-text-sender{
+  width:20%;
+  margin: 0;
+  border-bottom-right-radius:10px;
+}

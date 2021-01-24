@@ -19,7 +19,9 @@ class GameChatMessage extends Component {
   render(){
     return (
       <div className = {this.props.alignRight ? 'GameChatMessage-container-right' : 'GameChatMessage-container-left'}>
-        <h5 className = 'GameChatMessage-message-sender'>{this.props.sender}</h5>
+        <div className = "GameChatMessage-sender-container">
+          <h5 className = {this.props.alignRight ? 'GameChatMessage-message-user' : 'GameChatMessage-message-sender'}>{this.props.sender}</h5>
+        </div>
         <div className = {this.props.alignRight ? 'GameChatMessage-message-container-user' : 'GameChatMessage-message-container-general'}>
           <p className = "GameChatMessage-message">{this.props.message}</p>
         </div>
