@@ -1,0 +1,9 @@
+.Trash-styling{
+  height:20px;
+  fill:white;
+}
+
+.Trash-styling:hover{
+  fill:rgb(230,230,230);
+  transform: scale(1.2);
+}

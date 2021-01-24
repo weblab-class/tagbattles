@@ -7,7 +7,7 @@ const TrashButton = (props) => {
   return(
     <div onClick = {props.func}>
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-        width="1059.6px" height="1117px" viewBox="0 0 1059.6 1117" className = "Icon-icon-styling">
+        width="1059.6px" height="1117px" viewBox="0 0 1059.6 1117" className = "Icon-icon-styling Trash-styling">
       <defs>
       </defs>
       <g>

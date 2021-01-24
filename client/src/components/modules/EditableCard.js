@@ -3,6 +3,7 @@ import "./EditableCard.css";
 import "./EditableCardPrompt.css";
 import "./EditableCardResponse.css";
 import trash from "../../public/trash.png";
+import TrashButton from "./icons/trash.js";
 /**
  * @props
  * 
@@ -30,7 +31,10 @@ class EditableCard extends Component {
         <div className={"EditableCard-card-container EditableCard-parent-"+ (this.props.isValid ? this.props.type : "invalid")}>
             <span contentEditable="true" className={"EditableCard-textInput EditableCard-textInput-"+this.props.type} type="text" 
               onInput={(data)=>{this.props.onChange(data.currentTarget.textContent)}} value={this.props.text} />
-            <img className="EditableCard-trashImage" src={trash} alt="Delete" onClick={this.props.onDelete} />
+            <div className = "EditableCard-trashImage">
+              <TrashButton func = {this.props.onDelete} className = "EditableCard-trashImage"/>
+            </div>
+            {/*<img className="EditableCard-trashImage" src={trash} alt="Delete" onClick={this.props.onDelete} />*/}
         </div>
       );
     }
