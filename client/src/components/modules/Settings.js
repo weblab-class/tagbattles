@@ -64,7 +64,7 @@ class Settings extends Component {
     const rounds = [2,3,4,5,6,7,8,9,10];
     return (
       <div className = "Settings-settings-side">
-        <h2 className = "Settings-container-label">Settings</h2>
+        <h1 className = "Settings-container-label">Settings</h1>
         <div className = "Settings-settings-container">
           <h4 className = "Settings-settings-label">Rounds</h4>
           {this.props.host?

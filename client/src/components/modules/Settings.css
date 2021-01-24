@@ -1,19 +1,24 @@
 .Settings-settings-side{
-  width:400px;
-  height:500px;
+  width:40%;
+  min-width:350px;
+  max-width:450px;
+  height: 50%;
   margin-left:20px;
   margin-right:20px;
 }
 
 .Settings-container-label{
   text-align:center;
+  margin:0;
 }
 
 .Settings-settings-container{
   border-radius: 20px;
   background-color: rgba(240,240,240,0.7);
   padding:20px;
-  height:350px;
+  height:calc(100% - 80px);
+  min-height:210px;
+  max-height:250px;
   text-align:center;
 }
 
