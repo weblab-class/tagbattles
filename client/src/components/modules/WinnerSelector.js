@@ -31,6 +31,7 @@ class WinnerSelector extends Component{
     }
 
     selectCard = (playerID) => {
+      post('/api/selectTentativeWinner', {gameID : this.props.gameID, playerID: playerID})
       this.setState({
         selectedPlayer: playerID,
       });
@@ -38,6 +39,18 @@ class WinnerSelector extends Component{
     
     componentDidUpdate = () => {
       get("/api/getSubmittedResponses", {gameID: this.props.gameID}).then((response) => {
+        console.log(response, "my responses");
+        this.setState({
+          playerCards: response.playerCards,
+        })
+      }).catch((e) => {
+        console.log(e);
+        console.log("Component mounted :O");
+      });
+    }
+    componentDidMount = () => {
+      get("/api/getSubmittedResponses", {gameID: this.props.gameID}).then((response) => {
+        console.log(response, "my responses");
         this.setState({
           playerCards: response.playerCards,
         })
@@ -57,6 +70,7 @@ class WinnerSelector extends Component{
                   key = {o.playerID}
                   text={o.card} 
                   isSelected={o.playerID === this.state.selectedPlayer} 
+                  isFlipped={o.playerID !== this.state.selectedPlayer} 
                   selectCard = { () => {this.selectCard(o.playerID)}}
                 />
               )

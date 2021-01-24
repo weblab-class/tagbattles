@@ -29,6 +29,7 @@ class Judge extends Component {
 
   // Selecting the 
   render() { 
+    console.log(this.props.numThinkingPlayers, "I think there are thinkeres")
     return (
       <>
         <PromptCardSelector gameID={this.props.gameID} />

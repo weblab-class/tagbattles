@@ -80,9 +80,11 @@ class Game extends Component {
             }
             break;
           case "numThinkingPlayers":
+            console.log("I think there are ", data.numThinkingPlayers)
             this.setState({
               numThinkingPlayers: data.numThinkingPlayers
             });
+            break;
           case "displayCard":
             this.setState({
               displayCard: data.displayCard
@@ -108,6 +110,11 @@ class Game extends Component {
             //console.log(data.rounds);
             this.setState({
               rounds: data.rounds,
+            });
+            break;
+          case "tentativeWinner":
+            this.setState({
+              tentativeWinner: data.card,
             });
             break;
           case "deckUpdate":
@@ -219,7 +226,7 @@ class Game extends Component {
           (this.state.currentState === "gameEnd" ? 
             <Leaderboard leaderboard = {this.state.leaderboard}/>
           : 
-          <Player gameID = {this.state.gameID} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
+          <Player gameID = {this.state.gameID} tentativeWinner={this.state.tentativeWinner} displayCard = {this.state.displayCard} userID = {this.state.userID}/>)) : 
           <Lobby 
             players = {this.state.players} 
             startGame = {this.startGame} 

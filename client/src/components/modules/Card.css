@@ -24,7 +24,7 @@
   color:black;
 }
 
-.card-inner.is-flipped{
+.card-inner.is-selected{
   transform: scale(1.1);
   animation: scaleT 0.3s ease;
   z-index: 1;
