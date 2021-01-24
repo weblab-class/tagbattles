@@ -27,14 +27,13 @@ class DeckCreator extends Component {
     }
 
     componentDidMount() {
-			console.log("mounted");
 			get("/api/whoami").then(me => {
 				
-				this.setState({userID: me._id, userName: me.name});
+				if (me.name !== this.state.userName)
+					this.setState({userID: me._id, userName: me.name});
 			});
 		}
 		componentDidUpdate() {
-			console.log("mounted");
 			get("/api/whoami").then(me => {
 				if (me.name !== this.state.userName)
 					this.setState({userID: me._id, userName: me.name});
@@ -42,21 +41,18 @@ class DeckCreator extends Component {
     }
 
     async isNameUnique(name) {
-        console.log("eh")
         let res = await get("/api/isNameUnique", {name: name})
     
         if(res.isUnique) {
             this.setState({
                 error_message: null,
             })
-            console.log("returned t")
             return true;
         }
         else{
             this.setState({
                 error_message: "Name is taken, try something else!",
             })
-            console.log("returned f")
             return false;
         }
     }
@@ -107,7 +103,6 @@ class DeckCreator extends Component {
         }
         else{ 
             let valid = await this.isNameUnique(this.state.deck_name)
-            console.log(valid);
             if (!valid) {
                 return ;
             }
@@ -128,7 +123,6 @@ class DeckCreator extends Component {
     }
 
     handeCardRemoval(index, card_type) {
-        console.log(index);
         this.setState({
             [card_type]: [...this.state[card_type].slice(0, index), ...this.state[card_type].slice(index+1)]
         }, () => this.areCardsValid())
@@ -141,8 +135,6 @@ class DeckCreator extends Component {
 
     render() {
 			if (!this.state.userID) {
-				console.log("not logged in");
-				console.log(this.state.userID);
 				return (
 					<div className="DeckCreator-center">
 							<p className="">Cannot view this page until you log in!</p>
