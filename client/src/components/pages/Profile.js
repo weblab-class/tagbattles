@@ -250,7 +250,7 @@ class Profile extends Component {
               <div className = "Profile-bio-edit-box">
                 {
                   this.state.changingBio ? 
-                    <textarea className = "Profile-bio-text" type = "text" value = {this.state.bio} onChange = {this.onBioChange} placeholder = "Add a bio"/>
+                    <textarea className = "Profile-bio-text-edit" type = "text" value = {this.state.bio} onChange = {this.onBioChange} placeholder = "Add a bio"/>
                   :
                     <p className = "Profile-bio-text">{this.state.bio}</p>
                 }

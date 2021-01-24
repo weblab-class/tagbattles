@@ -77,10 +77,14 @@
 .Profile-bio-edit-box{
   width:100%;
 }
-.Profile-bio-text{
+.Profile-bio-text-edit{
   width:100%;
   resize:none;
   border-radius:8px;
+  height:80px;
+}
+.Profile-bio-text{
+  width:100%;
 }
 .Profile-bio-icons{
   position: absolute;
@@ -88,9 +92,6 @@
   flex-direction:row-reverse;
   top:8px;
   right:0px;
-}
-.Profile-bio-icon{
-
 }
 .Profile-favorite-card-box{
 
