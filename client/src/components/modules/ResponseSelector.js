@@ -18,7 +18,7 @@ class ResponseSelector extends Component{
       super(props);
       this.state = {
         cards: ["This is a card","This is a second card"],
-        selectedCard: null,
+        selectedCard: false,
       }
     }
     
@@ -35,6 +35,7 @@ class ResponseSelector extends Component{
     selectCard = (cardIndex) => {
       this.setState({
         selectedCardIndex: cardIndex,
+        selectedCard: true,
       })
     }
     
@@ -56,6 +57,8 @@ class ResponseSelector extends Component{
     }
 
     render(){
+      console.log(this.state.selectedCardIndex);
+      console.log(this.props.displayingCard);
 			return(
         <div className = "ResponseSelector-container">
           {console.log(this.state.cards)}
@@ -71,7 +74,8 @@ class ResponseSelector extends Component{
               )
             ) : null}
           </div>
-          <button hidden={!this.state.selectedCardIndex && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
+          
+          <button hidden={!this.state.selectedCard && this.props.displayingCard} onClick = {this.submitCard}>Final Card</button> {/* Should be blurred out until they have selected a card */}
         </div>
 			)
 		}

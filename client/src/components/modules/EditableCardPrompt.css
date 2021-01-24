@@ -1,6 +1,6 @@
 .EditableCard-parent-prompt{
-    background-color: rgb(6, 20, 36);
+    background-color: hsl(20, 20, 20);
 }
 .EditableCard-textInput-prompt{ 
-    color: rgb(208, 215, 223);
+    color:white;
 }

@@ -32,7 +32,7 @@ class Judge extends Component {
     return (
       <>
         <PromptCardSelector gameID={this.props.gameID} />
-        {this.props.numThinkingPlayers === 0 ? <WinnerSelector gameID={this.props.gameID} /> : <p>Waiting for slowpokes</p>}
+        {this.props.numThinkingPlayers === 0 ? <WinnerSelector gameID={this.props.gameID} /> : null}
       </>
     );
   }

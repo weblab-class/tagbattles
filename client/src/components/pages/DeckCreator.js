@@ -17,7 +17,7 @@ import "./DeckCreator.css"
 class DeckCreator extends Component {
     constructor(props) {
       super(props);
-      this.MAX_CARD_LENGTH = 300;
+      this.MAX_CARD_LENGTH = 120;
       this.state = {
         error_message: "You need at least one card!",
         deck_name: "",
@@ -99,6 +99,10 @@ class DeckCreator extends Component {
         }
         if (this.state.deck_name.length < 4) {
             this.setState({error_message: "Deck name too short. Need at least 4 characters!"})
+            return ;
+        }
+        else if (this.state.deck_name.length > 35) {
+            this.setState({error_message: "Deck name too long."})
             return ;
         }
         else{ 
