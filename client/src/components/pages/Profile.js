@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities.js";
+import EditIcon from '../modules/icons/edit.js';
+import CloseButton from '../modules/icons/close.js';
+import ConfirmButton from "../modules/icons/confirm.js";
 import './Profile.css';
 
 //Icons
@@ -104,7 +107,33 @@ class Profile extends Component {
   }
 
   onBioChange = (e) => {
+    this.setState({
+      bio: e.target.value,
+    })
+  }
 
+  editBio = () => {
+    this.setState({
+      changingBio: true,
+    })
+  }
+
+  saveBio = () => {
+    post("/api/postNewBio", {userID: this.state.userID, bio: this.state.bio}).then((data) => {
+      this.setState({
+        changingBio: false,
+        bio: data.bio,
+      })
+    })
+  }
+
+  closeBioEdit = () => {
+    get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
+      this.setState({
+        bio: data.bio,
+        changingBio: false,
+      })
+    })
   }
 
   toggleLeftHat = () => {
@@ -216,30 +245,32 @@ class Profile extends Component {
         <div className = "Profile-bio-container">
           {this.state.userID === this.props.playerID?
             <>
+              <h2 className = "Profile-bio-title">Biography</h2>
+              <hr></hr>
+              <div className = "Profile-bio-edit-box">
+                {
+                  this.state.changingBio ? 
+                    <textarea className = "Profile-bio-text" type = "text" value = {this.state.bio} onChange = {this.onBioChange} placeholder = "Add a bio"/>
+                  :
+                    <p className = "Profile-bio-text">{this.state.bio}</p>
+                }
               <div className = "Profile-bio-icons">
                 {
                   this.state.changingBio ? 
                     <>
-                      <img src = "" alt = "close" className = "Profile-bio-icon"/>
-                      <img src = "" alt = "confirm" className = "Profile-bio-icon"/>
+                      <ConfirmButton func = {this.saveBio}/>
+                      <CloseButton func = {this.closeBioEdit}/>
                     </>
                   :
-                    <img src = "" alt = "edit" className = "Profile-bio-icon"/>
+                    <EditIcon func = {this.editBio}/>
                 }
               </div>
-              <h2>Biography</h2>
-              <div className = "Profile-bio-edit-box">
-                {
-                  this.state.changingBio ? 
-                    <input className = "Profile-bio-text" type = "text" value = {this.state.bio} onChange = {this.onBioChange}></input>
-                  :
-                    <p className = "Profile-bio-text">{this.state.bio}</p>
-                }
               </div>
             </>
           :
             <>
-              <h2>Biography</h2>
+              <h2 className = "Profile-bio-title">Biography</h2>
+              <hr></hr>
               <div className = "Profile-bio-edit-box">
                 <p className = "Profile-bio-text">{this.state.bio}</p>
               </div>

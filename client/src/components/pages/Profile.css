@@ -65,15 +65,29 @@
 }
 
 .Profile-bio-container{
-
+  width:40%;
+  position:relative;
 }
+
+.Profile-bio-title{
+  text-align:center;
+  margin:0;
+}
+
 .Profile-bio-edit-box{
+  width:100%;
 }
 .Profile-bio-text{
-
+  width:100%;
+  resize:none;
+  border-radius:8px;
 }
 .Profile-bio-icons{
   position: absolute;
+  display:flex;
+  flex-direction:row-reverse;
+  top:8px;
+  right:0px;
 }
 .Profile-bio-icon{
 
