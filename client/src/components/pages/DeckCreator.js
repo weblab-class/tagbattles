@@ -26,6 +26,21 @@ class DeckCreator extends Component {
       }
     }
 
+    componentDidMount() {
+			console.log("mounted");
+			get("/api/whoami").then(me => {
+				
+				this.setState({userID: me._id, userName: me.name});
+			});
+		}
+		componentDidUpdate() {
+			console.log("mounted");
+			get("/api/whoami").then(me => {
+				if (me.name !== this.state.userName)
+					this.setState({userID: me._id, userName: me.name});
+			});
+    }
+
     async isNameUnique(name) {
         console.log("eh")
         let res = await get("/api/isNameUnique", {name: name})
@@ -125,6 +140,14 @@ class DeckCreator extends Component {
 
 
     render() {
+			if (!this.state.userID) {
+				console.log("not logged in");
+				console.log(this.state.userID);
+				return (
+					<div className="DeckCreator-center">
+							<p className="">Cannot view this page until you log in!</p>
+					</div>)
+			}
       return (
         <>
             <div className="DeckCreator-deck-name-container">
