@@ -23,6 +23,9 @@ const createGame = (gameID) => {
     'gameID': gameID,
     'players' : [],
     'inactivePlayers' : [],
+    'host' : '',
+    'rounds' : 3,
+    'deck': 'Apples2Apples',
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,
@@ -49,6 +52,11 @@ const addPlayerToGame = (gameState, player) => {
     'responseCards' : gameState.isActive ? getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS) : null,
     'chosenResponse' : null,
   });
+  // Set player to host if only 1 player in game
+  if(gameState.players.length === 1){
+    console.log("Place 1:", player._id);
+    gameState.host = player._id;
+  }
   return gameState;
 }
 

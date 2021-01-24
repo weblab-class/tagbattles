@@ -44,7 +44,7 @@ class PlayerListItem extends Component {
         <div className = "PlayerListItem-player-info-container">
           <h3 className = "PlayerListItem-name-label">{this.props.player.name}</h3>
           <p className = "PlayerListItem-points-label">{this.props.player.points} points</p>
-          <span className = "PlayerListItem-label-icon">{this.props.player.type}</span>
+          <span className = "PlayerListItem-label-icon">{this.props.type}</span>
         </div>
       </div>
     )

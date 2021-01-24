@@ -64,9 +64,11 @@ const selectFinalResponse = (gameID, playerID, card) => {
 }
 
 const getNumberOfThinkingPlayers = (gameID) => {
-  const index = getParticularGameIndex(gameID)
+  const index = getParticularGameIndex(gameID);
   if (index !== -1) {
+    console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
     return logic.getNumberOfThinkingPlayers(allGames[index]);
+    
   }
   return -1;
 }
@@ -123,6 +125,12 @@ const addPlayerToGame = (gameID, player) => {
   }
   // If not add them to the game
   logic.addPlayerToGame(allGames[index], player)
+
+  // Set host if only one player
+  if(allGames[index].players.length === 1){
+    console.log("Place 2: ",player._id);
+    allGames[index].host = player._id;
+  }
   return 0;
 }
 
@@ -140,10 +148,27 @@ const removePlayerFromGame = (gameID, playerID) => {
       break;
     }
   }
-
   // Remove that player from the actives list.
+  console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
+  console.log('after', allGames[index]);
+
+  //Assign new host if player was host and game is still going
+  if(allGames[index].players.length > 0 && playerID === allGames[index].host){
+    console.log("Going into if statement");
+    console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
+    console.log(allGames[index].host);
+  }
   return 0;
+}
+
+const getHost = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  return allGames[index].host;
 }
 
 const incrementPlayerPoints = (gameID, winnerID) => {
@@ -196,6 +221,42 @@ const getLeaderboard = (gameID) => {
   return retList;
 }
 
+const updateGameRounds = (gameID, numRounds) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  allGames[index].rounds = numRounds;
+  console.log("gameIDadsgadsg:", gameID);
+  return allGames[index].rounds;
+}
+
+const updateGameDeck = (gameID, deck) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  allGames[index].deck = deck;
+  return allGames[index].deck;
+}
+
+const getGameDeck = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index===-1){
+    return;
+  }
+  return allGames[index].deck;
+}
+
+const getGameRounds = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index===-1){
+    return;
+  }
+  console.log("gameIDASD a:", gameID)
+  return allGames[index].rounds;
+}
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
@@ -213,4 +274,9 @@ module.exports = {
   addSettingsAndStart,
   getPlayerCards,
   getLeaderboard,
+  getHost,
+  updateGameRounds,
+  updateGameDeck,
+  getGameDeck,
+  getGameRounds,
 }

@@ -27,7 +27,7 @@ class HomePage extends Component {
           <Link to={"/play/" + this.state.gameID}>
             <button>Start Game</button>
           </Link>
-          <Link to={"/join/"}>
+          <Link to={"/play/"}>
             <button>Join Game</button>
           </Link>
         </>
