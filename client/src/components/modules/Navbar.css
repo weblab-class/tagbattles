@@ -27,8 +27,7 @@ nav{
 }
 
 .nav-logo{
-  display:table-cell;
-  vertical-align: middle;
+  height:60px;
 }
 
 .NavBar-link{

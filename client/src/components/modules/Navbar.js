@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "@reach/router";
 import GoogleLogin, { GoogleLogout } from "react-google-login";
 import { get, post } from "../../utilities";
+import Logo from './icons/logo.js';
 import "./Navbar.css";
 
 const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
@@ -36,7 +37,7 @@ class Navbar extends Component {
       <nav>
         <div className = "nav-logo">
           <Link to = "/" className = "NavBar-link">
-            <img src = "" alt = "Logo"/>
+            <Logo/>
           </Link>
         </div>
         <div className = "nav-links">
