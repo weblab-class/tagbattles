@@ -268,6 +268,16 @@ router.get("/getDeck", (req, res) => {
   res.send({deck: gameManager.getGameDeck(req.query.gameID)})
 })
 
+router.get("/getChatMessages", (req, res) => {
+  res.send({chat: gameManager.getChat(req.query.gameID)});
+})
+
+router.post("/postChatMessage", (req, res) => {
+  gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
+  res.send({message: req.body.message});
+})
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

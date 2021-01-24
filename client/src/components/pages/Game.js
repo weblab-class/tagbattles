@@ -25,6 +25,7 @@ class Game extends Component {
         host: "",
         currentState: null,
         leaderboard: null,
+        chats: [],
         joinedGame: false,
         displayPlayerError: false,
         rounds: 3,
@@ -46,7 +47,7 @@ class Game extends Component {
           'rounds' : this.state.rounds,
           'decks' : [this.state.deck],
         }).then((data) =>{
-          console.log("started game");
+          //console.log("started game");
         })
       }
       else{
@@ -58,7 +59,7 @@ class Game extends Component {
 
     listenToServer = () => {
       socket.off("gameUpdate").on("gameUpdate", data => {
-        console.log(data);
+        //console.log(data);
         switch(data.type) {
           case "playerList":
             this.setState({
@@ -67,7 +68,7 @@ class Game extends Component {
             });
             break;
           case "judgeUpdate":
-            console.log(data.judgeID);
+            //console.log(data.judgeID);
             if (this.state.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
@@ -88,36 +89,43 @@ class Game extends Component {
             })
             break;
           case "gameEnded":
-            console.log("Game has ended");
-            console.log("leaderboard: ", data.leaderboard);
+            //console.log("Game has ended");
+            //console.log("leaderboard: ", data.leaderboard);
             this.setState({
               currentState: "gameEnd",
               leaderboard: data.leaderboard,
             })
             break;
           case "updateHost":
-            console.log("Host Updated");
-            console.log(data.host);
+            //console.log("Host Updated");
+            //console.log(data.host);
             this.setState({
               host: data.host,
             })
             break;
           case "roundsUpdate":
-            console.log("Rounds Updated");
-            console.log(data.rounds);
+            //console.log("Rounds Updated");
+            //console.log(data.rounds);
             this.setState({
               rounds: data.rounds,
             });
             break;
           case "deckUpdate":
-            console.log("Deck Updated");
-            console.log(data.deck);
+            //console.log("Deck Updated");
+            //console.log(data.deck);
             this.setState({
               deck: data.deck,
             })
             break;
+          case "chatUpdate":
+            this.setState((prevState) => {
+              return {
+                chats: prevState.chats.concat(data.chat),
+              }
+            })
+            break;
           default:
-            console.log("Missing event");
+            console.log("Missing event: ",  data.type);
             break;
         }
       });
@@ -129,23 +137,29 @@ class Game extends Component {
         if (!me) return console.log("WTF YOU SHOULD HAVE LOGGED IN");
         this.setState({userID: me._id, userName: me.name});
         if (me._id) {
+          console.log("Nameasdhdsahd:", me.name);
           post("/api/test", {socketid:socket.id}).then((data) => {
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
-              console.log('starting game')
+              //console.log('starting game')
               post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
-                console.log('made game');
+                //console.log('made game');
                 this.setState({
                   joinedGame:true
                 });
                 get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
-                  console.log("ROUNDSAFDSF: ",roundsData.rounds);
                   this.setState({
                     rounds: roundsData.rounds,
                   })
                   get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
-                    console.log("DECKASDF:",deckData.deck);
                     this.setState({
                       deck: deckData.deck,
+                    })
+                    console.log("Mounting Chat");
+                    get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
+                      console.log(data.chat);
+                      this.setState({
+                        chats: chatData.chat,
+                      })
                     })
                   })
                 })
@@ -159,20 +173,20 @@ class Game extends Component {
     }
     
     handleLogin = (res) => {
-      console.log(`Logged in as ${res.profileObj.name}`);
+      //console.log(`Logged in as ${res.profileObj.name}`);
       const userToken = res.tokenObj.id_token;
       post("/api/login", { token: userToken }).then(async (user) => {
         this.setState({ userID: user._id, userName: user.name});
-        console.log(this.state.userID);
+        //console.log(this.state.userID);
         post("/api/initsocket", { socketid: socket.id }).then(() => {
-          console.log("hey in initsocket");
+          //console.log("hey in initsocket");
           post("/api/test", {socketid:socket.id}).then(() => {
-            console.log("in test");
+            //console.log("in test");
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
-              console.log("in init"); this.listenToServer();
-              console.log('starting game')
+              //console.log("in init"); this.listenToServer();
+              //console.log('starting game')
               post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.state.userID, name: this.state.userName}}).then((res) => {
-                console.log('made game');
+                //console.log('made game');
                 this.setState({
                   joinedGame:true
                 });
@@ -184,7 +198,7 @@ class Game extends Component {
     }
 
     render() {
-      console.log("USER ID IS ", this.state.userID);
+      //console.log("USER ID IS ", this.state.userID);
       if (!this.state.userID) {
         return (
         <div>
@@ -217,6 +231,8 @@ class Game extends Component {
             gameID = {this.state.gameID}
             rounds = {this.state.rounds}
             deck = {this.state.deck}
+            userName = {this.state.userName}
+            chats = {this.state.chats}
           />}
         </div>
       );
