@@ -250,7 +250,7 @@ class Game extends Component {
           {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
           {console.log("PLAYERS IN THE GAME: ",this.state.players)}
           {this.state.currentState === 'fullGame' ? 
-            <h1>Game is Full</h1>
+            <h1 className = "Game-game-full">Game is Full</h1>
           :
             <>
               <div className = "Game-main-container">
