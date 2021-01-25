@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { get, post } from "../../utilities";
+import CopyToClipboard from './CopyToClipboard.js';
 import './Settings.css';
 // import cards from "../../../../a_lot_of_cards.js";
 
@@ -66,6 +67,7 @@ class Settings extends Component {
       <div className = "Settings-settings-side">
         <h1 className = "Settings-container-label">Settings</h1>
         <div className = "Settings-settings-container">
+          <CopyToClipboard gameCode = {this.props.gameID}/>
           <h4 className = "Settings-settings-label">Rounds</h4>
           {this.props.host?
           <select value = {this.props.rounds} name = "rounds-select" onChange = {this.onRoundsChange}>

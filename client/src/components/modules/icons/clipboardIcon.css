@@ -1,0 +1,16 @@
+.ClipboardIcon-styling{
+  width:15px;
+  height:15px;
+}
+
+.ClipboardIcon-styling:hover{
+  fill:rgb(200,200,200);
+}
+
+.ClipboardIcon-container{
+  display:flex;
+  position:absolute;
+  right:0;
+  flex-direction:column;
+  justify-content:center;
+}
