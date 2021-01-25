@@ -12,3 +12,8 @@
   flex-direction:column;
   align-items:center;
 }
+
+.ResponseSelector-submitButton{
+  margin: auto;
+  margin-top: 25px;
+}
