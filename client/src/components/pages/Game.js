@@ -163,7 +163,7 @@ class Game extends Component {
       console.log(socket);
       
       if (this.props.userID) {
-        console.log("Nameasdhdsahd:", this.props.userName);
+        console.log("Game.js Nameasdhdsahd:", this.props.userName);
         post("/api/test", {socketid:socket.id}).then((data) => {
           post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
             //console.log('starting game')

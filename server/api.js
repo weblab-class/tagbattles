@@ -40,8 +40,9 @@ router.get("/whoami", (req, res) => {
     // not logged in
     return res.send({});
   }
-
-  res.send(req.user);
+  User.findOne({_id: req.user._id}).then((user) => {
+    res.send(user);
+  });
 });
 
 router.post("/initsocket", (req, res) => {
@@ -49,8 +50,10 @@ router.post("/initsocket", (req, res) => {
   console.log("reached init socket")
   if (req.user) {
     console.log("HELLOOOO", req.body.socketid);
-    console.log(req.user); console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
-    socketManager.addUser(req.user, socketManager.getSocketFromSocketID(req.body.socketid));
+    User.findOne({_id: req.user._id}).then((user) => {
+      console.log("INITSOCKET USER: ", user); console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
+      socketManager.addUser(user, socketManager.getSocketFromSocketID(req.body.socketid));
+    })
   }
   res.send({});
 });
@@ -71,13 +74,14 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
   console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
   const socket = await socketManager.getSocketFromSocketID(req.body.socketid);
   if (socket) await socket.join(req.body.gameID, async () => {
+    User.findOne({_id: req.user._id}).then(async (user) => {
+      await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${user.name} has joined!`, "type":"playerJoined"});
+      console.log("INITGAMESOCKET USER: ",user);
+      socketManager.addUserToRoom(user, req.body.gameID);
 
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`, "type":"playerJoined"});
-
-    socketManager.addUserToRoom(req.user, req.body.gameID);
-
-    await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
-      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => socketManager.getUserFromSocketID(socketid))});
+      await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
+        socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
+      });
     });
   });
   res.send({});
@@ -89,11 +93,13 @@ router.post("/test", (req, res) => {
 })
 
 router.post("/testingsocket", auth.ensureLoggedIn, async (req, res) => {
-  let socket = await socketManager.getSocketFromUserID(req.user._id);
-  console.log(socket.rooms);
-  console.log(req.body.gameID);
-  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg":"hey man"});
-  res.send({});
+  User.findOne({_id: req.user._id}).then(async (user) => {
+    let socket = await socketManager.getSocketFromUserID(user._id);
+    console.log(socket.rooms);
+    console.log(req.body.gameID);
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg":"hey man"});
+    res.send({});
+  })
 });
 
 
@@ -151,7 +157,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   // If the game currently has nobody in it, we will call createGame
   console.log('started game creation')
   await gameManager.createGameIfNonExistant(req.body.gameID);
-  console.log("created game")
+  console.log(`created game for ${req.body.player.name}`)
   
   await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
@@ -204,8 +210,8 @@ router.post('/createDeck', (req, res) => {
 // player info
 
 router.get("/getPlayer", (req, res) => {
-  User.find({_id: req.query.userID}).then((player) => {
-    res.send(player[0]);
+  User.findOne({_id: req.query.userID}).then((player) => {
+    res.send(player);
   })
 })
 
