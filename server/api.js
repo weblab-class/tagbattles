@@ -47,11 +47,11 @@ router.get("/whoami", (req, res) => {
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
-  console.log("reached init socket")
+  //console.log("reached init socket")
   if (req.user) {
-    console.log("HELLOOOO", req.body.socketid);
+    //console.log("HELLOOOO", req.body.socketid);
     User.findOne({_id: req.user._id}).then((user) => {
-      console.log("INITSOCKET USER: ", user); console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
+      //console.log("INITSOCKET USER: ", user); //console.log(socketManager.getSocketFromSocketID(req.body.socketid).id);
       socketManager.addUser(user, socketManager.getSocketFromSocketID(req.body.socketid));
     })
   }
@@ -71,14 +71,14 @@ router.get("/newGameID", (req, res) => {
 
 
 router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
-  console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
+  //console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
   const socket = await socketManager.getSocketFromSocketID(req.body.socketid);
   if (socket) await socket.join(req.body.gameID, async () => {
     User.findOne({_id: req.user._id}).then(async (user) => {
       await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${user.name} has joined!`, "type":"playerJoined"});
-      console.log("INITGAMESOCKET USER: ",user);
+      //console.log("INITGAMESOCKET USER: ",user);
       socketManager.addUserToRoom(user, req.body.gameID);
-
+      
       await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
         socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
       });
@@ -88,15 +88,15 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
 });
 
 router.post("/test", (req, res) => {
-  console.log("HEY MANNN");
+  //console.log("HEY MANNN");
   res.send({socketid: req.body.socketid});
 })
 
 router.post("/testingsocket", auth.ensureLoggedIn, async (req, res) => {
   User.findOne({_id: req.user._id}).then(async (user) => {
     let socket = await socketManager.getSocketFromUserID(user._id);
-    console.log(socket.rooms);
-    console.log(req.body.gameID);
+    //console.log(socket.rooms);
+    //console.log(req.body.gameID);
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg":"hey man"});
     res.send({});
   })
@@ -120,7 +120,7 @@ router.get('/getSubmittedResponses', auth.ensureLoggedIn, async (req, res) => {
 });
 
 router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res) => {
-  console.log("reached api");
+  //console.log("reached api");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
     const newJudge = await gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
@@ -137,16 +137,16 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
 });
 
 router.post('/selectTentativeWinner', auth.ensureLoggedIn, async (req, res) => {
-  console.log("reached api");
+  //console.log("reached api");
   const response = gameManager.getChosenResponse(req.body.gameID, req.body.playerID);
   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": response});
 });
 
 router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
-  console.log('submitted card', req.body.cardIndex);
+  //console.log('submitted card', req.body.cardIndex);
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.cardIndex);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
-  console.log("in server thinking players", numberOfThinkingPlayers);
+  //console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
   res.send({});
@@ -155,19 +155,15 @@ router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
 // Also creates game. HAX
 router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   // If the game currently has nobody in it, we will call createGame
-  console.log('started game creation')
+  //console.log('started game creation')
   await gameManager.createGameIfNonExistant(req.body.gameID);
-  console.log(`created game for ${req.body.player.name}`)
+  //console.log(`created game for ${req.body.player.name}`)
   
-  if(gameManager.getPlayerList.length < 10){
-    await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
-    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
-    console.log("added player to game")
-    res.send({status: "Success"});
-  }
-  else{
-    res.send({status: "Game Full"});
-  }
+  await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name});
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
+  //console.log("added player to game")
+  res.send({});
 })
 
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
@@ -209,7 +205,7 @@ router.post('/createDeck', (req, res) => {
     prompt_cards : req.body.prompt_cards,
     response_cards: req.body.response_cards,
   })
-  newDeck.save().then(()=> {res.send({}); console.log("added deck")})
+  newDeck.save().then(()=> {res.send({});});
   res.send({})
 })
 // player info
@@ -229,7 +225,7 @@ router.get("/getName", (req, res) => {
 router.post("/setPlayerHat", (req, res) => {
   User.updateOne({_id: req.body.userID}, {hatID: req.body.hatID}).then((data)=>{
     User.find({_id: req.body.userID}).then((user) => {
-      console.log(user);
+      //console.log(user);
       res.send(user[0]);
     })
   });
@@ -238,7 +234,7 @@ router.post("/setPlayerHat", (req, res) => {
 router.post("/setPlayerColor", (req,res) => {
   User.updateOne({_id: req.body.userID}, {colorID: req.body.colorID}).then((data)=>{
     User.find({_id: req.body.userID}).then((user) => {
-      console.log(user);
+      //console.log(user);
       res.send(user[0]);
     })
   });
@@ -247,7 +243,7 @@ router.post("/setPlayerColor", (req,res) => {
 router.post("/setPlayerMouth", (req,res) => {
   User.updateOne({_id: req.body.userID}, {mouthID: req.body.mouthID}).then((data)=>{
     User.find({_id: req.body.userID}).then((user) => {
-      console.log(user);
+      //console.log(user);
       res.send(user[0]);
     })
   });
@@ -256,7 +252,7 @@ router.post("/setPlayerMouth", (req,res) => {
 router.post("/setPlayerEye", (req,res) => {
   User.updateOne({_id: req.body.userID}, {eyeID: req.body.eyeID}).then((data)=>{
     User.find({_id: req.body.userID}).then((user) => {
-      console.log(user);
+      //console.log(user);
       res.send(user[0]);
     })
   });
@@ -273,7 +269,7 @@ router.post("/incrementPlayerWins", (req, res) => {
       })
     }
   }).catch((error)=>{
-    console.log(error);
+    //console.log(error);
     res.send({});
   })
 })
@@ -304,16 +300,16 @@ router.get("/getChatMessages", (req, res) => {
 
 router.post("/postChatMessage", async (req, res) => {
   await gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
-  console.log("Current Chat: ", gameManager.getChat(req.body.gameID));
+  // console.log("Current Chat: ", gameManager.getChat(req.body.gameID));
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
-  console.log("message: ", req.body.message);
+  //console.log("message: ", req.body.message);
   res.send({message: req.body.message});
 })
 
 router.post("/postNewBio", (req, res) => {
   User.updateOne({_id: req.body.userID}, {bio: req.body.bio}).then((data) => {
     User.find({_id: req.body.userID}).then((user) => {
-      console.log(user);
+      //console.log(user);
       res.send({bio: user[0].bio});
     })
   })
@@ -321,7 +317,7 @@ router.post("/postNewBio", (req, res) => {
 
 router.get("/getBio", (req, res) => {
   User.find({_id: req.body.userID}).then((user) => {
-    console.log(user);
+    //console.log(user);
     res.send({bio: user[0].bio});
   })
 })
@@ -348,7 +344,7 @@ router.get("/getBio", (req, res) => {
 })*/
 
 router.post("/postNewName", (req, res) => {
-  console.log("ASDGDASGAD:", req.body.name, req.body.userID);
+  //console.log("ASDGDASGAD:", req.body.name, req.body.userID);
   User.updateOne({_id: req.body.userID}, {name: req.body.name}).then((a) => {
     User.find({_id: req.body.userID}).then((user)=>{
       res.send({newUser: user[0]});
@@ -358,7 +354,7 @@ router.post("/postNewName", (req, res) => {
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
-  console.log(`API route not found: ${req.method} ${req.url}`);
+  //console.log(`API route not found: ${req.method} ${req.url}`);
   res.status(404).send({ msg: "API route not found" });
 });
 

@@ -157,18 +157,19 @@ const removePlayerFromGame = (gameID, playerID) => {
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
-    player.chosenResponse = null;
-    if (playerID=== player._id) {
+    // player.chosenResponse = null;
+    if (playerID === player._id) {
       // Set that player to active
       allGames[index].inactivePlayers.push(player);
+      player.chosenResponse = null;
       break;
     }
   }
-  console.log('removed player')
+  console.log('removed player', i)
   // Remove that player from the actives list.
-  console.log('before', allGames[index]);
+  console.log('before', allGames[index].players);
   allGames[index].players.splice(i, 1);
-  console.log('after', allGames[index]);
+  console.log('after', allGames[index].players);
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
@@ -293,10 +294,10 @@ const getChat = (gameID) => {
 const getPlayerList = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
-    return;
+    return [];
   }
   console.log(allGames[index].players);
-  return allGames[index].players;
+  return allGames[index].players || [];
 }
 
 module.exports = {
