@@ -129,6 +129,10 @@ class Game extends Component {
               }
             })
             break;
+          case "leaderboard":
+            this.setState({
+              leaderboard: data.leaderboard,
+            })
           default:
             console.log("Missing event: ",  data.type);
             break;
@@ -261,6 +265,8 @@ class Game extends Component {
               host = {this.state.host}
               stage = {this.state.currentState}
               judgeID = {this.state.judgeID}
+              leaderboard = {this.state.leaderboard}
+              playerID = {this.state.userID}
             />
             <GameChat
               userID = {this.state.userID}
