@@ -119,6 +119,7 @@ class Game extends Component {
             });
             break;
           case "reset":
+            console.log("reset state")
             this.setState({
               currentPlayerState: 0,
             })

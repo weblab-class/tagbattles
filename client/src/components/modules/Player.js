@@ -70,7 +70,7 @@ class Player extends Component {
               />
             :
               <div className="Player-container">
-              (this.props.tentativeWinner ? 
+              {(this.props.tentativeWinner ? 
               <Card 
                 text={this.props.tentativeWinner}
                 selectCard = { () => {console.log("this does nothing lol")}}
@@ -78,7 +78,7 @@ class Player extends Component {
               <Card 
                 text="As the host clicks through cards, they will show up here. May your card be the favorite!"
                 selectCard = { () => {console.log("this does nothing lol")}}
-              /> )
+              /> )}
               </div>
             }
           </>

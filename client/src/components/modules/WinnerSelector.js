@@ -17,6 +17,7 @@ class WinnerSelector extends Component{
       this.state = {
         playerCards: [],
         selectedPlayer: null,
+        selectWinner: false,
       }
     }
     
@@ -24,10 +25,17 @@ class WinnerSelector extends Component{
       console.log("selecting winner");
       console.log("gameID: ", this.props.gameID);
       console.log("WinnerID: ", this.state.selectedPlayer);
+      this.setState({
+        selectWinner : true,
+      })
       post("/api/selectWinnerAndUpdateJudge", {gameID: this.props.gameID, winnerID: this.state.selectedPlayer}).catch((e) => {
         console.log("selected winner");
         console.log(e);
-      });;
+      }).then(() => {
+        this.setState({
+          selectWinner: false,
+        })
+      })
     }
 
     selectCard = (playerID) => {
@@ -76,7 +84,7 @@ class WinnerSelector extends Component{
               )
             ) : null}
           </div>
-          <button hidden={!this.state.selectedPlayer} onClick = {this.selectWinner}>Final Card</button>
+          <button hidden={!this.state.selectedPlayer && !this.state.submittedPlayer} onClick = {this.selectWinner}>Final Card</button>
         </div>
 			)
 		}
