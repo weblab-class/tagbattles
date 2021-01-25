@@ -1,0 +1,14 @@
+.Logo-styling{
+  height:60px;
+  width:60px;
+}
+
+.Logo-styling:hover{
+
+}
+
+.Logo-container{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}

@@ -8,6 +8,8 @@ import './PlayerList.css';
  * Proptypes
  * @param {array} players to display
  * @param {String} host
+ * @param {String} stage (ingame or lobby)
+ * @param {String} judgeID
  */
 class PlayerList extends Component {
   constructor(props){
@@ -22,7 +24,12 @@ class PlayerList extends Component {
         <PlayerListItem 
           key = {player._id}
           player = {player}
-          type = {this.props.host === player._id ? "Host" : "Player"}
+          stage = {this.props.stage}
+          label = {this.props.stage ? 
+            (this.props.judgeID === player._id ? "Judge" : "Player")
+          :
+            (this.props.host === player._id ? "Host" : "Player")
+          }
         />
       )
     }
