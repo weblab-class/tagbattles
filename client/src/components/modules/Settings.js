@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import Select from 'react-select';
+
 import { get, post } from "../../utilities";
 import CopyToClipboard from './CopyToClipboard.js';
 import './Settings.css';
@@ -62,6 +64,7 @@ class Settings extends Component {
 
   render() {
     console.log("joinedGame", this.props.joinedGame);
+    console.log(this.state.decks);
     const rounds = [2,3,4,5,6,7,8,9,10];
     return (
       <div className = "Settings-settings-side">
@@ -77,10 +80,19 @@ class Settings extends Component {
             <p className = "Settings-settings-value">{this.props.rounds}</p>
           }
           <h4 className = "Settings-settings-label">Deck</h4>
+          {/*<select value = {this.props.deck} name = "deck-select" onChange = {this.onDeckChange}>
+            {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
+          </select>*/}
           {this.props.host?
-            <select value = {this.props.deck} name = "deck-select" onChange = {this.onDeckChange}>
-              {this.state.decks.map((deck) => <option key = {deck} value = {deck}>{deck}</option>)}
-            </select>
+            <Select 
+              defaultValue = {[this.state.decks[0]]}
+              isMulti
+              name = "Decks"
+              isSearchable
+              placeholder="Select Decks to Use"
+              options = {this.state.decks.map((deck) => {return {value: deck, label: deck}})}
+              className = "Settings-decks-selector"
+            />
           :
             <p className = "Settings-settings-value">{this.props.deck}</p>
           }

@@ -43,6 +43,15 @@
   cursor:pointer;
 }
 
+.Settings-settings-label{
+  margin:10px;
+}
+
+.Settings-decks-selector{
+  margin:0;
+  border-radius:5px;
+}
+
 .Settings-error{
   color:red;
 }
