@@ -45,8 +45,9 @@ class App extends Component {
   handleLogin = (res) => {
     console.log(`Logged in as ${res.profileObj.name}`);
     const userToken = res.tokenObj.id_token;
+    console.log("logged in")
     post("/api/login", { token: userToken }).then((user) => {
-      this.setState({ userId: user._id });
+      this.setState({ userId: user._id, userName: user.name});
       post("/api/initsocket", { socketid: socket.id }).catch((e)=>console.log(e));
     }).catch((e)=>console.log(e));
   };
@@ -81,9 +82,9 @@ class App extends Component {
             userId={this.state.userId}
           />
           {/* <GameSettings path="/play" /> */}
-          <Game path="/play/:gameID" gameID = {this.state.gameID}/>
+          <Game key={this.state.userId + "a"} userID={this.state.userId} userName={this.state.userName} path="/play/:gameID" gameID = {this.state.gameID}/>
           <JoinGame path = "/play/"/>
-          <DeckCreator path="/create" />
+          <DeckCreator key={this.state.userId + "a"} userID={this.state.userId} userName={this.state.userName} path="/create"/>
           <Profile path = "/profile/:playerID"/>
           <NotFound default />
         </Router>

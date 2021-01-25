@@ -73,7 +73,7 @@ class Game extends Component {
             break;
           case "judgeUpdate":
             //console.log(data.judgeID);
-            if (this.state.userID === data.judgeID) {
+            if (this.props.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
                 judgeID: data.judgeID,
@@ -155,46 +155,46 @@ class Game extends Component {
     }
 
     async componentDidMount() {
+      this.handleMount();
+    }
+    
+    handleMount = async () => {
       console.log(socket);
-      await get("/api/whoami").then(me => {
-        if (!me) return console.log("WTF YOU SHOULD HAVE LOGGED IN");
-        this.setState({userID: me._id, userName: me.name});
-        if (me._id) {
-          console.log("Nameasdhdsahd:", me.name);
-          post("/api/test", {socketid:socket.id}).then((data) => {
-            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
-              //console.log('starting game')
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : me._id, name: me.name}}).then((res) => {
-                //console.log('made game');
+      
+      if (this.props.userID) {
+        console.log("Nameasdhdsahd:", this.props.userName);
+        post("/api/test", {socketid:socket.id}).then((data) => {
+          post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
+            //console.log('starting game')
+            post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
+              //console.log('made game');
+              this.setState({
+                joinedGame:true
+              });
+              get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
                 this.setState({
-                  joinedGame:true
-                });
-                get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
+                  rounds: roundsData.rounds,
+                })
+                get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
                   this.setState({
-                    rounds: roundsData.rounds,
+                    deck: deckData.deck,
                   })
-                  get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
+                  console.log("Mounting Chat");
+                  get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
+                    console.log(data.chat);
                     this.setState({
-                      deck: deckData.deck,
-                    })
-                    console.log("Mounting Chat");
-                    get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
-                      console.log(data.chat);
-                      this.setState({
-                        chats: chatData.chat,
-                      })
+                      chats: chatData.chat,
                     })
                   })
                 })
-              });
-            })
-          });
-        }
-      });
+              })
+            });
+          })
+        });
+      }
       
-      this.listenToServer();      
+      this.listenToServer();   
     }
-    
     
     handleLogin = (res) => {
       //console.log(`Logged in as ${res.profileObj.name}`);
@@ -209,7 +209,7 @@ class Game extends Component {
             post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
               //console.log("in init"); this.listenToServer();
               //console.log('starting game')
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.state.userID, name: this.state.userName}}).then((res) => {
+              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
                 //console.log('made game');
                 this.setState({
                   joinedGame:true
@@ -222,8 +222,9 @@ class Game extends Component {
     }
 
     render() {
-      //console.log("USER ID IS ", this.state.userID);
-      if (!this.state.userID) {
+      console.log("USER ID IS ", this.props.userID);
+      
+      if (!this.props.userID) {
         return (
         <div>
             Please Log in.
@@ -238,7 +239,7 @@ class Game extends Component {
                 <Judge 
                   numThinkingPlayers = {this.state.numThinkingPlayers} 
                   gameID = {this.state.gameID} 
-                  userID = {this.state.userID}
+                  userID = {this.props.userID}
                 />
               : 
                 (this.state.currentState === "gameEnd" ? 
@@ -250,7 +251,7 @@ class Game extends Component {
                     setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
                     displayCard = {this.state.displayCard} 
                     tentativeWinner={this.state.tentativeWinner}
-                    userID = {this.state.userID}/>
+                    userID = {this.props.userID}/>
                 )
               ) 
             : 
@@ -261,11 +262,11 @@ class Game extends Component {
                 joinedGame = {this.state.joinedGame}
                 displayPlayerError = {this.state.displayPlayerError}
                 host = {this.state.host}
-                userID = {this.state.userID}
+                userID = {this.props.userID}
                 gameID = {this.state.gameID}
                 rounds = {this.state.rounds}
                 deck = {this.state.deck}
-                userName = {this.state.userName}
+                userName = {this.props.userName}
                 chats = {this.state.chats}
               />
             }
@@ -277,12 +278,12 @@ class Game extends Component {
               stage = {this.state.currentState}
               judgeID = {this.state.judgeID}
               leaderboard = {this.state.leaderboard}
-              playerID = {this.state.userID}
+              playerID = {this.props.userID}
             />
             <GameChat
-              userID = {this.state.userID}
+              userID = {this.props.userID}
               gameID = {this.state.gameID}
-              userName = {this.state.userName}
+              userName = {this.props.userName}
               chats = {this.state.chats}
             />
           </div>

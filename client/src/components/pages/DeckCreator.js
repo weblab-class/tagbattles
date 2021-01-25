@@ -26,19 +26,7 @@ class DeckCreator extends Component {
       }
     }
 
-    componentDidMount() {
-			get("/api/whoami").then(me => {
-				
-				if (me.name !== this.state.userName)
-					this.setState({userID: me._id, userName: me.name});
-			});
-		}
-		componentDidUpdate() {
-			get("/api/whoami").then(me => {
-				if (me.name !== this.state.userName)
-					this.setState({userID: me._id, userName: me.name});
-			});
-    }
+    
 
     async isNameUnique(name) {
         let res = await get("/api/isNameUnique", {name: name})
@@ -138,7 +126,7 @@ class DeckCreator extends Component {
 
 
     render() {
-			if (!this.state.userID) {
+			if (!this.props.userID) {
 				return (
 					<div className="DeckCreator-center">
 							<p className="">Cannot view this page until you log in!</p>
