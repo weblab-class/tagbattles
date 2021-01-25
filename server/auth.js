@@ -26,7 +26,7 @@ function getOrCreateUser(user) {
       console.log("EXISTING USER: ",existingUser);
       return existingUser;
     }
-    User.findOne({ name: user.name }).then((prevUser)=>{
+    return User.findOne({ name: user.name }).then((prevUser)=>{
       if(prevUser){
         user.name += nums[Math.floor(Math.random()*10)];
         user.name += nums[Math.floor(Math.random()*10)];
