@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import { get, post } from "../../utilities.js";
 import './JoinGame.css';
 
@@ -35,13 +35,27 @@ class JoinGame extends Component{
     })
   }
 
+  handleEnterKey = (e) => {
+    console.log("Key Pressed!");
+    if(e.keyCode == 13 && e.shiftKey == false){
+      console.log("Enter detected");
+      if(this.state.incorrectCode){
+        this.handleClick();
+      }
+      else{
+        e.preventDefault();
+        navigate(`/play/${e.target.value}`)
+      }
+    }
+  }
+
   render(){
     return(
       <div className = "JoinGame-container">
         <div className = "JoinGame-window">
           <h1>Join Game</h1>
           <div>
-            Game Code: <input type="text" onChange = {(event)=>this.handleChange(event)}></input>
+            Game Code: <input type="text" onKeyDown = {this.handleEnterKey} onChange = {(event)=>this.handleChange(event)}></input>
             <p className = "JoinGame-error-message" hidden = {!this.state.displayError}>Please enter a valid game code.</p>
             {
               this.state.incorrectCode?
