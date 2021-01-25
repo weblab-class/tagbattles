@@ -74,10 +74,10 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
 
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${req.user.name} has joined!`, "type":"playerJoined"});
 
-    socketManager.addUserToRoom(req.user, req.body.gameID);
-
+    await socketManager.addUserToRoom(req.user, req.body.gameID);
+    await gameManager.addPlayerToGame(req.body.gameID, req.user);
     await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
-      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:clients.map(socketid => socketManager.getUserFromSocketID(socketid))});
+      socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players:gameManager.getPlayers(req.body.gameID)});
     });
   });
   res.send({});

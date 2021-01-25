@@ -290,6 +290,14 @@ const getChat = (gameID) => {
   return allGames[index].chat;
 }
 
+const getPlayers = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if (index === -1) {
+    return;
+  }
+  return allGames[index].players;
+}
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
@@ -315,4 +323,5 @@ module.exports = {
   getGameRounds,
   addToChat,
   getChat,
+  getPlayers,
 }

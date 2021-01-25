@@ -156,11 +156,12 @@ class Game extends Component {
     }
 
     async componentDidMount() {
-      this.handleMount();
+      console.log("GAME ID IS ", this.state.gameID);
+      await this.handleMount();
     }
     
     handleMount = async () => {
-      console.log(socket);
+      console.log("SOCKET ID IS ", socket);
       
       if (this.props.userID) {
         console.log("Nameasdhdsahd:", this.props.userName);
@@ -222,7 +223,7 @@ class Game extends Component {
       });
     }
     componentWillUnmount() {
-      socket.disconnect();
+      //socket.disconnect();
     }
     render() {
       console.log("USER ID IS ", this.props.userID);
