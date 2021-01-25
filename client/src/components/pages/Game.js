@@ -226,7 +226,7 @@ class Game extends Component {
     }
     render() {
       console.log("USER ID IS ", this.props.userID);
-      
+      console.log("User Name is: ", this.props.userName);
       if (!this.props.userID) {
         return (
         <div>
@@ -271,7 +271,6 @@ class Game extends Component {
                 rounds = {this.state.rounds}
                 deck = {this.state.deck}
                 userName = {this.props.userName}
-                chats = {this.state.chats}
               />
             }
           </div>

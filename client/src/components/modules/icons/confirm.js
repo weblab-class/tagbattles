@@ -3,11 +3,16 @@ import React from 'react';
 import './confirm.css';
 import './iconstyles.css';
 
+/**
+ * Props:
+ * @param {Function} func
+ * @param {String} location 
+ */
 const ConfirmButton = (props) => {
   return (
     <div onClick = {props.func}>
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-        width="1108.7px" height="805.6px" viewBox="0 0 1108.7 805.6" className = "Confirm-styling Icon-icon-styling">
+        width="1108.7px" height="805.6px" viewBox="0 0 1108.7 805.6" className = {props.location === 'name' ? "Confirm-styling-name" : "Confirm-styling Icon-icon-styling"}>
       <defs>
       </defs>
       <g>

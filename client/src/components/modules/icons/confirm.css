@@ -7,3 +7,14 @@
   fill:rgb(107, 235, 91);
   cursor:pointer;
 }
+
+.Confirm-styling-name{
+  height:40px;
+  width:40px;
+  fill:rgb(25,216,34);
+}
+
+.Confirm-styling-name:hover{
+  fill:rgb(107,235,91);
+  cursor:pointer;
+}

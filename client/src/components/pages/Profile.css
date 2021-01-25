@@ -75,10 +75,57 @@
   margin:0;
 }
 
+.Profile-username-input{
+  font-family: "Source Serif Pro", arial, sans-serif;
+  width:90%;
+  height:50px;
+  margin-top:35px;
+  margin-bottom:27px;
+  font-size:50px;
+  font-weight:500;
+  text-align:center;
+}
+
+.Profile-username-container{
+  width:70%;
+  max-width:500px;
+}
+
+.Profile-username-editor{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  width:100%;
+}
+
+.Profile-username-icons-close{
+  position:absolute;
+  right:-60px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+
+.Profile-username-icons-edit{
+  position:absolute;
+  right:0px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+
+.Profile-error-message{
+  margin:0;
+  color:red;
+}
+
 .Profile-bio-edit-box{
   width:100%;
 }
 .Profile-bio-text-edit{
+  font-family: "Source Serif Pro", arial, sans-serif;
   width:100%;
   resize:none;
   border-radius:8px;

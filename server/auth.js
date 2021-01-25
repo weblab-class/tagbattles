@@ -1,6 +1,7 @@
 const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const socketManager = require("./server-socket");
+const nums = ['0', '1','2','3','4','5','6','7','8','9'];
 
 // create a new OAuth client used to verify google sign-in
 //    TODO: replace with your own CLIENT_ID
@@ -22,23 +23,37 @@ function getOrCreateUser(user) {
   // the "sub" field means "subject", which is a unique identifier for each user
   return User.findOne({ googleid: user.sub }).then((existingUser) => {
     if (existingUser){
-      console.log(existingUser);
+      console.log("EXISTING USER: ",existingUser);
       return existingUser;
     }
+    User.findOne({ name: user.name }).then((prevUser)=>{
+      if(prevUser){
+        user.name += nums[Math.floor(Math.random()*10)];
+        user.name += nums[Math.floor(Math.random()*10)];
+        user.name += nums[Math.floor(Math.random()*10)];
+      }
 
-    const newUser = new User({
-      name: user.name,
-      googleid: user.sub,
-      hatID: 0,
-      mouthID: 0,
-      colorID: 0,
-      eyeID: 0,
-      bio: "",
-      favCard: "",
-      gameWins: 0,
-    });
+      if(user.name.length > 20){
+        user.name = user.name.substring(0,18);
+        user.name += nums[Math.floor(Math.random()*10)];
+        user.name += nums[Math.floor(Math.random()*10)];
+        user.name += nums[Math.floor(Math.random()*10)];
+      }
 
-    return newUser.save();
+      const newUser = new User({
+        name: user.name,
+        googleid: user.sub,
+        hatID: 0,
+        mouthID: 0,
+        colorID: 0,
+        eyeID: 0,
+        bio: "",
+        favCard: "",
+        gameWins: 0,
+      });
+
+      return newUser.save();
+    })
   });
 }
 

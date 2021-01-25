@@ -25,6 +25,7 @@ class App extends Component {
     this.state = {
       userId: undefined,
       gameID: null,
+      userName: "",
     };
   }
 
@@ -35,7 +36,7 @@ class App extends Component {
       get("/api/whoami").then((user) => {
         if (user._id) {
           // they are registed in the database, and currently logged in.
-          this.setState({ userId: user._id });
+          this.setState({ userId: user._id, userName: user.name });
         }
       }).catch(e => console.log(e));
      }).catch(error => console.error(error));

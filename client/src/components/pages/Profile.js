@@ -3,6 +3,7 @@ import { get, post } from "../../utilities.js";
 import EditIcon from '../modules/icons/edit.js';
 import CloseButton from '../modules/icons/close.js';
 import ConfirmButton from "../modules/icons/confirm.js";
+import EditPencil from '../modules/icons/editPencil.js';
 import './Profile.css';
 
 //Icons
@@ -69,6 +70,9 @@ class Profile extends Component {
     this.state = {
       changingBio: false,
       changingCard: false,
+      changingName: false,
+      nameError: false,
+      nameLengthError: false,
       bio: "",
       favoriteCard: "",
       hatID: 0,
@@ -174,6 +178,13 @@ class Profile extends Component {
     })
   }
 
+  onEnterKeyPressed = (e) => {
+    if(e.keyCode == 13 && e.shiftKey == false){
+      e.preventDefault();
+      this.saveName();
+    }
+  }
+
   toggleRightHat = ()=>{
     const newHat = (this.state.hatID+1)%hats.length;
     post("/api/setPlayerHat", {userID: this.props.playerID, hatID: newHat}).then((data)=>{
@@ -210,10 +221,102 @@ class Profile extends Component {
     })
   }
 
+  onNameChange = (e) => {
+    if(e.target.value.length < 21){
+      this.setState({
+        name: e.target.value,
+        nameLengthError: false,
+      });
+    }
+    else{
+      this.setState({
+        nameLengthError: true,
+      })
+    }
+  }
+
+  editName = () => {
+    this.setState({
+      changingName: true,
+    })
+  }
+
+  saveName = () => {
+    get("/api/getName", {name: this.state.name}).then((player) => {
+      if(player.length === 0 || player[0]._id === this.state.userID){
+        post("/api/postNewName", {userID: this.state.userID, name: this.state.name}).then((data) => {
+          console.log(data);
+          this.setState({
+            changingName: false,
+            name: data.newUser.name,
+            nameError: false,
+            nameLengthError:false,
+          })
+        })
+      }
+      else{
+        this.setState({
+          nameError: true,
+        })
+      }
+    })
+  }
+
+  closeNameEdit = () => {
+    get("/api/getPlayer", {userID: this.props.playerID}).then((data) => {
+      this.setState({
+        name: data.name,
+        changingName: false,
+        nameError: false,
+        nameLengthError: false,
+      })
+    })
+  }
+
   render(){
     return(
       <div className = "Profile-container">
-        <h1 className = "Profile-username">{this.state.name}</h1>
+        <div className = "Profile-username-container">
+          {this.state.userID === this.props.playerID ? (
+            <>
+              {this.state.changingName ? 
+                <>
+                  <div className = "Profile-username-editor">
+                    <input value = {this.state.name} onChange = {this.onNameChange} onKeyDown = {this.onEnterKeyPressed} className = "Profile-username-input"/>
+                    <div className = "Profile-username-icons-close">
+                      <CloseButton func = {this.closeNameEdit} location = "name"/>
+                      <ConfirmButton func = {this.saveName} location = "name"/>
+                    </div>
+                  </div>
+                  {this.state.nameError?
+                    <div>
+                      <p className = "Profile-error-message">Name already taken</p>
+                    </div>
+                  :
+                    <>
+                      {this.state.nameLengthError ? 
+                        <div>
+                          <p className = "Profile-error-message">Name can't be longer than 20 characters</p>
+                        </div>
+                      :
+                        null
+                      }
+                    </>
+                  }
+                </>
+              :
+                <div className = "Profile-username-editor">
+                  <h1 className = "Profile-username">{this.state.name}</h1>
+                  <div className  ="Profile-username-icons-edit">
+                    <EditPencil func = {this.editName} className = "Profile-username-edit" location = "name"/>
+                  </div>
+                </div>
+              }
+            </>)
+          : 
+            <h1 className = "Profile-username">{this.state.name}</h1>
+          }
+        </div>
         <div className = "Profile-avatar-customizer">
           {this.state.userID === this.props.playerID?
             <div className = "Profile-toggle-container">
