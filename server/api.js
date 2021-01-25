@@ -118,6 +118,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   }
   else{
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
@@ -159,6 +160,7 @@ router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
   // Get the first judge and send that out
   let newJudge = gameManager.getJudge(req.body.gameID)
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   res.send({});
 })
 
