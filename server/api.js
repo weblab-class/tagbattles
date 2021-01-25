@@ -209,6 +209,12 @@ router.get("/getPlayer", (req, res) => {
   })
 })
 
+router.get("/getName", (req, res) => {
+  User.find({name: req.query.name}).then((player) => {
+    res.send(player);
+  })
+})
+
 router.post("/setPlayerHat", (req, res) => {
   User.updateOne({_id: req.body.userID}, {hatID: req.body.hatID}).then((data)=>{
     User.find({_id: req.body.userID}).then((user) => {
@@ -285,9 +291,11 @@ router.get("/getChatMessages", (req, res) => {
   res.send({chat: gameManager.getChat(req.query.gameID)});
 })
 
-router.post("/postChatMessage", (req, res) => {
-  gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
-  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
+router.post("/postChatMessage", async (req, res) => {
+  await gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
+  console.log("Current Chat: ", gameManager.getChat(req.body.gameID));
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
+  console.log("message: ", req.body.message);
   res.send({message: req.body.message});
 })
 
@@ -327,6 +335,15 @@ router.get("/getBio", (req, res) => {
     res.send({users: uniqueUsers})
   }))
 })*/
+
+router.post("/postNewName", (req, res) => {
+  console.log("ASDGDASGAD:", req.body.name, req.body.userID);
+  User.updateOne({_id: req.body.userID}, {name: req.body.name}).then((a) => {
+    User.find({_id: req.body.userID}).then((user)=>{
+      res.send({newUser: user[0]});
+    })
+  })
+})
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
