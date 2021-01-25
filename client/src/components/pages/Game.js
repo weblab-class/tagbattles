@@ -26,6 +26,7 @@ class Game extends Component {
         players: [],
         host: "",
         currentState: null,
+        currentPlayerState: 0,
         judgeID: "",
         leaderboard: null,
         chats: [],
@@ -117,6 +118,12 @@ class Game extends Component {
               rounds: data.rounds,
             });
             break;
+          case "reset":
+            console.log("reset state")
+            this.setState({
+              currentPlayerState: 0,
+            })
+            break;
           case "tentativeWinner":
             this.setState({
               tentativeWinner: data.card,
@@ -188,6 +195,7 @@ class Game extends Component {
       this.listenToServer();      
     }
     
+    
     handleLogin = (res) => {
       //console.log(`Logged in as ${res.profileObj.name}`);
       const userToken = res.tokenObj.id_token;
@@ -219,13 +227,6 @@ class Game extends Component {
         return (
         <div>
             Please Log in.
-            <GoogleLogin
-              clientId={GOOGLE_CLIENT_ID}
-              buttonText="Login"
-              onSuccess={this.handleLogin}
-              onFailure={(err) => console.log(err)}
-              className="NavBar-link NavBar-login"
-            />
         </div>
         );
       }
@@ -245,6 +246,8 @@ class Game extends Component {
                 : 
                   <Player 
                     gameID = {this.state.gameID} 
+                    currentState = {this.state.currentPlayerState}
+                    setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
                     displayCard = {this.state.displayCard} 
                     tentativeWinner={this.state.tentativeWinner}
                     userID = {this.state.userID}/>

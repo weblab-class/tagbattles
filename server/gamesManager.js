@@ -164,6 +164,7 @@ const removePlayerFromGame = (gameID, playerID) => {
       break;
     }
   }
+  console.log('removed player')
   // Remove that player from the actives list.
   console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);

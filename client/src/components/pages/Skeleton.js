@@ -22,7 +22,7 @@ class Skeleton extends Component {
   render() {
     return (
       <>
-          {this.props.userId ? (
+          {/*{this.props.userId ? (
             <GoogleLogout
               clientId={GOOGLE_CLIENT_ID}
               buttonText="Logout"
@@ -39,7 +39,7 @@ class Skeleton extends Component {
               className="NavBar-link NavBar-login"
             />
           )}
-        <HomePage userID={this.props.userId} />
+        <HomePage userID={this.props.userId} />*/}
       </>
     );
   }
