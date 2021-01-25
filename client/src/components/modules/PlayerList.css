@@ -1,16 +1,32 @@
 .PlayerList-players-side{
   height:50%;
 }
-
 .PlayerList-players-container{
   /*border-radius:20px;*/
   background-color: rgba(240,240,240,0.7);
   height:calc(100% - 30px);
   overflow-y:auto;
   overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 .PlayerList-container-label{
   text-align:center;
   margin:0;
+  height:30px;
+}
+
+@media (max-width: 800px){
+  .PlayerList-players-side{
+    height:100%;
+    width:50%;
+  }
+
+  .PlayerList-players-container{
+    overflow-x:auto;
+    overflow-y:hidden;
+    display:flex;
+    flex-direction:row;
+  }
 }

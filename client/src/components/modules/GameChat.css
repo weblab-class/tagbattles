@@ -50,5 +50,11 @@
 .GameChat-text-sender{
   width:20%;
   margin: 0;
-  display:inline;
+}
+
+@media(max-width:800px){
+  .GameChat-chat-container{
+    width:50%;
+    height:100%;
+  }
 }
