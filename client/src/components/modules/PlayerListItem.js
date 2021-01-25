@@ -47,7 +47,7 @@ class PlayerListItem extends Component {
           />
         </div> 
         <div className = "PlayerListItem-player-info-container">
-          <h3 className = "PlayerListItem-name-label">{this.state.name}</h3>
+          <h3 className = "PlayerListItem-name-label">{this.state.name}{this.props.playerID === this.props.player._id ? " (You)" : null}</h3>
           {this.props.stage ?
             <p className = "PlayerListItem-points-label">{this.props.player.score} points</p>
           :

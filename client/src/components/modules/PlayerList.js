@@ -38,7 +38,7 @@ class PlayerList extends Component {
     }
     return(
       <div className = "PlayerList-players-side">
-        <h2 className = "PlayerList-container-label">Players</h2>
+        <h2 className = "PlayerList-container-label">Players ({playerList.length}/10)</h2>
         <div className = "PlayerList-players-container">
           {playerList}          
         </div>
