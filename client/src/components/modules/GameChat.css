@@ -50,4 +50,5 @@
 .GameChat-text-sender{
   width:20%;
   margin: 0;
+  display:inline;
 }

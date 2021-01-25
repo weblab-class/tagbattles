@@ -18,6 +18,13 @@ class GameChat extends Component {
     }
   }
 
+  onEnterKeyPressed = (e) => {
+    if(e.keyCode == 13 && e.shiftKey == false){
+      e.preventDefault();
+      this.submitMessage();
+    }
+  }
+
   scrollToBottom = () => {
     this.messagesEnd.scrollIntoView({behavior: "smooth"});
   }
@@ -31,9 +38,11 @@ class GameChat extends Component {
   }
 
   textChange = (event) => {
-    this.setState({
-      newMessage: event.target.value,
-    })
+    if(event.target.value.length < 100){
+      this.setState({
+        newMessage: event.target.value,
+      })
+    }
     console.log(this.state.newMessage);
   }
 
@@ -65,8 +74,10 @@ class GameChat extends Component {
             <div style = {{float: "left", clear: "both"}} ref = {(el) => {this.messagesEnd = el;}}></div>
           </div>
           <div className = "GameChat-text-input-container">
-            <textarea type = "text" onChange = {this.textChange} className = "GameChat-text-input" value = {this.state.newMessage} placeholder = "new message"/>
-            <button onClick = {this.submitMessage} className = "GameChat-text-sender">Send</button>
+            <form onSubmit = {this.submitMessage} className = "GameChat-text-input-container">
+              <textarea type = "text" onChange = {this.textChange} onKeyDown = {this.onEnterKeyPressed} className = "GameChat-text-input" value = {this.state.newMessage} placeholder = "new message"/>
+              <button type = "submit" className = "GameChat-text-sender">Send</button>
+            </form>
           </div>
         </div>
       </div>
