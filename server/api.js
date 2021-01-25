@@ -159,10 +159,15 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   await gameManager.createGameIfNonExistant(req.body.gameID);
   console.log(`created game for ${req.body.player.name}`)
   
-  await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
-  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
-  console.log("added player to game")
-  res.send({});
+  if(gameManager.getPlayerList.length < 10){
+    await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name})
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
+    console.log("added player to game")
+    res.send({status: "Success"});
+  }
+  else{
+    res.send({status: "Game Full"});
+  }
 })
 
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
