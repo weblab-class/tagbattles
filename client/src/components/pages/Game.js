@@ -171,6 +171,8 @@ class Game extends Component {
             post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
               //console.log('made game');
               if(res.status === 'Game Full'){
+                console.log("THIS GMAE IS FULADGSADG");
+                console.log("THEREFORE:     ",this.state.currentState)
                 this.setState({
                   currentState: "fullGame",
                   joinedGame: false,
@@ -247,7 +249,7 @@ class Game extends Component {
         <div className = "Game-game-container">
           {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
           {console.log("PLAYERS IN THE GAME: ",this.state.players)}
-          {this.state.currentState === 'gameFull' ? 
+          {this.state.currentState === 'fullGame' ? 
             <h1>Game is Full</h1>
           :
             <>
