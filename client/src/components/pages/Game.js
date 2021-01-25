@@ -26,6 +26,7 @@ class Game extends Component {
         players: [],
         host: "",
         currentState: null,
+        currentPlayerState: 0,
         judgeID: "",
         leaderboard: null,
         chats: [],
@@ -116,6 +117,11 @@ class Game extends Component {
             this.setState({
               rounds: data.rounds,
             });
+            break;
+          case "reset":
+            this.setState({
+              currentPlayerState: 0,
+            })
             break;
           case "tentativeWinner":
             this.setState({
@@ -245,6 +251,8 @@ class Game extends Component {
                 : 
                   <Player 
                     gameID = {this.state.gameID} 
+                    currentState = {this.state.currentPlayerState}
+                    setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
                     displayCard = {this.state.displayCard} 
                     tentativeWinner={this.state.tentativeWinner}
                     userID = {this.state.userID}/>

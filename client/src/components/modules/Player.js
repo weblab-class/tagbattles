@@ -18,6 +18,7 @@ import { get, post } from "../../utilities";
  * Proptypes
  * @param {string} gameID to display
  * @param {string} tentativeWinner the winner
+ * @param {0 or 1} currentState also pass in a setter for it set to 0 for playing cards, 1 for seeing responses 
  * 
  *  
  * States
@@ -45,8 +46,8 @@ class Player extends Component {
   // Figuring out the black card code
   selectedResponse = (selectedCard) => {
     console.log("got here and selected a response");
+    this.props.setCurrentState(1);
     this.setState({
-      currentState : 1,
       currentCard: selectedCard,
     })
   }
@@ -60,7 +61,7 @@ class Player extends Component {
         {this.props.displayCard ? 
           <>
             <DisplayCard text = {this.props.displayCard} type = {0}/>
-            {this.state.currentState === 0 ?
+            {this.props.currentState === 0 ?
               <ResponseSelector 
                 displayingCard = {this.props.displayCard} 
                 submitResponse= {(card) => this.selectedResponse(card)} 
@@ -68,15 +69,17 @@ class Player extends Component {
                 userID = {this.props.userID}
               />
             :
+              <div className="Player-container">
               (this.props.tentativeWinner ? 
               <Card 
                 text={this.props.tentativeWinner}
                 selectCard = { () => {console.log("this does nothing lol")}}
               /> : 
               <Card 
-                text="Submitted cards will show up here shortly"
+                text="As the host clicks through cards, they will show up here. May your card be the favorite!"
                 selectCard = { () => {console.log("this does nothing lol")}}
               /> )
+              </div>
             }
           </>
           : <p>Loading</p>}
