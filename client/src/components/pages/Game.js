@@ -221,7 +221,9 @@ class Game extends Component {
         });
       });
     }
-
+    componentWillUnmount() {
+      socket.disconnect();
+    }
     render() {
       console.log("USER ID IS ", this.props.userID);
       console.log("User Name is: ", this.props.userName);
