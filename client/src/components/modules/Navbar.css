@@ -8,17 +8,11 @@ nav{
   height:60px;
 }
 
-.nav-links{
+.NavBar-nav-links{
   width:70%;
 }
 
-@media (max-width: 800px){
-  .nav-links{
-    width:90%;
-  }
-}
-
-.nav-list{
+.NavBar-nav-list{
   list-style: none;
   display:flex;
   flex-direction:row;
@@ -26,11 +20,32 @@ nav{
   align-items: center;
 }
 
-.nav-logo{
+.NavBar-hamburger{
+  display:none;
+}
+
+.NavBar-nav-logo{
   height:60px;
 }
 
 .NavBar-link{
   text-decoration: none;
   color:black;
+}
+
+@media (max-width: 800px){
+  .NavBar-nav-links{
+    width:90%;
+  }
+
+  .NavBar-nav-links{
+    display:none;
+  }
+
+  .NavBar-hamburger{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    height:60px;
+  }
 }

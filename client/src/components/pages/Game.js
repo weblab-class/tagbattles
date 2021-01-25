@@ -22,7 +22,7 @@ class Game extends Component {
         // THESE ALL SHOULD BE A PROP UNLESS MAYBE PLAYERS CAN BE AFTER THE GAME HAS STARTED
         userID: null,
         userName: null,
-        gameID: window.location.pathname.substring(6), 
+        gameID: this.props.gameID, 
         players: [],
         host: "",
         currentState: null,

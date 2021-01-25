@@ -40,6 +40,7 @@
 
 .Settings-start-game:hover{
   background-color:rgb(100, 190, 100);
+  cursor:pointer;
 }
 
 .Settings-error{

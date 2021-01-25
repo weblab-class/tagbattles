@@ -4,4 +4,5 @@
 
 .Icon-icon-styling:hover{
   fill:gray;
+  cursor:pointer;
 }

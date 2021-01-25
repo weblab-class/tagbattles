@@ -5,4 +5,5 @@
 
 .CloseButton-styling:hover{
   fill: rgb(240,100,100);
+  cursor:pointer;
 }

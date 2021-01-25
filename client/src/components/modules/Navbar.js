@@ -1,48 +1,40 @@
 import React, { Component } from "react";
 import { Link } from "@reach/router";
 import GoogleLogin, { GoogleLogout } from "react-google-login";
-import { get, post } from "../../utilities";
+import HamburgerIcon from './icons/hamburger.js';
 import Logo from './icons/logo.js';
 import "./Navbar.css";
 
 const GOOGLE_CLIENT_ID = "640440795885-4do41cm5va1aumbs67c398b1m8m2574o.apps.googleusercontent.com";
 
-/*
-*
+/** 
+*Props:
+*@param {String} gameID
+*@param {Function} setNewGameID
 */
 class Navbar extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      gameID: null,
-    }
   }
 
-  componentDidMount() {
-   get("/api/newGameID").then(data => {
-     (this.setState({gameID: data.gameID}));
-     console.log("Game ID: ",this.state.gameID);
-    }).catch(error => console.error(error));
-  }
+  openNav = () => {
 
-  setNewGameID = () => {
-    get("/api/newGameID").then(data => {
-      (this.setState({gameID: data.gameID}));
-      console.log("Game ID: ",this.state.gameID);
-     }).catch(error => console.error(error));
   }
 
   render(){
     return (
       <nav>
-        <div className = "nav-logo">
+        <div className = "NavBar-nav-logo">
           <Link to = "/" className = "NavBar-link">
             <Logo/>
           </Link>
         </div>
-        <div className = "nav-links">
-					<ul className = "nav-list">
-						<li><Link to  = {"/play/" + this.state.gameID} className = "NavBar-link" onClick = {this.setNewGameID}>New Game</Link></li>
+        <div className = "NavBar-hamburger">
+          <HamburgerIcon func = {this.openNav}/>
+        </div>
+        <div className = "NavBar-nav-links">
+					<ul className = "NavBar-nav-list">
+						<li><Link to  = {"/play/" + this.props.gameID} className = "NavBar-link" onClick = {this.props.setNewGameID}>New Game</Link></li>
 						<li><Link to = "/play/" className = "NavBar-link">Join Game</Link></li>
             <li><Link to  = {"/create"} className = "NavBar-link">Create Deck</Link></li>
             {this.props.userId?<li><Link to = {`/profile/${this.props.userId}`} className = "NavBar-link">Profile</Link></li>:null}

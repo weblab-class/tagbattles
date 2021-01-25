@@ -1,20 +1,3 @@
-.PlayerListItem-players-side{
-  width:400px;
-  height:500px;
-  margin-right:5px;
-}
-
-.PlayerListItem-players-container{
-  border-radius:20px;
-  background-color: rgba(240,240,240,0.7);
-  height:350px;
-  padding:20px;
-}
-
-.PlayerListItem-container-label{
-  text-align:center;
-}
-
 .PlayerListItem-player-container{
   display:flex;
   flex-direction:row;
@@ -46,4 +29,29 @@
 
 .PlayerListItem-player-info-container{
   margin-left: 5px;
+}
+
+@media(max-width:800px){
+  .PlayerListItem-player-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  
+  .PlayerListItem-label-icon{
+    margin:0;
+    background-color: rgb(82, 122, 197);
+    border-radius:100px;
+    padding-left: 10px;
+    font-size: 12px;
+    padding-right: 10px;
+    color:white;
+  }
+  
+  .PlayerListItem-player-info-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
 }

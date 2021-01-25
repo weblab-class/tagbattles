@@ -107,9 +107,11 @@ class Profile extends Component {
   }
 
   onBioChange = (e) => {
-    this.setState({
-      bio: e.target.value,
-    })
+    if(e.target.value.length < 250){
+      this.setState({
+        bio: e.target.value,
+      })
+    }
   }
 
   editBio = () => {
