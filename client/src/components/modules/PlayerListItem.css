@@ -22,6 +22,10 @@
   margin-bottom:10px;
 }
 
+.PlayerListItem-player-self{
+  background-color: rgb(190,250,180);
+}
+
 .PlayerListItem-name-label{
   margin:0;
 }
