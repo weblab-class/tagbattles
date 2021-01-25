@@ -112,7 +112,6 @@ const selectResponseCard = (gameState, playerID, cardIndex) => {
 
 const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   // find the winner by id and increase his score
-  gameState.players[getPlayerByID(gameState, winnerID)].score += 1;
   for(let i = 0; i < gameState.players.length; i++) {
     gameState.players[i].chosenResponse = null;
   }
@@ -122,6 +121,7 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
 }
 
 const getNumberOfThinkingPlayers = (gameState) => {
+  console.log("players", gameState.players)
   let numberOfThinkingPlayers = gameState.players.length - 1;
   for (let i = 0; i < gameState.players.length; i++) {
     console.log(gameState.players[i].chosenResponse, gameState.players[i].name)

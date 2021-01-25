@@ -195,6 +195,7 @@ class Game extends Component {
       this.listenToServer();      
     }
     
+    
     handleLogin = (res) => {
       //console.log(`Logged in as ${res.profileObj.name}`);
       const userToken = res.tokenObj.id_token;
@@ -226,13 +227,6 @@ class Game extends Component {
         return (
         <div>
             Please Log in.
-            <GoogleLogin
-              clientId={GOOGLE_CLIENT_ID}
-              buttonText="Login"
-              onSuccess={this.handleLogin}
-              onFailure={(err) => console.log(err)}
-              className="NavBar-link NavBar-login"
-            />
         </div>
         );
       }
