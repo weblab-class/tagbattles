@@ -15,6 +15,7 @@ class PlayerListItem extends Component {
       colorID: 0,
       hatID: 0,
       mouthID: 0,
+      name,
       eyeID: 0,
     }
   }
@@ -26,6 +27,7 @@ class PlayerListItem extends Component {
         hatID: data.hatID,
         mouthID: data.mouthID,
         eyeID: data.eyeID,
+        name: data.name,
       })
     })
   }
@@ -45,7 +47,7 @@ class PlayerListItem extends Component {
           />
         </div> 
         <div className = "PlayerListItem-player-info-container">
-          <h3 className = "PlayerListItem-name-label">{this.props.player.name}</h3>
+          <h3 className = "PlayerListItem-name-label">{this.state.name}</h3>
           {this.props.stage ?
             <p className = "PlayerListItem-points-label">{this.props.player.score} points</p>
           :

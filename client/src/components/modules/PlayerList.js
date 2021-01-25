@@ -20,8 +20,6 @@ class PlayerList extends Component {
 
   render() {
     let playerList = "Loading...";
-    console.log(this.props);
-    console.log("Leaderboard: ",this.props.leaderboard);
     if (this.props.players.length > 0) {
       playerList = this.props.leaderboard ? this.props.leaderboard : this.props.players;
       playerList = playerList.map((player) => 

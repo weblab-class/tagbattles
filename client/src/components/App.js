@@ -65,6 +65,12 @@ class App extends Component {
      }).catch(error => console.error(error));
   }
 
+  saveUserName = (newName) => {
+    this.setState({
+      userName: newName,
+    })
+  }
+
   render() {
     return (
       <>
@@ -86,7 +92,7 @@ class App extends Component {
           <Game key={this.state.userId + "a"} userID={this.state.userId} userName={this.state.userName} path="/play/:gameID" gameID = {this.state.gameID}/>
           <JoinGame path = "/play/"/>
           <DeckCreator key={this.state.userId + "a"} userID={this.state.userId} userName={this.state.userName} path="/create"/>
-          <Profile path = "/profile/:playerID"/>
+          <Profile path = "/profile/:playerID" userName = {this.state.userName} saveName = {this.saveUserName}/>
           <NotFound default />
         </Router>
       </>

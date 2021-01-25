@@ -252,6 +252,7 @@ class Profile extends Component {
             nameError: false,
             nameLengthError:false,
           })
+          this.props.saveName(data.newUser.name);
         })
       }
       else{
