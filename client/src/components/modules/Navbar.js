@@ -44,13 +44,13 @@ class Navbar extends Component {
             <CloseButton func = {this.openNav} location = "nav"/>
           }
         </div>
-        <div className = {this.state.listClosed ? "NavBar-nav-links-closed" : "NavBar-nav-links"}>
+        <div className = {this.state.listClosed ? "NavBar-nav-links-closed NavBar-smooth" : "NavBar-smooth NavBar-nav-links"}>
 					<ul className = "NavBar-nav-list">
 						<li className = "NavBar-nav-item"><Link to  = {"/play/" + this.props.gameID} className = "NavBar-link" onClick = {this.props.setNewGameID}>New Game</Link></li>
 						<li className = "NavBar-nav-item"><Link to = "/play/" className = "NavBar-link">Join Game</Link></li>
             <li className = "NavBar-nav-item"><Link to  = {"/create"} className = "NavBar-link">Create Deck</Link></li>
             {this.props.userId?<li className = "NavBar-nav-item"><Link to = {`/profile/${this.props.userId}`} className = "NavBar-link">Profile</Link></li>:null}
-            <li className = "NavBar-nav-item">{this.props.userId ? (
+            <li className = "NavBar-nav-item-google">{this.props.userId ? (
               <GoogleLogout
                 clientId={GOOGLE_CLIENT_ID}
                 buttonText="Logout"
