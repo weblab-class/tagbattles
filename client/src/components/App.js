@@ -24,16 +24,22 @@ class App extends Component {
     super(props);
     this.state = {
       userId: undefined,
+      gameID: null,
     };
   }
 
   componentDidMount() {
-    get("/api/whoami").then((user) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        this.setState({ userId: user._id });
-      }
-    }).catch(e => console.log(e));
+    get("/api/newGameID").then(data => {
+      (this.setState({gameID: data.gameID}));
+      console.log("Game ID: ",this.state.gameID);
+      get("/api/whoami").then((user) => {
+        if (user._id) {
+          // they are registed in the database, and currently logged in.
+          this.setState({ userId: user._id });
+        }
+      }).catch(e => console.log(e));
+     }).catch(error => console.error(error));
+    
   }
 
   handleLogin = (res) => {
@@ -50,6 +56,13 @@ class App extends Component {
     post("/api/logout").catch((e)=>console.log(e));
   };
 
+  setNewGameID = () => {
+    get("/api/newGameID").then(data => {
+      (this.setState({gameID: data.gameID}));
+      console.log("Game ID: ",this.state.gameID);
+     }).catch(error => console.error(error));
+  }
+
   render() {
     return (
       <>
@@ -57,6 +70,8 @@ class App extends Component {
           userId = {this.state.userId}
           handleLogin = {this.handleLogin}
           handleLogout = {this.handleLogout}
+          gameID = {this.state.gameID}
+          setNewGameID = {this.setNewGameID}
         />
         <Router>
           <Skeleton
@@ -66,7 +81,7 @@ class App extends Component {
             userId={this.state.userId}
           />
           {/* <GameSettings path="/play" /> */}
-          <Game path="/play/:gameID" />
+          <Game path="/play/:gameID" gameID = {this.state.gameID}/>
           <JoinGame path = "/play/"/>
           <DeckCreator path="/create" />
           <Profile path = "/profile/:playerID"/>
