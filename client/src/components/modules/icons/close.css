@@ -27,3 +27,16 @@
   fill:rgb(50,50,50);
   cursor:pointer;
 }
+
+.CloseButton-styling-name{
+  height:30px;
+  width:30px;
+  fill:rgb(255,0,0);
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.CloseButton-styling-name:hover{
+  fill:rgb(204,100,100);
+  cursor:pointer;
+}

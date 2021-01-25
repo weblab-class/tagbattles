@@ -1,0 +1,13 @@
+.EditPencil-styling{
+  width:35px;
+  height:35px;
+}
+
+.EditPencil-styling:hover{
+  fill:rgb(50,50,50);
+  cursor: pointer;
+}
+
+.EditPencil-leftmargin{
+  margin-left:10px;
+}
