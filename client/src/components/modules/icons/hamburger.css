@@ -1,0 +1,9 @@
+.HamburgerIcon-styling{
+  height:30px;
+  width:30px;
+}
+
+.HamburgerIcon-styling:hover{
+  fill:rgb(50,50,50);
+  cursor:pointer;
+}

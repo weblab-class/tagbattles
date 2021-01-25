@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "@reach/router";
 import GoogleLogin, { GoogleLogout } from "react-google-login";
-import { get, post } from "../../utilities";
+import HamburgerIcon from './icons/hamburger.js';
 import Logo from './icons/logo.js';
 import "./Navbar.css";
 
@@ -17,16 +17,23 @@ class Navbar extends Component {
     super(props);
   }
 
+  openNav = () => {
+
+  }
+
   render(){
     return (
       <nav>
-        <div className = "nav-logo">
+        <div className = "NavBar-nav-logo">
           <Link to = "/" className = "NavBar-link">
             <Logo/>
           </Link>
         </div>
-        <div className = "nav-links">
-					<ul className = "nav-list">
+        <div className = "NavBar-hamburger">
+          <HamburgerIcon func = {this.openNav}/>
+        </div>
+        <div className = "NavBar-nav-links">
+					<ul className = "NavBar-nav-list">
 						<li><Link to  = {"/play/" + this.props.gameID} className = "NavBar-link" onClick = {this.props.setNewGameID}>New Game</Link></li>
 						<li><Link to = "/play/" className = "NavBar-link">Join Game</Link></li>
             <li><Link to  = {"/create"} className = "NavBar-link">Create Deck</Link></li>

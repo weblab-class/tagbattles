@@ -6,4 +6,5 @@
 .Trash-styling:hover{
   fill:rgb(230,230,230);
   transform: scale(1.2);
+  cursor:pointer;
 }

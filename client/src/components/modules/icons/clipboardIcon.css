@@ -5,6 +5,7 @@
 
 .ClipboardIcon-styling:hover{
   fill:rgb(50,50,50);
+  cursor:pointer;
 }
 
 .ClipboardIcon-container{
