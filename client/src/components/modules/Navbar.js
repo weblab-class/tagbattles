@@ -21,6 +21,16 @@ class Navbar extends Component {
     }
   }
 
+  componentDidMount(){
+    window.addEventListener('resize', ()=>{
+      if(window.innerWidth > 800){
+        this.setState({
+          listClosed:true,
+        })
+      }
+    })
+  }
+
   openNav = () => {
     this.setState((prevState) => {
       return {
