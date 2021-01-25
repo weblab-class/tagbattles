@@ -52,6 +52,10 @@
   margin: 0;
 }
 
+.GameChat-text-sender:hover{
+  cursor:pointer;
+}
+
 @media(max-width:800px){
   .GameChat-chat-container{
     width:50%;
