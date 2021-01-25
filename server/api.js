@@ -30,6 +30,9 @@ const CardPack = require("./models/card_pack.js");
 // Card
 const Card = require("./models/card.js");
 
+// Chat
+const Chat = require("./models/chat.js");
+
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -303,6 +306,27 @@ router.get("/getBio", (req, res) => {
     res.send({bio: user[0].bio});
   })
 })
+
+/*router.get("/getPlayerChats", (req, res) => {
+  Chat.find({$or: [{"sender._id": req.body.userID}, {"recipient._id": req.body.userID}]}.then((chats) => {
+    uniqueUsers = [];
+    map = {};
+    for(let i = 0; i<chats.length; i++){
+      if(chats.sender._id === req.body.userID){
+        map[chats.recipient._id] = chats.recipient.name;
+      }
+      else{
+        map[chats.sender._id] = chats.recipient.name;
+      }
+    }
+    for(let id in map){
+      if(Object.prototype.hasOwnProperty.call(map, id)){
+        uniqueUsers.push({id: id,name: map[id]})
+      }
+    }
+    res.send({users: uniqueUsers})
+  }))
+})*/
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

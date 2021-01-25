@@ -1,0 +1,10 @@
+.BackArrow-styling{
+  fill:black;
+  width:30px;
+  height:30px;
+}
+
+.BackArrow-styling:hover{
+  fill:rgb(50,50,50);
+  cursor:pointer;
+}

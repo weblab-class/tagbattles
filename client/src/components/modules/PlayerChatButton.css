@@ -1,0 +1,14 @@
+.PlayerChatButton-player-container{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.PlayerChatButton-player-image-container{
+
+}
+
+.PlayerChatButton-name-label{
+  margin:0;
+}

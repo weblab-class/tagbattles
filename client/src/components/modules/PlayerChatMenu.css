@@ -1,0 +1,27 @@
+.PlayerChatMenu-container-right{
+  border-radius:50%;
+  position:fixed;
+  display:flex;
+  flex-direction:column-reverse;
+  bottom:20px;
+  right:20px;
+}
+
+.PlayerChatMenu-container-left{
+  border-radius:50%;
+  position:fixed;
+  display:flex;
+  flex-direction:column-reverse;
+  bottom:20px;
+  left:20px;
+}
+
+.PlayerChatMenu-button{
+  border-radius:50%;
+  width:50px;
+  height:50px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}

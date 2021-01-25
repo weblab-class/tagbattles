@@ -12,7 +12,7 @@ const CloseButton = (props) => {
   return(
     <div onClick = {props.func}>
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="994.3px"
-        height="994.3px" viewBox="0 0 994.3 994.3" className = {props.location === 'nav' ? "CloseButton-styling-nav" : "Icon-icon-styling CloseButton-styling"}>
+        height="994.3px" viewBox="0 0 994.3 994.3" className = {props.location === 'nav' ? "CloseButton-styling-nav" : (props.location === 'chat' ? "CloseButton-styling-chat" : "Icon-icon-styling CloseButton-styling")}>
       <defs>
       </defs>
       <path d="M153.5,967.6l814.1-814.1c35.1-35.1,35.1-92.1,0-127.2l0,0c-35.1-35.1-92.1-35.1-127.2,0L26.3,840.4
