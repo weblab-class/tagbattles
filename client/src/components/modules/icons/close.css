@@ -7,3 +7,13 @@
   fill: rgb(240,100,100);
   cursor:pointer;
 }
+
+.CloseButton-styling-nav{
+  height:25px;
+  width:25px;
+}
+
+.CloseButton-styling-nav:hover{
+  fill:rgb(50,50,50);
+  cursor:pointer;
+}

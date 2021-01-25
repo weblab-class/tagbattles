@@ -6,9 +6,14 @@ nav{
   align-items:center;
   padding: 0 20px;
   height:60px;
+  position:relative;
 }
 
 .NavBar-nav-links{
+  width:70%;
+}
+
+.NavBar-nav-links-closed{
   width:70%;
 }
 
@@ -31,15 +36,44 @@ nav{
 .NavBar-link{
   text-decoration: none;
   color:black;
+  text-align:center;
+  width:100%;
 }
 
 @media (max-width: 800px){
   .NavBar-nav-links{
-    width:90%;
+    /*display:none;*/
+    position:absolute;
+    top:60px;
+    left:0px;
+    width:100%;
+    background-color:#B9C6E1;
+    z-index:2;
   }
 
-  .NavBar-nav-links{
+  .NavBar-nav-links-closed{
     display:none;
+  }
+
+  .NavBar-nav-list{
+    flex-direction:column;
+    align-items:center;
+    padding:0;
+    margin:0;
+  }
+
+  .NavBar-nav-item{
+    padding-top:10px;
+    padding-bottom:10px;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:0;
+  }
+
+  .NavBar-nav-item:hover{
+    background-color:#C5D3EF;
   }
 
   .NavBar-hamburger{
