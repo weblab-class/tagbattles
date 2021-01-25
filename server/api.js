@@ -189,7 +189,7 @@ router.get('/isNameUnique', (req, res) => {
     }
   })
 })
-router.post('/submitDeck', (req, res) => {
+router.post('/createDeck', (req, res) => {
   const newDeck = new CardPack({
     name: req.body.name,
     prompt_cards : req.body.prompt_cards,

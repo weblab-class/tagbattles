@@ -106,7 +106,7 @@ class DeckCreator extends Component {
 
     submitDeck() {
         console.log("attempting to submit")
-        post("/api/submitDeck", 
+        post("/api/createDeck", 
             {name: this.state.deck_name, 
             prompt_cards : this.state.prompt_cards, 
             response_cards: this.state.response_cards}).then((res) => {
