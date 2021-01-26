@@ -234,6 +234,12 @@ class Game extends Component {
       
       this.listenToServer();   
     }
+
+    async componentDidUpdate(prevProps) {
+      if (prevProps.gameID !== this.props.gameID) {
+        await this.handleMount();
+      }
+    }
     
     async componentWillUnmount() {
       // window.location.reload(true);
