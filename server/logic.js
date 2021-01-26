@@ -33,6 +33,7 @@ const createGame = (gameID) => {
     'isActive' : false,
     'promptCards' : null,
     'chat': [],
+    'roundCounter': 0,
   }
 } 
 
@@ -55,6 +56,7 @@ const addPlayerToGame = (gameState, player) => {
     'score' : 0,
     'responseCards' : gameState.isActive ? getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS) : null,
     'chosenResponse' : null,
+    'roundCounter': 0,
   });
   // Add player into the current round if game active
   if(gameState.isActive){
@@ -71,8 +73,16 @@ const addPlayerToGame = (gameState, player) => {
 
 const getRandomElementsFromArray = (arr, numberOfElementsToGet) => {
   let randomElements = [];
+  let randomIndices = [];
+  for(let i = 0; i<numberOfElementsToGet; i++){
+    let num = Math.floor(Math.random() * arr.length);
+    while(randomIndices.includes(num)){
+      num = Math.floor(Math.random() * arr.length);
+    }
+    randomIndices.push(num);
+  }
   for (let i = 0; i < numberOfElementsToGet; i++) {
-    randomElements.push(arr[Math.floor(Math.random() * arr.length)]);
+    randomElements.push(arr[randomIndices[i]]);
   }
   return randomElements;
 };
@@ -131,6 +141,7 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   // find the winner by id and increase his score
   for(let i = 0; i < gameState.players.length; i++) {
     gameState.players[i].chosenResponse = null;
+    gameState.players[i].responseCards = getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS);
   }
   gameState.promptCard = null;
   // find the judge by id and switch to the next player (note that we need to take the module)
