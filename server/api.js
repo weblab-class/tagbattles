@@ -171,6 +171,15 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   }
 })
 
+router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
+  console.log(req.body.gameID, req.body.userID);
+  if (req.body.userID) {
+    await gameManager.removePlayerFromGame(req.body.gameID, req.body.userID);
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
+  }
+});
+
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
   await gameManager.addSettingsAndStart(req.body.gameID, req.body.decks, req.body.rounds);
   // Get the first judge and send that out
