@@ -32,8 +32,8 @@ class PlayerChatButton extends Component {
 
   render(){
     return (
-      <div className = "PlayerListItem-player-container">
-        <div className = "PlayerListItem-player-image-container">
+      <div className = "PlayerChatButton-player-container">
+        <div className = "PlayerChatButton-player-image-container">
           <Avatar
             colorID = {this.state.colorID}
             hatID = {this.state.hatID}
@@ -43,7 +43,7 @@ class PlayerChatButton extends Component {
             height = "30px"
           />
         </div> 
-        <h3 className = "PlayerListItem-name-label">{this.props.player.name}</h3>
+        <h3 className = "PlayerChatButton-name-label">{this.props.player.name}</h3>
       </div>
     )
   }

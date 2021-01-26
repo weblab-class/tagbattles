@@ -1,0 +1,74 @@
+.PlayerChat-container{
+  width:300px;
+  height:400px;
+  background-color: #ACBED8;
+  border-radius:20px;
+}
+
+.PlayerChat-top-container{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  width:100%;
+  align-items:center;
+  height:40px;
+  border-bottom:solid black;
+  border-width:thin;
+  border-top-left-radius:20px;
+  position:relative;
+  border-top-right-radius:20px;
+}
+
+.PlayerChat-label{
+  text-align:center;
+}
+
+.PlayerChat-top-left{
+  position:absolute;
+  left:5px;
+  top:5px;
+}
+
+.PlayerChat-top-left-one{
+  position:absolute;
+  left:8px;
+  top:7px;
+}
+
+.PlayerChat-top-right{
+  position:absolute;
+  right:10px;
+  top:10px;
+}
+
+.PlayerChat-main-container{
+
+}
+
+.PlayerChat-player-names{
+
+}
+
+.PlayerChat-player-chat{
+
+}
+
+.PlayerChat-messages-container{
+
+}
+
+.PlayerChat-text-container{
+
+}
+
+.PlayerChat-text-container{
+
+}
+
+.PlayerChat-text-input{
+
+}
+
+.PlayerChat-send-button{
+
+}

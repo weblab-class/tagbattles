@@ -21,6 +21,8 @@ class PlayerList extends Component {
   render() {
     let playerList = "Loading...";
     if (this.props.players.length > 0) {
+      console.log("LEADERBOARD: ", this.props.leaderboard);
+      console.log("PLAYERS: ", this.props.players);
       playerList = this.props.leaderboard ? this.props.leaderboard : this.props.players;
       playerList = playerList.map((player) => 
         <PlayerListItem 
@@ -35,6 +37,7 @@ class PlayerList extends Component {
           }
         />
       )
+      console.log(playerList);
     }
     return(
       <div className = "PlayerList-players-side">
