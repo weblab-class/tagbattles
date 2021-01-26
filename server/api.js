@@ -122,7 +122,7 @@ router.get('/getSubmittedResponses', auth.ensureLoggedIn, async (req, res) => {
 });
 
 router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res) => {
-  //console.log("reached api");
+  console.log("reached api: selecting winner and updating judge");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
     const newJudge = await gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
@@ -186,7 +186,7 @@ router.get('/currentPromptCard', (req, res) => {
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
-  console.log(req.body.gameID, req.user._id);
+  //console.log(req.body.gameID, req.user._id);
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }
@@ -209,7 +209,7 @@ router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
 
 
 router.get('/getDeckNames', (req, res) => {
-  CardPack.find({}, {name:1, _id:0}).then((cardPackNames) => res.send(cardPackNames));
+  CardPack.find({}).then((cardPackNames) => res.send(cardPackNames));
 })
 
 router.get('/getGameID', (req,res) => {

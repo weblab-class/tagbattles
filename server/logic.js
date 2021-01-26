@@ -23,8 +23,10 @@ const createGame = (gameID) => {
     'gameID': gameID,
     'players' : [],
     'inactivePlayers' : [],
+    'currentRound': [],
     'host' : '',
     'rounds' : 3,
+    'round': 0,
     'decks': [],
     'promptCard' : null,
     'responseCards' : null,
@@ -38,10 +40,11 @@ const startGame = (gameState) => {
   gameState.isActive = true;
   let players = [...gameState.players]
   gameState.players = []
+  gameState.currentRound = []
   for (let i = 0; i < players.length; i++) {
     addPlayerToGame(gameState, players[i]);
   }
-
+  gameState.round = 1;
   gameState.judgeID = players[0]._id;
 }
 
@@ -53,9 +56,14 @@ const addPlayerToGame = (gameState, player) => {
     'responseCards' : gameState.isActive ? getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS) : null,
     'chosenResponse' : null,
   });
+  // Add player into the current round if game active
+  if(gameState.isActive){
+    gameState.currentRound.push(gameState.players[gameState.players.length-1]);
+  }
+
   // Set player to host if only 1 player in game
   if(gameState.players.length === 1){
-    console.log("Place 1:", player._id);
+    //console.log("Place 1:", player._id);
     gameState.host = player._id;
   }
   return gameState;
@@ -104,10 +112,19 @@ const getNewPromptCard = (gameState) => {
 
 const selectResponseCard = (gameState, playerID, cardIndex) => {
   const playerIndex = getPlayerByID(gameState, playerID);
-  console.log(cardIndex)
-  console.log("gameState.players[playerIndex].responseCards[cardIndex]", gameState.players[playerIndex].responseCards[cardIndex])
+  //console.log(cardIndex)
+  //console.log("gameState.players[playerIndex].responseCards[cardIndex]", gameState.players[playerIndex].responseCards[cardIndex])
   gameState.players[playerIndex].chosenResponse = gameState.players[playerIndex].responseCards[cardIndex];
   replaceResponseCard(gameState, playerID, cardIndex);
+}
+
+const beginNewRound = (gameState) => {
+  _players = [...gameState.players];
+  gameState.currentRound = []
+  for(let i =0 ; i<gameState.players.length; i++){
+    gameState.currentRound.push(_players[i])
+  }
+  return gameState;
 }
 
 const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
@@ -117,19 +134,23 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   }
   gameState.promptCard = null;
   // find the judge by id and switch to the next player (note that we need to take the module)
+<<<<<<< HEAD
   updateJudge(gameState); 
 }
 
 const updateJudge = (gameState) => {
   gameState.judgeID = gameState.players[(getPlayerByID(gameState, gameState.judgeID) + 1) % gameState.players.length]._id;
   return gameState.judgeID;
+=======
+  gameState.judgeID = gameState.currentRound.pop()._id;
+>>>>>>> 66f80d2daf2dcc6f1a0a88b9aa4cffb6aedc629b
 }
 
 const getNumberOfThinkingPlayers = (gameState) => {
-  console.log("players", gameState.players)
+  //console.log("players", gameState.players)
   let numberOfThinkingPlayers = gameState.players.length - 1;
   for (let i = 0; i < gameState.players.length; i++) {
-    console.log(gameState.players[i].chosenResponse, gameState.players[i].name)
+    //console.log(gameState.players[i].chosenResponse, gameState.players[i].name)
     if(gameState.players[i].chosenResponse) {
       numberOfThinkingPlayers -= 1;
     }
@@ -171,6 +192,11 @@ module.exports = {
   getNumberOfThinkingPlayers,
   getPlayerCards,
   startGame,
+<<<<<<< HEAD
   addSettingsToGame,
   updateJudge
+=======
+  beginNewRound,
+  addSettingsToGame
+>>>>>>> 66f80d2daf2dcc6f1a0a88b9aa4cffb6aedc629b
 }

@@ -7,7 +7,7 @@ import Leaderboard from "../modules/Leaderboard.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
-import PlayerChatMenu from '../modules/PlayerChatMenu.js';
+import PlayerChatButton from '../modules/PlayerChatButton.js';
 import PlayerList from '../modules/PlayerList.js';
 import GameChat from '../modules/GameChat.js';
 
@@ -47,7 +47,7 @@ class Game extends Component {
     }
 
     startGame = (rounds, decks) => {
-      if(this.state.players.length > 1){
+      if(this.state.players.length > 2){
         if(decks.length > 0){
           post("/api/startGame", {
             'gameID' : this.state.gameID,
@@ -187,8 +187,6 @@ class Game extends Component {
               //console.log('made game');
               console.log(res)
               if(res.status === 'Game Full'){
-                console.log("THIS GMAE IS FULADGSADG");
-                console.log("THEREFORE:     ",this.state.currentState)
                 this.setState({
                   currentState: "fullGame",
                   joinedGame: false,
@@ -253,7 +251,7 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null}
+          {/*this.props.userID?<PlayerChatButton userID = {this.props.userID} location = "left"/>:null*/}
           {this.state.currentState === 'fullGame' ? 
             <h1 className = "Game-game-full">Game is Full</h1>
           :
