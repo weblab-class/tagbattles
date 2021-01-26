@@ -224,7 +224,7 @@ class Game extends Component {
     
     async componentWillUnmount() {
       // window.location.reload(true);
-      // post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: socket.id});
+      await post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: this.state.socketID});
     }
     render() {
       //console.log("USER ID IS ", this.props.userID);
