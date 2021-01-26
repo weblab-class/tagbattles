@@ -61,7 +61,7 @@ class Settings extends Component {
   }
 
   render() {
-    console.log("joinedGame", this.props.joinedGame);
+    //console.log("joinedGame", this.props.joinedGame);
     const rounds = [2,3,4,5,6,7,8,9,10];
     return (
       <div className = "Settings-settings-side">

@@ -35,7 +35,7 @@ class PlayerListItem extends Component {
   render(){
     return(
       <div className = {this.props.playerID === this.props.player._id ? "PlayerListItem-player-container PlayerListItem-player-self" : "PlayerListItem-player-container"}>
-        {console.log("STAGE:ASDFa ", this.props.player)}
+        {/* {console.log("STAGE:ASDFa ", this.props.player)} */}
         <div className = "PlayerListItem-player-image-container">
           <Avatar
             colorID = {this.state.colorID}

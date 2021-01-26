@@ -58,10 +58,9 @@ class GameChat extends Component {
   }
 
   render(){
-    console.log("GameChat userName: ", this.props.userName);
+    //console.log("GameChat userName: ", this.props.userName);
     return (
       <div className = "GameChat-chat-container">
-        {console.log("CHATS: ",this.props.chats)}
         <h2 className = "GameChat-chat-title">Chat</h2>
         <div className = "GameChat-content-container">
           <div className = "GameChat-message-container">

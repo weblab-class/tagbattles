@@ -164,7 +164,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
   //console.log("added player to game")
   res.send({});
-})
+});
 
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
   await gameManager.addSettingsAndStart(req.body.gameID, req.body.decks, req.body.rounds);

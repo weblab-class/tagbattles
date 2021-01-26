@@ -29,9 +29,9 @@ class Lobby extends Component {
   render() {
     return (
       <div className = "Lobby-gamesettings-container">
-        {console.log("Players inasdf adsf :",this.props.players)}
+        {/* {console.log("Players inasdf adsf :",this.props.players)}
         {console.log("HOSTID: ", this.props.host)}
-        {console.log("PLAYERID: ", this.props.userID)}
+        {console.log("PLAYERID: ", this.props.userID)} */}
         <div className = "Lobby-game-container">
           {/*<PlayerList players = {this.props.players} host = {this.props.host}/>*/}
           <Settings 

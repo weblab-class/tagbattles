@@ -29,14 +29,15 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
-    get("/api/newGameID").then(data => {
+  async componentDidMount() {
+    await get("/api/newGameID").then(data => {
       (this.setState({gameID: data.gameID}));
-      console.log("Game ID: ",this.state.gameID);
+      //console.log("Game ID: ",this.state.gameID);
       get("/api/whoami").then((user) => {
         if (user._id) {
           // they are registed in the database, and currently logged in.
           this.setState({ userId: user._id, userName: user.name });
+          console.log("Now my userid is ", user._id); 
         }
       }).catch(e => console.log(e));
      }).catch(error => console.error(error));
@@ -86,7 +87,7 @@ class App extends Component {
             path="/"
             handleLogin={this.handleLogin}
             handleLogout={this.handleLogout}
-            userId={this.state.userId}
+            userID={this.state.userId}
           />
           {/* <GameSettings path="/play" /> */}
           <Game key={this.state.userId + "a"} userID={this.state.userId} userName={this.state.userName} path="/play/:gameID" gameID = {this.state.gameID}/>

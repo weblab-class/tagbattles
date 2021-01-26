@@ -21,7 +21,7 @@ class Game extends Component {
       super(props);
       this.state = {
         // THESE ALL SHOULD BE A PROP UNLESS MAYBE PLAYERS CAN BE AFTER THE GAME HAS STARTED
-        userID: null,
+        userID: this.props.userID,
         userName: null,
         gameID: this.props.gameID, 
         players: [],
@@ -52,7 +52,7 @@ class Game extends Component {
           'rounds' : this.state.rounds,
           'decks' : [this.state.deck],
         }).then((data) =>{
-          //console.log("started game");
+          ////console.log("started game");
         })
       }
       else{
@@ -64,7 +64,7 @@ class Game extends Component {
 
     listenToServer = () => {
       socket.off("gameUpdate").on("gameUpdate", data => {
-        //console.log(data);
+        ////console.log(data);
         switch(data.type) {
           case "playerList":
             this.setState({
@@ -73,7 +73,7 @@ class Game extends Component {
             });
             break;
           case "judgeUpdate":
-            //console.log(data.judgeID);
+            ////console.log(data.judgeID);
             if (this.props.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
@@ -87,7 +87,7 @@ class Game extends Component {
             }
             break;
           case "numThinkingPlayers":
-            console.log("I think there are ", data.numThinkingPlayers)
+            //console.log("I think there are ", data.numThinkingPlayers)
             this.setState({
               numThinkingPlayers: data.numThinkingPlayers
             });
@@ -98,29 +98,29 @@ class Game extends Component {
             })
             break;
           case "gameEnded":
-            //console.log("Game has ended");
-            //console.log("leaderboard: ", data.leaderboard);
+            ////console.log("Game has ended");
+            ////console.log("leaderboard: ", data.leaderboard);
             this.setState({
               currentState: "gameEnd",
               leaderboard: data.leaderboard,
             })
             break;
           case "updateHost":
-            //console.log("Host Updated");
-            //console.log(data.host);
+            ////console.log("Host Updated");
+            ////console.log(data.host);
             this.setState({
               host: data.host,
             })
             break;
           case "roundsUpdate":
-            //console.log("Rounds Updated");
-            //console.log(data.rounds);
+            ////console.log("Rounds Updated");
+            ////console.log(data.rounds);
             this.setState({
               rounds: data.rounds,
             });
             break;
           case "reset":
-            console.log("reset state")
+            //console.log("reset state")
             this.setState({
               currentPlayerState: 0,
             })
@@ -131,8 +131,8 @@ class Game extends Component {
             });
             break;
           case "deckUpdate":
-            //console.log("Deck Updated");
-            //console.log(data.deck);
+            ////console.log("Deck Updated");
+            ////console.log(data.deck);
             this.setState({
               deck: data.deck,
             })
@@ -149,27 +149,30 @@ class Game extends Component {
               leaderboard: data.leaderboard,
             })
           default:
-            console.log("Missing event: ",  data.type);
+            //console.log("Missing event: ",  data.type);
             break;
         }
       });
     }
 
     async componentDidMount() {
-      console.log("GAME ID IS ", this.state.gameID);
+      console.log("I AM IN DIDMOUNT");
+      //console.log("GAME ID IS ", this.state.gameID);
       await this.handleMount();
     }
     
     handleMount = async () => {
-      console.log("SOCKET ID IS ", socket);
-      
+      if (socket.disconnected) {
+        console.log("socket id is", socket.id);
+        await socket.io.reconnect();
+      }
       if (this.props.userID) {
-        console.log("Game.js Nameasdhdsahd:", this.props.userName);
+        //console.log("Game.js Nameasdhdsahd:", this.props.userName);
         post("/api/test", {socketid:socket.id}).then((data) => {
           post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
-            //console.log('starting game')
+            ////console.log('starting game')
             post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
-              //console.log('made game');
+              ////console.log('made game');
               this.setState({
                 joinedGame:true
               });
@@ -181,9 +184,9 @@ class Game extends Component {
                   this.setState({
                     deck: deckData.deck,
                   })
-                  console.log("Mounting Chat");
+                  //console.log("Mounting Chat");
                   get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
-                    console.log(data.chat);
+                    //console.log(data.chat);
                     this.setState({
                       chats: chatData.chat,
                     })
@@ -198,36 +201,13 @@ class Game extends Component {
       this.listenToServer();   
     }
     
-    handleLogin = (res) => {
-      //console.log(`Logged in as ${res.profileObj.name}`);
-      const userToken = res.tokenObj.id_token;
-      post("/api/login", { token: userToken }).then(async (user) => {
-        this.setState({ userID: user._id, userName: user.name});
-        //console.log(this.state.userID);
-        post("/api/initsocket", { socketid: socket.id }).then(() => {
-          //console.log("hey in initsocket");
-          post("/api/test", {socketid:socket.id}).then(() => {
-            //console.log("in test");
-            post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(() => {
-              //console.log("in init"); this.listenToServer();
-              //console.log('starting game')
-              post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
-                //console.log('made game');
-                this.setState({
-                  joinedGame:true
-                });
-              });  
-            });
-          });
-        });
-      });
-    }
-    componentWillUnmount() {
-      //socket.disconnect();
+    async componentWillUnmount() {
+      // window.location.reload(true);
+      // post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: socket.id});
     }
     render() {
-      console.log("USER ID IS ", this.props.userID);
-      console.log("User Name is: ", this.props.userName);
+      //console.log("USER ID IS ", this.props.userID);
+      //console.log("User Name is: ", this.props.userName);
       if (!this.props.userID) {
         return (
         <div>
@@ -237,6 +217,7 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
+          {console.log(socket.id)}
           {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
           <div className = "Game-main-container">
             {this.state.currentState ? 
