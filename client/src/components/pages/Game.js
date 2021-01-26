@@ -7,7 +7,7 @@ import Leaderboard from "../modules/Leaderboard.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
-import PlayerChatMenu from '../modules/playerChatMenu.js';
+import PlayerChatMenu from '../modules/PlayerChatMenu.js';
 import PlayerList from '../modules/PlayerList.js';
 import GameChat from '../modules/GameChat.js';
 
