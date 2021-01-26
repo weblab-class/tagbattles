@@ -19,11 +19,12 @@
 }
 
 .CloseButton-styling-chat{
+  fill:rgb(0,0,0);
   height:20px;
   width:20px;
 }
 
-.CloseButton-styling-chat{
+.CloseButton-styling-chat:hover{
   fill:rgb(50,50,50);
   cursor:pointer;
 }
