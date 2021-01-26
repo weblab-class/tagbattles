@@ -128,6 +128,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "reset"});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   }
   else{
@@ -368,6 +369,14 @@ router.post("/postNewName", auth.ensureLoggedIn, (req, res) => {
       res.send({newUser: user[0]});
     })
   })
+})
+
+router.get("/getGameStatus", (req, res) => {
+  res.send({status: gameManager.getGameStatus(req.query.gameID)});
+})
+
+router.get("/getPlayerStatus", (req, res) => {
+  res.send({status: gameManager.getPlayerStatus(req.query.gameID, req.query.playerID)});
 })
 
 // anything else falls to this "not found" case
