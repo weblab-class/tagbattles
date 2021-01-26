@@ -10,7 +10,6 @@ import './PlayerList.css';
  * @param {String} host
  * @param {String} stage (ingame or lobby)
  * @param {String} judgeID
- * @param {List} leaderboard
  * @param {String} playerID
  */
 class PlayerList extends Component {
@@ -21,10 +20,7 @@ class PlayerList extends Component {
   render() {
     let playerList = "Loading...";
     if (this.props.players.length > 0) {
-      console.log("LEADERBOARD: ", this.props.leaderboard);
-      console.log("PLAYERS: ", this.props.players);
-      playerList = this.props.leaderboard ? this.props.leaderboard : this.props.players;
-      playerList = playerList.map((player) => 
+      playerList = this.props.players.map((player) => 
         <PlayerListItem 
           key = {player._id}
           player = {player}

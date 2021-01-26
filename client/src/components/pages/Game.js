@@ -47,7 +47,7 @@ class Game extends Component {
     }
 
     startGame = (rounds, decks) => {
-      if(this.state.players.length > 2){
+      if(this.state.players.length > 1){
         if(decks.length > 0){
           post("/api/startGame", {
             'gameID' : this.state.gameID,
@@ -286,7 +286,6 @@ class Game extends Component {
                   host = {this.state.host}
                   stage = {this.state.currentState}
                   judgeID = {this.state.judgeID}
-                  leaderboard = {this.state.leaderboard}
                   playerID = {this.props.userID}
                 />
                 <GameChat
