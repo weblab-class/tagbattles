@@ -25,7 +25,7 @@ const createGame = (gameID) => {
     'inactivePlayers' : [],
     'host' : '',
     'rounds' : 3,
-    'deck': 'Apples2Apples',
+    'decks': [],
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,
@@ -71,8 +71,8 @@ const getRandomElementsFromArray = (arr, numberOfElementsToGet) => {
 
 const findAllCards = async (cardPackNames) => {
 	// Collect all black and white cards from the card packs
-	let promptCards = ["a", "b", "c"];
-  let responseCards = ['d', 'e', 'f'];
+	let promptCards = [];
+  let responseCards = [];
   for (let i = 0; i < cardPackNames.length; i++) {
     let cardPackName = cardPackNames[i];
     await CardPacks.findOne({'name' : cardPackName}).then((CardPack) => {

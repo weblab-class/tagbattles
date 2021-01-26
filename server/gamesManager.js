@@ -13,7 +13,6 @@ const getParticularGameIndex = (gameID) => {
 
 const getNewPromptCard = (gameID) => {
   const index = getParticularGameIndex(gameID)
-  //console.log(gameID, index);
   if (index !== -1) {
     return logic.getNewPromptCard(allGames[index])
   }
@@ -70,7 +69,7 @@ const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
 }
 
 const selectFinalResponse = (gameID, playerID, cardIndex) => {
-  //console.log(cardIndex, "index");
+  console.log(cardIndex, "index");
   if (cardIndex > 10 || cardIndex <= 0) return 0;
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
@@ -82,7 +81,7 @@ const selectFinalResponse = (gameID, playerID, cardIndex) => {
 const getNumberOfThinkingPlayers = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if (index !== -1) {
-    //console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
+    console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
     return logic.getNumberOfThinkingPlayers(allGames[index]);
     
   }
@@ -90,12 +89,12 @@ const getNumberOfThinkingPlayers = (gameID) => {
 }
 
 const getPlayerCards = (gameID, playerID) => {
-  //console.log(gameID);
+  console.log(gameID);
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     return logic.getPlayerCards(allGames[index], playerID);
   }
-  //console.log("did not find the game");
+  console.log("did not find the game");
   return -1;
 }
 
@@ -104,7 +103,6 @@ const createGameIfNonExistant = (gameID) => {
   if (index === -1) {
     allGames.push(logic.createGame(gameID));
   }
-  //console.log("The game is stored at", getParticularGameIndex(gameID));
 }
 
 const addSettingsAndStart = async (gameID, decks, rounds) => {
@@ -144,7 +142,7 @@ const addPlayerToGame = (gameID, player) => {
 
   // Set host if only one player
   if(allGames[index].players.length === 1){
-    //console.log("Place 2: ",player._id);
+    console.log("Place 2: ",player._id);
     allGames[index].host = player._id;
   }
   return 0;
@@ -153,33 +151,30 @@ const addPlayerToGame = (gameID, player) => {
 const removePlayerFromGame = (gameID, playerID) => {
   // Set that player to inactive
   const index = getParticularGameIndex(gameID)
+  console.log("REMOVING ", playerID, " from ", gameID);
   if (index === -1) return;
   let i;
-  console.log("trying to remove player ", playerID);
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
-    // console.log(player._id);
-    // player.chosenResponse = null;
-    if (playerID == player._id) {
-      console.log("I found him");
+    player.chosenResponse = null;
+    if (playerID=== player._id) {
       // Set that player to active
       allGames[index].inactivePlayers.push(player);
-      player.chosenResponse = null;
       break;
     }
   }
-  console.log('removed player', i)
+  console.log('removed player')
   // Remove that player from the actives list.
-  console.log('before', allGames[index].players);
+  console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
-  console.log('after', allGames[index].players);
+  console.log('after', allGames[index]);
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
-    //console.log("Going into if statement");
-    //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    console.log("Going into if statement");
+    console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
-    //console.log(allGames[index].host);
+    console.log(allGames[index].host);
   }
   return 0;
 }
@@ -209,7 +204,7 @@ const checkMoreRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  //console.log(allGames[index].rounds)
+  console.log(allGames[index].rounds)
   allGames[index].rounds--;
   return allGames[index].rounds > 0;
 }
@@ -234,10 +229,10 @@ const getLeaderboard = (gameID) => {
         maxIndex = j;
       }
     }
-    //console.log(maxIndex, maxScore);
+    console.log(maxIndex, maxScore);
     retList.push(playerCopy.splice(maxIndex,1)[0]);
-    //console.log("retList: ", retList)
-    //console.log("playerList: ", playerCopy, "\n")
+    console.log("retList: ", retList)
+    console.log("playerList: ", playerCopy, "\n")
   }
   return retList;
 }
@@ -248,25 +243,25 @@ const updateGameRounds = (gameID, numRounds) => {
     return;
   }
   allGames[index].rounds = numRounds;
-  //console.log("gameIDadsgadsg:", gameID);
+  console.log("gameIDadsgadsg:", gameID);
   return allGames[index].rounds;
 }
 
-const updateGameDeck = (gameID, deck) => {
+const updateGameDecks = (gameID, decks) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
     return;
   }
-  allGames[index].deck = deck;
-  return allGames[index].deck;
+  allGames[index].decks = decks;
+  return allGames[index].decks;
 }
 
-const getGameDeck = (gameID) => {
+const getGameDecks = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if(index===-1){
     return;
   }
-  return allGames[index].deck;
+  return allGames[index].decks;
 }
 
 const getGameRounds = (gameID) => {
@@ -274,7 +269,7 @@ const getGameRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  //console.log("gameIDASD a:", gameID)
+  console.log("gameIDASD a:", gameID)
   return allGames[index].rounds;
 }
 
@@ -297,10 +292,10 @@ const getChat = (gameID) => {
 const getPlayerList = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
-    return [];
+    return;
   }
-  //console.log(allGames[index].players);
-  return allGames[index].players || [];
+  console.log(allGames[index].players);
+  return allGames[index].players;
 }
 
 module.exports = {
@@ -323,8 +318,8 @@ module.exports = {
   getLeaderboard,
   getHost,
   updateGameRounds,
-  updateGameDeck,
-  getGameDeck,
+  updateGameDecks,
+  getGameDecks,
   getGameRounds,
   addToChat,
   getChat,
