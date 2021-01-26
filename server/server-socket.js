@@ -12,17 +12,20 @@ const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
 const getSocketFromSocketID = (socketid) => io.sockets.connected[socketid];
 
 const addUser = (user, socket) => {
+  if (!socket) return;
   const oldSocket = userToSocketMap[user._id];
-  if (oldSocket && oldSocket.id !== socket.id) {
+  if (oldSocket && oldSocket.id != socket.id) {
     // there was an old tab open for this user, force it to disconnect
     // FIXME: is this the behavior you want?
     oldSocket.disconnect();
     delete socketToUserMap[oldSocket.id];
     delete socketToRoomMap[oldSocket.id];
   }
-  console.log(`now ${user.name} has ${socket.id}`)
-  userToSocketMap[user._id] = socket;
-  socketToUserMap[socket.id] = user;
+  // console.log(`now ${user.name} has ${socket.id}`)
+  if (socket) {
+    userToSocketMap[user._id] = socket;
+    socketToUserMap[socket.id] = user;
+  }
 };
 
 const addUserToRoom = (user, roomid) => {

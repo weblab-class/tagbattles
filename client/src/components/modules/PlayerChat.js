@@ -3,6 +3,7 @@ import './PlayerChat.css';
 import BackArrow from './icons/fatback.js';
 import { get, post } from "../../utilities.js";
 import CloseButton from './icons/close.js';
+import EditIcon from './icons/edit.js';
 
 /**
  * Props
@@ -13,11 +14,16 @@ class PlayerChat extends Component {
     super(props);
     this.state = {
       viewingChat: false,
+      currentState: "list",
       messages: [],
       chattingWith: "",
       newMessage: "",
       messageHistory: [],
     }
+  }
+
+  componentDidMount(){
+
   }
 
   sendMessage = () => {
@@ -26,8 +32,15 @@ class PlayerChat extends Component {
 
   openChat = (playerID) => {
     this.setState({
-      viewingChat: true,
+      currentState: "chat", //list, chat, or new
       chattingWith: playerID,
+    })
+  }
+
+  closeChat = (playerID) => {
+    this.setState({
+      currentState: "list",
+      chattingWith: "",
     })
   }
 
@@ -35,17 +48,21 @@ class PlayerChat extends Component {
     return(
       <div className = "PlayerChat-container">
         <div className = "PlayerChat-top-container">
-          <CloseButton func = {this.props.closeChat} location = "chat"/>
-          <h2>{this.state.viewingChat ? this.chattingWith : "Chats"}</h2>
-          {this.state.viewingChat ? 
-            <BackArrow func = {this.closeChat}/>
-          :
-            null
-          }
+          <div className = "PlayerChat-top-right">
+            <CloseButton func = {this.props.closeChat} location = "chat"/>
+          </div>
+          <h2 className = "PlayerChat-label">{this.state.viewingChat ? this.chattingWith : "Chats"}</h2>
+          <div className = {this.state.currentState === "list" ? "PlayerChat-top-left-one" : "PLayerChat-top-left"}>
+            {this.state.currentState === "chat" || this.state.currentState === 'new' ? 
+              <BackArrow func = {this.closeChat}/>
+            :
+              <EditIcon func = {() => {console.log("Hello");}} location = "chat"/>
+            }
+          </div>
         </div>
         <div className = "PlayerChat-main-container">
           <div className = "PlayerChat-player-names">
-            {this.messageHistory.map((chat) => {
+            {this.state.messageHistory.map((chat) => {
               return (
                 <PlayerChatButton player = {chat.player} openChat = {this.openChat} />
               )

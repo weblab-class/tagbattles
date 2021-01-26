@@ -32,7 +32,7 @@ class PlayerChatMenu extends Component {
     return(
       <div className = {this.props.location === 'left' ? "PlayerChatMenu-container-left" : "PlayerChatMenu-container-right"}>
         {this.state.opened ? 
-          <PlayerChat userID = {this.props.userID}/>
+          <PlayerChat userID = {this.props.userID} closeChat = {this.closeChat}/>
         :
           <button className = "PlayerChatMenu-button">
             <ChatIcon func = {this.openChat} className = "PlayerChatMenu-button"/>

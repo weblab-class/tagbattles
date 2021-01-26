@@ -77,6 +77,7 @@ class Game extends Component {
         ////console.log(data);
         switch(data.type) {
           case "playerList":
+            console.log("RECEIVED PLAYERS: ", data.players);
             this.setState({
               players: data.players,
               displayPlayerError: false,
@@ -238,9 +239,7 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {console.log(socket.id)}
-          {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
-          {console.log("PLAYERS IN THE GAME: ",this.state.players)}
+          {this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null}
           {this.state.currentState === 'fullGame' ? 
             <h1 className = "Game-game-full">Game is Full</h1>
           :
