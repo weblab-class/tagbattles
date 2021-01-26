@@ -47,7 +47,7 @@ class Game extends Component {
     }
 
     startGame = (rounds, decks) => {
-      if(this.state.players.length > 2){
+      if(this.state.players.length > 1){
         if(decks.length > 0){
           post("/api/startGame", {
             'gameID' : this.state.gameID,
