@@ -173,6 +173,9 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
   console.log(req.body.gameID, req.body.userID);
+  if (req.body.socketID) {
+    await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
+  }
   if (req.body.userID) {
     await gameManager.removePlayerFromGame(req.body.gameID, req.body.userID);
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
