@@ -108,10 +108,15 @@ class DeckCreator extends Component {
         console.log("attempting to submit")
         post("/api/createDeck", 
             {name: this.state.deck_name, 
-            prompt_cards : this.state.prompt_cards, 
-            response_cards: this.state.response_cards}).then((res) => {
+            prompt_cards : this.state.prompt_cards.map((element) => {
+							return element.card;
+						}), 
+            response_cards: this.state.response_cards.map((element) => {
+							return element.card;
+						})
+					}).then((res) => {
                 console.log("submitted deck");
-            }).catch((e)=>console.log(e))
+					}).catch((e)=>console.log(e))
     }
 
     handeCardRemoval(index, card_type) {

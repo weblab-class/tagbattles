@@ -18,6 +18,10 @@ function verify(token) {
     .then((ticket) => ticket.getPayload());
 }
 
+const getRandomNumber = (max) => {
+  return Math.floor(Math.random() * max);
+}
+
 // gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user) {
   // the "sub" field means "subject", which is a unique identifier for each user
@@ -43,10 +47,10 @@ function getOrCreateUser(user) {
       const newUser = new User({
         name: user.name,
         googleid: user.sub,
-        hatID: 0,
-        mouthID: 0,
-        colorID: 0,
-        eyeID: 0,
+        hatID: getRandomNumber(5),
+        mouthID: getRandomNumber(6),
+        colorID: getRandomNumber(11),
+        eyeID: getRandomNumber(4),
         bio: "",
         favCard: "",
         gameWins: 0,
