@@ -11,12 +11,12 @@ import './Settings.css';
  *
  * Proptypes
  * @param {function} startGame to display
- * @param {array} deckList
  * @param {boolean} displayPlayerError
+ * @param {boolean} displayDeckError
  * @param {String} host
  * @param {String} gameID
  * @param {Number} rounds
- * @param {String} deck
+ * @param {Array} decks
  */
 class Settings extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class Settings extends Component {
     // console.log(uniqueTypes);
     this.state = {
       rounds: "3",
-      deck: "",
+      selectedDecks: this.props.decks,
       decks: [],
     }
   }
@@ -38,7 +38,6 @@ class Settings extends Component {
   componentDidMount(){
     get("/api/getDeckNames").then((data) => {
       this.setState({
-        deck: data.map(cardPack => cardPack.name)[0],
         decks: data.map(cardPack => cardPack.name),
       });
     });
@@ -54,10 +53,11 @@ class Settings extends Component {
   }
 
   onDeckChange = (newDeck) => {
-    post("/api/updateDeck", {gameID: this.props.gameID, deck: newDeck.target.value}).then((newStuff) => {
-      console.log(newStuff);
+    console.log("NEWDECK: ", newDeck)
+    post("/api/updateDecks", {gameID: this.props.gameID, decks: newDeck}).then((newStuff) => {
+      console.log("NEW DECK :O :", newStuff.newDecks.map((deck) => deck.value));
       this.setState({
-        deck: newStuff,
+        selectedDecks: newStuff.newDecks.map((deck) => deck.value),
       });
     });
   }
@@ -65,6 +65,7 @@ class Settings extends Component {
   render() {
     console.log("joinedGame", this.props.joinedGame);
     console.log(this.state.decks);
+    console.log("PROP DECKS: ", this.props.decks);
     const rounds = [2,3,4,5,6,7,8,9,10];
     return (
       <div className = "Settings-settings-side">
@@ -85,16 +86,25 @@ class Settings extends Component {
           </select>*/}
           {this.props.host?
             <Select 
-              defaultValue = {[this.state.decks[0]]}
+              defaultValue = {[]}
               isMulti
               name = "Decks"
               isSearchable
+              onChange = {this.onDeckChange}
               placeholder="Select Decks to Use"
+              autoFocus
+              noOptionsMessage = {() => "Must select a deck!"}
               options = {this.state.decks.map((deck) => {return {value: deck, label: deck}})}
               className = "Settings-decks-selector"
             />
           :
-            <p className = "Settings-settings-value">{this.props.deck}</p>
+            <div className = "Settings-decks-container">
+              {this.props.decks.map((deck) => 
+                <span key = {deck} className = "Settings-deck-label">
+                  {deck}
+                </span>
+              )}
+            </div>
           }
           {this.props.host?(
             <>
@@ -102,11 +112,12 @@ class Settings extends Component {
               <>
                 <button 
                   className = "Settings-start-game" 
-                  onClick = {()=>this.props.startGame(this.state.rounds, [this.state.deck])}
+                  onClick = {()=>this.props.startGame(this.state.rounds, this.state.selectedDecks)}
                 >
                   Enter Game
                 </button> 
                 <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 2 players to start</p>
+                <p className = "Settings-error" hidden = {!this.props.displayDeckError}>Need at least 1 deck to play</p>
               </>
             : 
               <p>Creating your game</p>}

@@ -11,13 +11,13 @@ import './Lobby.css';
  * @param {array} players to display
  * @param {function} startGame
  * @param {function} testFunction
- * @param {array} deckList
  * @param {boolean} displayPlayerError
+ * @param {boolean} displayDeckError
  * @param {String} host
  * @param {String} userID
  * @param {String} gameID
  * @param {Number} rounds
- * @param {String} deck
+ * @param {Array} decks
  * @param {String} userName
  * 
  */
@@ -37,12 +37,12 @@ class Lobby extends Component {
           <Settings 
             joinedGame = {this.props.joinedGame} 
             startGame = {this.props.startGame} 
-            deckList = {this.props.deckList}
             displayPlayerError = {this.props.displayPlayerError}
+            displayDeckError = {this.props.displayDeckError}
             host = {this.props.host === this.props.userID}
             gameID = {this.props.gameID}
             rounds = {this.props.rounds}
-            deck = {this.props.deck}
+            decks = {this.props.decks}
           />
           {/*<GameChat
             userID = {this.props.userID}
