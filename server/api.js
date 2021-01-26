@@ -172,12 +172,12 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
-  console.log(req.body.gameID, req.body.userID);
+  console.log(req.body.gameID, req.user._id);
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }
-  if (req.body.userID) {
-    await gameManager.removePlayerFromGame(req.body.gameID, req.body.userID);
+  if (req.user._id) {
+    await gameManager.removePlayerFromGame(req.body.gameID, req.user._id);
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
   }
@@ -239,49 +239,49 @@ router.get("/getName", (req, res) => {
   })
 })
 
-router.post("/setPlayerHat", (req, res) => {
-  User.updateOne({_id: req.body.userID}, {hatID: req.body.hatID}).then((data)=>{
-    User.find({_id: req.body.userID}).then((user) => {
+router.post("/setPlayerHat", auth.ensureLoggedIn, (req, res) => {
+  User.updateOne({_id: req.user._id}, {hatID: req.body.hatID}).then((data)=>{
+    User.find({_id: req.user._id}).then((user) => {
       //console.log(user);
       res.send(user[0]);
     })
   });
 })
 
-router.post("/setPlayerColor", (req,res) => {
-  User.updateOne({_id: req.body.userID}, {colorID: req.body.colorID}).then((data)=>{
-    User.find({_id: req.body.userID}).then((user) => {
+router.post("/setPlayerColor", auth.ensureLoggedIn, (req,res) => {
+  User.updateOne({_id: req.user._id}, {colorID: req.body.colorID}).then((data)=>{
+    User.find({_id: req.user._id}).then((user) => {
       //console.log(user);
       res.send(user[0]);
     })
   });
 })
 
-router.post("/setPlayerMouth", (req,res) => {
-  User.updateOne({_id: req.body.userID}, {mouthID: req.body.mouthID}).then((data)=>{
-    User.find({_id: req.body.userID}).then((user) => {
+router.post("/setPlayerMouth", auth.ensureLoggedIn, (req,res) => {
+  User.updateOne({_id: req.user._id}, {mouthID: req.body.mouthID}).then((data)=>{
+    User.find({_id: req.user._id}).then((user) => {
       //console.log(user);
       res.send(user[0]);
     })
   });
 })
 
-router.post("/setPlayerEye", (req,res) => {
-  User.updateOne({_id: req.body.userID}, {eyeID: req.body.eyeID}).then((data)=>{
-    User.find({_id: req.body.userID}).then((user) => {
+router.post("/setPlayerEye", auth.ensureLoggedIn, (req,res) => {
+  User.updateOne({_id: req.user._id}, {eyeID: req.body.eyeID}).then((data)=>{
+    User.find({_id: req.user._id}).then((user) => {
       //console.log(user);
       res.send(user[0]);
     })
   });
 })
 
-router.post("/incrementPlayerWins", (req, res) => {
+router.post("/incrementPlayerWins", auth.ensureLoggedIn, (req, res) => {
   User.find({userID: req.user._id}).then((players) => {
     if(players.length === 0){
       res.send({message: "no such player"});
     }
     else{
-      User.updateOne({_id: req.body.userID}, {gameWins: players[0].gameWins+1}).then((data) => {
+      User.updateOne({_id: req.user._id}, {gameWins: players[0].gameWins+1}).then((data) => {
         res.send(data);
       })
     }
@@ -291,7 +291,7 @@ router.post("/incrementPlayerWins", (req, res) => {
   })
 })
 
-router.post("/updateRounds", (req, res) => {
+router.post("/updateRounds", auth.ensureLoggedIn, (req, res) => {
   const newRounds = gameManager.updateGameRounds(req.body.gameID, req.body.rounds);
   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "roundsUpdate", rounds: newRounds});
   res.send({newRounds});
@@ -315,36 +315,36 @@ router.get("/getChatMessages", (req, res) => {
   res.send({chat: gameManager.getChat(req.query.gameID)});
 })
 
-router.post("/postChatMessage", async (req, res) => {
-  await gameManager.addToChat(req.body.gameID, req.body.userID, req.body.message, req.body.name);
+router.post("/postChatMessage", auth.ensureLoggedIn, async (req, res) => {
+  await gameManager.addToChat(req.body.gameID, req.user._id, req.body.message, req.body.name);
   // console.log("Current Chat: ", gameManager.getChat(req.body.gameID));
-  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.body.userID, message: req.body.message, name: req.body.name}});
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "chatUpdate", chat: {userID: req.user._id, message: req.body.message, name: req.body.name}});
   //console.log("message: ", req.body.message);
   res.send({message: req.body.message});
 })
 
-router.post("/postNewBio", (req, res) => {
-  User.updateOne({_id: req.body.userID}, {bio: req.body.bio}).then((data) => {
-    User.find({_id: req.body.userID}).then((user) => {
+router.post("/postNewBio", auth.ensureLoggedIn, (req, res) => {
+  User.updateOne({_id: req.user._id}, {bio: req.body.bio}).then((data) => {
+    User.find({_id: req.user._id}).then((user) => {
       //console.log(user);
       res.send({bio: user[0].bio});
     })
   })
 })
 
-router.get("/getBio", (req, res) => {
-  User.find({_id: req.body.userID}).then((user) => {
+router.get("/getBio", auth.ensureLoggedIn, (req, res) => {
+  User.find({_id: req.user._id}).then((user) => {
     //console.log(user);
     res.send({bio: user[0].bio});
   })
 })
 
 /*router.get("/getPlayerChats", (req, res) => {
-  Chat.find({$or: [{"sender._id": req.body.userID}, {"recipient._id": req.body.userID}]}.then((chats) => {
+  Chat.find({$or: [{"sender._id": req.user._id}, {"recipient._id": req.user._id}]}.then((chats) => {
     uniqueUsers = [];
     map = {};
     for(let i = 0; i<chats.length; i++){
-      if(chats.sender._id === req.body.userID){
+      if(chats.sender._id === req.user._id){
         map[chats.recipient._id] = chats.recipient.name;
       }
       else{
@@ -360,10 +360,10 @@ router.get("/getBio", (req, res) => {
   }))
 })*/
 
-router.post("/postNewName", (req, res) => {
-  //console.log("ASDGDASGAD:", req.body.name, req.body.userID);
-  User.updateOne({_id: req.body.userID}, {name: req.body.name}).then((a) => {
-    User.find({_id: req.body.userID}).then((user)=>{
+router.post("/postNewName", auth.ensureLoggedIn, (req, res) => {
+  //console.log("ASDGDASGAD:", req.body.name, req.user._id);
+  User.updateOne({_id: req.user._id}, {name: req.body.name}).then((a) => {
+    User.find({_id: req.user._id}).then((user)=>{
       res.send({newUser: user[0]});
     })
   })
