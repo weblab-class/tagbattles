@@ -21,9 +21,10 @@ const addSettingsToGame = async (gameState, cardPackNames, rounds) => {
 const createGame = (gameID) => {
   return {
     'gameID': gameID,
-    'players' : [],
-    'inactivePlayers' : [],
-    'currentRound': [],
+    'players' : [], // List of all active players in the game
+    'inactivePlayers' : [], // List of inactive players and their data
+    'currentRound': [], // List of players yet to go in the round
+    'currentRoundGone': [], // List of playerIDs that have already gone in the current round
     'host' : '',
     'rounds' : 3,
     'round': 0,
@@ -121,6 +122,7 @@ const selectResponseCard = (gameState, playerID, cardIndex) => {
 const beginNewRound = (gameState) => {
   _players = [...gameState.players];
   gameState.currentRound = []
+  gameState.currentRoundGone = [];
   for(let i =0 ; i<gameState.players.length; i++){
     gameState.currentRound.push(_players[i])
   }
@@ -135,6 +137,7 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   gameState.promptCard = null;
   // find the judge by id and switch to the next player (note that we need to take the module)
   gameState.judgeID = gameState.currentRound.pop()._id;
+  gameState.currentRoundGone.push(gameState.judgeID);
 }
 
 const getNumberOfThinkingPlayers = (gameState) => {

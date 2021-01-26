@@ -128,6 +128,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res)
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "reset"});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   }
   else{

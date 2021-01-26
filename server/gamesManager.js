@@ -136,10 +136,19 @@ const addPlayerToGame = (gameID, player) => {
   let i = -1;
   for (i = 0; i < allGames[index].inactivePlayers.length; ++i) {
     _player = allGames[index].inactivePlayers[i]
-    if (player._id === _player._id) {
+    if (player._id == _player._id) {
       // Set that player to active and remove them from the
       allGames[index].players.push(_player);
-      allGames[index].currentRound.push(allGames[index].inactivePlayers.splice(i, 1));
+      
+      let alreadyGone = false;
+      for(let j =0 ;j<allGames[index].currentRoundGone.length; j++){
+        if(player._id == allGames[index].currentRoundGone[j]){
+          alreadyGone = true;
+        }
+      }
+      if(!alreadyGone){
+        allGames[index].currentRound.push(allGames[index].inactivePlayers.splice(i, 1));
+      }
       return 0;
     }
   }
@@ -174,6 +183,15 @@ const removePlayerFromGame = (gameID, playerID) => {
   //console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
   //console.log('after', allGames[index]);
+
+  //Remove player from the current round cycle so the game doesn't make them judge
+  for(i = 0; i <allGames[index].currentRound.length; i++){
+    player = allGames[index].currentRound[i];
+    if(playerID === player._id){
+      allGames[index].currentRound.splice(i,1);
+      break;
+    }
+  }
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
