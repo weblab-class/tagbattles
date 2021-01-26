@@ -58,6 +58,15 @@ module.exports = {
           if (user) await gameManager.removePlayerFromGame(room, user._id);
           await io.to(room).emit("gameUpdate", {type:"playerList",players:clients.map(socketid => getUserFromSocketID(socketid))});
           await io.to(room).emit("gameUpdate", {type:"updateHost", host:gameManager.getHost(room)})
+
+          // Reset to next round if leaving player was judge
+          if(gameManager.shouldReset(room)){
+            await io.to(room).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : gameManager.getJudge(room)});
+            await io.to(room).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
+            await io.to(room).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
+            await io.to(room).emit("gameUpdate", {'type': "reset"});
+          }
+          
           removeUser(user, socket);
         });
         console.log(`player has disconnected from room ${room}`);

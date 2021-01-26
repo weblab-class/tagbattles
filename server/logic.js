@@ -28,10 +28,13 @@ const createGame = (gameID) => {
     'rounds' : 3,
     'round': 0,
     'decks': [],
+    'reset': false,
+    'status': "lobby", // lobby, inSession, or leaderboard
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,
     'promptCards' : null,
+    'judgeID': "",
     'chat': [],
     'roundCounter': 0,
   }
@@ -42,6 +45,7 @@ const startGame = (gameState) => {
   let players = [...gameState.players]
   gameState.players = []
   gameState.currentRound = []
+  gameState.status = "inSession";
   for (let i = 0; i < players.length; i++) {
     addPlayerToGame(gameState, players[i]);
   }
@@ -125,7 +129,20 @@ const selectResponseCard = (gameState, playerID, cardIndex) => {
   //console.log(cardIndex)
   //console.log("gameState.players[playerIndex].responseCards[cardIndex]", gameState.players[playerIndex].responseCards[cardIndex])
   gameState.players[playerIndex].chosenResponse = gameState.players[playerIndex].responseCards[cardIndex];
+  gameState.players[playerIndex].roundCounter = gameState.roundCounter;
   replaceResponseCard(gameState, playerID, cardIndex);
+}
+
+const removePlayerFromGame = (gameState, playerID)=>{
+  let i;
+  for (i = 0; i < gameState.players.length; ++i) {
+    player = gameState.players[i]
+    if (playerID=== player._id) {
+      // Set that player to active
+      gameState.inactivePlayers.push(gameState.players.splice(i, 1));
+      break;
+    }
+  }
 }
 
 const beginNewRound = (gameState) => {
@@ -139,6 +156,8 @@ const beginNewRound = (gameState) => {
 
 const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   // find the winner by id and increase his score
+  console.log("In assigning winner and updating judge")
+  console.log("Updating judge for gameID ", gameState.gameID);
   for(let i = 0; i < gameState.players.length; i++) {
     gameState.players[i].chosenResponse = null;
     gameState.players[i].responseCards = getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS);
@@ -195,5 +214,6 @@ module.exports = {
   getPlayerCards,
   startGame,
   beginNewRound,
+  removePlayerFromGame,
   addSettingsToGame
 }

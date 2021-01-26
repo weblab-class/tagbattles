@@ -65,7 +65,7 @@ const selectWinnerAndUpdateJudge = async (gameID, winnerID) => {
     allGames[index].round += 1;
     await logic.beginNewRound(allGames[index]);
   }
-  logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
+  await logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
   for(let i = 0 ;i<allGames[index].players.length; i++){
     allGames[index].players[i].chosenResponse = null;
   }
@@ -138,6 +138,10 @@ const addPlayerToGame = (gameID, player) => {
     _player = allGames[index].inactivePlayers[i]
     if (player._id === _player._id) {
       // Set that player to active and remove them from the
+      if(_player.roundCounter === allGames[index].roundCounter){
+        // If the player has not chosen a card for this round before they left, reset their chosenResponse
+        _player.chosenResponse = null;
+      }
       allGames[index].players.push(_player);
       allGames[index].currentRound.push(allGames[index].inactivePlayers.splice(i, 1));
       return 0;
@@ -154,25 +158,15 @@ const addPlayerToGame = (gameID, player) => {
   return 0;
 }
 
-const removePlayerFromGame = (gameID, playerID) => {
+const removePlayerFromGame = async (gameID, playerID) => {
   // Set that player to inactive
   const index = getParticularGameIndex(gameID)
   //console.log("REMOVING ", playerID, " from ", gameID);
   if (index === -1) return;
-  let i;
-  for (i = 0; i < allGames[index].players.length; ++i) {
-    player = allGames[index].players[i]
-    player.chosenResponse = null;
-    if (playerID=== player._id) {
-      // Set that player to active
-      allGames[index].inactivePlayers.push(player);
-      break;
-    }
-  }
+  await removePlayerFromGame(allGames[index], playerID);
   //console.log('removed player')
   // Remove that player from the actives list.
   //console.log('before', allGames[index]);
-  allGames[index].players.splice(i, 1);
   //console.log('after', allGames[index]);
 
   //Assign new host if player was host and game is still going
@@ -182,7 +176,32 @@ const removePlayerFromGame = (gameID, playerID) => {
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
     //console.log(allGames[index].host);
   }
+
+  console.log("PlayerID: ", playerID, "; judgeID: ", allGames[index].judgeID);
+  console.log("Players in game: ",allGames[index].players);
+  console.log("Inactive players in game: ", allGames[index].inactivePlayers);
+  console.log("Whole Game: " , allGames[index]);
+  console.log(allGames[index].players.length > 0);
+  console.log(playerID == allGames[index].judgeID);
+  if(allGames[index].players.length > 0 && playerID == allGames[index].judgeID){
+    allGames[index].reset = true;
+    console.log("logic called");
+    await logic.assignWinnerAndUpdateJudge(allGames[index], playerID);
+    console.log(allGames[index]);
+  }
   return 0;
+}
+
+const shouldReset = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  if(allGames[index].reset){
+    allGames[index].reset = false;
+    return true;
+  }
+  return false;
 }
 
 const getHost = (gameID) => {
@@ -212,6 +231,7 @@ const checkMoreRounds = (gameID) => {
   }
   console.log("Current Round: ", allGames[index].round);
   console.log("Current Round Players: ",allGames[index].currentRound)
+  allGames[index].roundCounter += 1;
   return !(allGames[index].round == allGames[index].rounds && allGames[index].currentRound.length === 1);
 }
 
@@ -279,6 +299,30 @@ const getGameRounds = (gameID) => {
   return allGames[index].rounds;
 }
 
+const getGameStatus = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return "Oh no";
+  }
+  if(allGames[index].status === "inSession"){
+    return "player";
+  }
+  return allGames[index].status;
+}
+
+const getPlayerStatus = (gameID, playerID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  for(let i = 0; i<allGames[index].players.length; i++){
+    if(allGames[index].players[i]._id === playerID){
+      return allGames[index].players[i].chosenResponse ? "submitted" : "selecting";
+    }
+  }
+  return "NA";
+}
+
 const addToChat = (gameID, userID, message, name) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
@@ -306,6 +350,8 @@ const getPlayerList = (gameID) => {
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
+  getPlayerStatus,
+  getGameStatus,
   getChosenResponses,
   getChosenResponse,
   selectWinnerAndUpdateJudge,
@@ -323,6 +369,7 @@ module.exports = {
   getLeaderboard,
   getHost,
   updateGameRounds,
+  shouldReset,
   updateGameDecks,
   getGameDecks,
   getGameRounds,
