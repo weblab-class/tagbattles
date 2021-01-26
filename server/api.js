@@ -120,7 +120,7 @@ router.get('/getSubmittedResponses', auth.ensureLoggedIn, async (req, res) => {
 });
 
 router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res) => {
-  //console.log("reached api");
+  console.log("reached api: selecting winner and updating judge");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
     const newJudge = await gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
@@ -172,7 +172,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
-  console.log(req.body.gameID, req.user._id);
+  //console.log(req.body.gameID, req.user._id);
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }
