@@ -222,7 +222,7 @@ class Profile extends Component {
   }
 
   onNameChange = (e) => {
-    if(e.target.value.length < 21){
+    if(e.target.value.length < 11){
       this.setState({
         name: e.target.value,
         nameLengthError: false,
@@ -297,7 +297,7 @@ class Profile extends Component {
                     <>
                       {this.state.nameLengthError ? 
                         <div>
-                          <p className = "Profile-error-message">Name can't be longer than 20 characters</p>
+                          <p className = "Profile-error-message">Name can't be longer than 10 characters</p>
                         </div>
                       :
                         null
@@ -383,27 +383,29 @@ class Profile extends Component {
             </>
           }
         </div>
-        <div className = "Profile-favorite-card-box">
-          <h2>Favorite Card</h2>
-          {
-            this.state.favoriteCard?
-              <DisplayCard type = {1} text = {this.state.favoriteCard}/>
-            :
-              <button className = "Profile-card-button">Add Favorite Card</button>
-          }
-        </div>
-        {
-          this.state.decks.length > 0 ? 
-          <div className = "Profile-decks">
-            <h2>Decks</h2>
+        {/*
+          <div className = "Profile-favorite-card-box">
+            <h2>Favorite Card</h2>
             {
-              this.state.decks.map((deck) => {
-
-              })
+              this.state.favoriteCard?
+                <DisplayCard type = {1} text = {this.state.favoriteCard}/>
+              :
+                <button className = "Profile-card-button">Add Favorite Card</button>
             }
           </div>
-          :
-          null
+          {
+            this.state.decks.length > 0 ? 
+            <div className = "Profile-decks">
+              <h2>Decks</h2>
+              {
+                this.state.decks.map((deck) => {
+
+                })
+              }
+            </div>
+            :
+            null
+          }*/
         }
       </div>
     )

@@ -32,6 +32,10 @@
 }
 
 @media(max-width:800px){
+  .PlayerListItem-name-label{
+    text-align:center;
+  }
+
   .PlayerListItem-player-container{
     display:flex;
     flex-direction:column;

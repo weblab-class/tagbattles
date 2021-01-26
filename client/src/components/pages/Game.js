@@ -172,27 +172,37 @@ class Game extends Component {
           post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
             ////console.log('starting game')
             post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
-              ////console.log('made game');
-              this.setState({
-                joinedGame:true
-              });
-              get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
+              //console.log('made game');
+              if(res.status === 'Game Full'){
+                console.log("THIS GMAE IS FULADGSADG");
+                console.log("THEREFORE:     ",this.state.currentState)
                 this.setState({
-                  rounds: roundsData.rounds,
+                  currentState: "fullGame",
+                  joinedGame: false,
                 })
-                get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
+              }
+              else{
+                this.setState({
+                  joinedGame:true
+                });
+                get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
                   this.setState({
-                    deck: deckData.deck,
+                    rounds: roundsData.rounds,
                   })
-                  //console.log("Mounting Chat");
-                  get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
-                    //console.log(data.chat);
+                  get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
                     this.setState({
-                      chats: chatData.chat,
+                      deck: deckData.deck,
+                    })
+                    console.log("Mounting Chat");
+                    get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
+                      console.log(data.chat);
+                      this.setState({
+                        chats: chatData.chat,
+                      })
                     })
                   })
                 })
-              })
+              }
             });
           })
         });
@@ -219,59 +229,66 @@ class Game extends Component {
         <div className = "Game-game-container">
           {console.log(socket.id)}
           {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
-          <div className = "Game-main-container">
-            {this.state.currentState ? 
-              (this.state.currentState === "judge" ? 
-                <Judge 
-                  numThinkingPlayers = {this.state.numThinkingPlayers} 
-                  gameID = {this.state.gameID} 
-                  userID = {this.props.userID}
-                />
-              : 
-                (this.state.currentState === "gameEnd" ? 
-                  <Leaderboard leaderboard = {this.state.leaderboard}/>
+          {console.log("PLAYERS IN THE GAME: ",this.state.players)}
+          {this.state.currentState === 'fullGame' ? 
+            <h1 className = "Game-game-full">Game is Full</h1>
+          :
+            <>
+              <div className = "Game-main-container">
+                {this.state.currentState ? 
+                  (this.state.currentState === "judge" ? 
+                    <Judge 
+                      numThinkingPlayers = {this.state.numThinkingPlayers} 
+                      gameID = {this.state.gameID} 
+                      userID = {this.props.userID}
+                    />
+                  : 
+                    (this.state.currentState === "gameEnd" ? 
+                      <Leaderboard leaderboard = {this.state.leaderboard}/>
+                    : 
+                      <Player 
+                        gameID = {this.state.gameID} 
+                        currentState = {this.state.currentPlayerState}
+                        setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
+                        displayCard = {this.state.displayCard} 
+                        tentativeWinner={this.state.tentativeWinner}
+                        userID = {this.props.userID}/>
+                    )
+                  ) 
                 : 
-                  <Player 
-                    gameID = {this.state.gameID} 
-                    currentState = {this.state.currentPlayerState}
-                    setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
-                    displayCard = {this.state.displayCard} 
-                    tentativeWinner={this.state.tentativeWinner}
-                    userID = {this.props.userID}/>
-                )
-              ) 
-            : 
-              <Lobby 
-                players = {this.state.players} 
-                startGame = {this.startGame} 
-                testFunction = {this.testFunction} 
-                joinedGame = {this.state.joinedGame}
-                displayPlayerError = {this.state.displayPlayerError}
-                host = {this.state.host}
-                userID = {this.props.userID}
-                gameID = {this.state.gameID}
-                rounds = {this.state.rounds}
-                deck = {this.state.deck}
-                userName = {this.props.userName}
-              />
-            }
-          </div>
-          <div className = "Game-rightBar">
-            <PlayerList 
-              players = {this.state.players} 
-              host = {this.state.host}
-              stage = {this.state.currentState}
-              judgeID = {this.state.judgeID}
-              leaderboard = {this.state.leaderboard}
-              playerID = {this.props.userID}
-            />
-            <GameChat
-              userID = {this.props.userID}
-              gameID = {this.state.gameID}
-              userName = {this.props.userName}
-              chats = {this.state.chats}
-            />
-          </div>
+                  <Lobby 
+                    players = {this.state.players} 
+                    startGame = {this.startGame} 
+                    testFunction = {this.testFunction} 
+                    joinedGame = {this.state.joinedGame}
+                    displayPlayerError = {this.state.displayPlayerError}
+                    host = {this.state.host}
+                    userID = {this.props.userID}
+                    gameID = {this.state.gameID}
+                    rounds = {this.state.rounds}
+                    deck = {this.state.deck}
+                    userName = {this.props.userName}
+                  />
+                }
+              </div>
+              <div className = "Game-rightBar">
+                <PlayerList 
+                  players = {this.state.players} 
+                  host = {this.state.host}
+                  stage = {this.state.currentState}
+                  judgeID = {this.state.judgeID}
+                  leaderboard = {this.state.leaderboard}
+                  playerID = {this.props.userID}
+                />
+                <GameChat
+                  userID = {this.props.userID}
+                  gameID = {this.state.gameID}
+                  userName = {this.props.userName}
+                  chats = {this.state.chats}
+                />
+              </div>
+            </>
+          }
         </div>
       );
     }
