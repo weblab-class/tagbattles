@@ -72,7 +72,7 @@ class Game extends Component {
       }
     }
 
-    listenToServer = () => {
+    listenToServer = async () => {
       socket.off("gameUpdate").on("gameUpdate", data => {
         ////console.log(data);
         switch(data.type) {
@@ -174,12 +174,12 @@ class Game extends Component {
     }
     
     handleMount = async () => {
-      if (socket.disconnected) {
-        console.log("socket id is", socket.id);
-        await socket.io.reconnect();
-      }
+      // if (socket.disconnected) {
+      //   console.log("socket id is", socket.id);
+      //   await socket.io.reconnect();
+      // }
       if (this.props.userID) {
-        //console.log("Game.js Nameasdhdsahd:", this.props.userName);
+        console.log("Game.js Nameasdhdsahd:", this.props.userName);
         post("/api/test", {socketid:socket.id}).then((data) => {
           post("/api/initGameSocket", {gameID: this.state.gameID, socketid:socket.id}).then(()=>{
             ////console.log('starting game')
@@ -223,9 +223,9 @@ class Game extends Component {
       this.listenToServer();   
     }
     
-    async componentWillUnmount() {
+    componentWillUnmount() {
       // window.location.reload(true);
-      await post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: this.state.socketID});
+      post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: this.state.socketID});
     }
     render() {
       //console.log("USER ID IS ", this.props.userID);

@@ -79,9 +79,9 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
       //console.log("INITGAMESOCKET USER: ",user);
       socketManager.addUserToRoom(user, req.body.gameID);
       
-      await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
-        socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
-      });
+      // await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
+      //   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
+      // });
     });
   });
   res.send({});
@@ -161,7 +161,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   
   if(gameManager.getPlayerList(req.body.gameID).length < 10){
     await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)||[]});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
     //console.log("added player to game")
     res.send({status: "Success"});
@@ -173,12 +173,13 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
   console.log(req.body.gameID, req.user._id);
+  console.log("DISCONNECT USER IS CALLED");
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }
   if (req.user._id) {
     await gameManager.removePlayerFromGame(req.body.gameID, req.user._id);
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
+    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID) || []});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
   }
 });

@@ -115,8 +115,8 @@ class DeckCreator extends Component {
 							return element.card;
 						})
 					}).then((res) => {
-                console.log("submitted deck");
-					}).catch((e)=>console.log(e))
+                console.log("submitted deck"); alert("Deck has been saved! You can choose it while you create a new game."); this.setState({error_message: "You need at least one card!", response_cards: [], prompt_cards: [], deck_name: ""});
+					}).catch((e)=>console.log(e));
     }
 
     handeCardRemoval(index, card_type) {
