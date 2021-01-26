@@ -222,8 +222,9 @@ router.post('/createDeck', (req, res) => {
     prompt_cards : req.body.prompt_cards,
     response_cards: req.body.response_cards,
   })
-  newDeck.save().then(()=> {res.send({});});
-  res.send({})
+  newDeck.save().then(()=>
+   {res.send({})}
+  ).catch((e) => console.log(e));
 })
 // player info
 
