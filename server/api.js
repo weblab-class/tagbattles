@@ -194,7 +194,7 @@ router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
 
 
 router.get('/getDeckNames', (req, res) => {
-  CardPack.find({}, {name:1, _id:0}).then((cardPackNames) => res.send(cardPackNames));
+  CardPack.find({}).then((cardPackNames) => res.send(cardPackNames));
 })
 
 router.get('/getGameID', (req,res) => {
