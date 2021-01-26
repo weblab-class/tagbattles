@@ -297,18 +297,18 @@ router.post("/updateRounds", auth.ensureLoggedIn, (req, res) => {
   res.send({newRounds});
 })
 
-router.post("/updateDeck", (req, res) => {
-  const newDeck = gameManager.updateGameDeck(req.body.gameID, req.body.deck);
-  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "deckUpdate", deck: newDeck});
-  res.send({newDeck});
+router.post("/updateDecks", (req, res) => {
+  const newDecks = gameManager.updateGameDecks(req.body.gameID, req.body.decks);
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "deckUpdate", decks: newDecks});
+  res.send({newDecks});
 })
 
 router.get("/getRounds", (req, res) => {
   res.send({rounds: gameManager.getGameRounds(req.query.gameID)});
 })
 
-router.get("/getDeck", (req, res) => {
-  res.send({deck: gameManager.getGameDeck(req.query.gameID)})
+router.get("/getDecks", (req, res) => {
+  res.send({decks: gameManager.getGameDecks(req.query.gameID)})
 })
 
 router.get("/getChatMessages", (req, res) => {

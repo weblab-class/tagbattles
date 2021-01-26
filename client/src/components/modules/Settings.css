@@ -43,6 +43,16 @@
   cursor:pointer;
 }
 
+.Settings-deck-label{
+  margin:0;
+  background-color: rgb(82, 122, 197);
+  border-radius:100px;
+  padding-left: 10px;
+  font-size: 12px;
+  padding-right: 10px;
+  color:white;
+}
+
 .Settings-settings-label{
   margin:10px;
 }

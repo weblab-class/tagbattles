@@ -33,8 +33,9 @@ class Game extends Component {
         chats: [],
         joinedGame: false,
         displayPlayerError: false,
+        displayDeckError: false,
         rounds: 3,
-        deck: "Apples2Apples",
+        decks: [],
         // deckList: cards,
         // numberOfRounds: null,
         // selectedDecks: ["a"],
@@ -47,17 +48,26 @@ class Game extends Component {
 
     startGame = (rounds, decks) => {
       if(this.state.players.length > 1){
-        post("/api/startGame", {
-          'gameID' : this.state.gameID,
-          'rounds' : this.state.rounds,
-          'decks' : [this.state.deck],
-        }).then((data) =>{
-          ////console.log("started game");
-        })
+        if(decks.length > 0){
+          post("/api/startGame", {
+            'gameID' : this.state.gameID,
+            'rounds' : this.state.rounds,
+            'decks' : decks,
+          }).then((data) =>{
+            ////console.log("started game");
+          })
+        }
+        else{
+          this.setState({
+            displayDeckError: true,
+            displayPlayerError: false,
+          })
+        }
       }
       else{
         this.setState({
           displayPlayerError: true,
+          displayDeckError: false,
         })
       }
     }
@@ -67,6 +77,7 @@ class Game extends Component {
         ////console.log(data);
         switch(data.type) {
           case "playerList":
+            console.log("RECEIVED PLAYERS: ", data.players);
             this.setState({
               players: data.players,
               displayPlayerError: false,
@@ -133,8 +144,9 @@ class Game extends Component {
           case "deckUpdate":
             ////console.log("Deck Updated");
             ////console.log(data.deck);
+            console.log("UPDATED DECKS: ", data.decks.map((deck) => deck.value));
             this.setState({
-              deck: data.deck,
+              decks: data.decks.map((deck) => deck.value),
             })
             break;
           case "chatUpdate":
@@ -189,9 +201,9 @@ class Game extends Component {
                   this.setState({
                     rounds: roundsData.rounds,
                   })
-                  get("/api/getDeck", {gameID: this.state.gameID}).then((deckData) => {
+                  get("/api/getDecks", {gameID: this.state.gameID}).then((deckData) => {
                     this.setState({
-                      deck: deckData.deck,
+                      decks: deckData.decks.map(deck => deck.value),
                     })
                     console.log("Mounting Chat");
                     get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
@@ -227,9 +239,7 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {console.log(socket.id)}
-          {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
-          {console.log("PLAYERS IN THE GAME: ",this.state.players)}
+          {this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null}
           {this.state.currentState === 'fullGame' ? 
             <h1 className = "Game-game-full">Game is Full</h1>
           :
@@ -262,11 +272,12 @@ class Game extends Component {
                     testFunction = {this.testFunction} 
                     joinedGame = {this.state.joinedGame}
                     displayPlayerError = {this.state.displayPlayerError}
+                    displayDeckError = {this.state.displayDeckError}
                     host = {this.state.host}
                     userID = {this.props.userID}
                     gameID = {this.state.gameID}
                     rounds = {this.state.rounds}
-                    deck = {this.state.deck}
+                    decks = {this.state.decks}
                     userName = {this.props.userName}
                   />
                 }
