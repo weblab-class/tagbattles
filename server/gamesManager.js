@@ -164,8 +164,8 @@ const removePlayerFromGame = (gameID, playerID) => {
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
-    player.chosenResponse = null;
     if (playerID=== player._id) {
+      player.chosenResponse = null;
       // Set that player to active
       allGames[index].inactivePlayers.push(player);
       break;
