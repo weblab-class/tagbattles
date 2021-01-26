@@ -111,6 +111,8 @@ router.get('/getNewPromptCard', auth.ensureLoggedIn, async (req, res) => {
 router.post('/selectPromptCard', auth.ensureLoggedIn, async (req, res) => {
   const promptCard = gameManager.selectPromptCard(req.body.gameID);
   await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : promptCard});
+  const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
+  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
   res.send({});
 });
 
@@ -164,11 +166,23 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "updateHost", host:gameManager.getHost(req.body.gameID)});
     //console.log("added player to game")
-    res.send({status: "Success"});
+    if (gameManager.isStarted(req.body.gameID)) {
+      res.send({status: "Started"})
+    }
+    else{
+      res.send({status: "Success"});
+    }
   }
   else{
     res.send({status: "Game Full"});
   }
+})
+
+router.get('/currentPromptCard', (req, res) => {
+  console.log('=======================================================')
+  const gc = gameManager.getPromptCard(req.query.gameID)
+  console.log("prompt card", gc);
+  res.send({displayCard : gc});
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
@@ -181,6 +195,7 @@ router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
   }
+  res.send({});
 });
 
 router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
@@ -231,7 +246,7 @@ router.post('/createDeck', (req, res) => {
 router.get("/getPlayer", (req, res) => {
   User.findOne({_id: req.query.userID}).then((player) => {
     res.send(player);
-  })
+  });
 })
 
 router.get("/getName", (req, res) => {

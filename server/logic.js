@@ -117,7 +117,12 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   }
   gameState.promptCard = null;
   // find the judge by id and switch to the next player (note that we need to take the module)
+  updateJudge(gameState); 
+}
+
+const updateJudge = (gameState) => {
   gameState.judgeID = gameState.players[(getPlayerByID(gameState, gameState.judgeID) + 1) % gameState.players.length]._id;
+  return gameState.judgeID;
 }
 
 const getNumberOfThinkingPlayers = (gameState) => {
@@ -166,5 +171,6 @@ module.exports = {
   getNumberOfThinkingPlayers,
   getPlayerCards,
   startGame,
-  addSettingsToGame
+  addSettingsToGame,
+  updateJudge
 }

@@ -185,6 +185,7 @@ class Game extends Component {
             ////console.log('starting game')
             post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
               //console.log('made game');
+              console.log(res)
               if(res.status === 'Game Full'){
                 console.log("THIS GMAE IS FULADGSADG");
                 console.log("THEREFORE:     ",this.state.currentState)
@@ -214,6 +215,19 @@ class Game extends Component {
                     })
                   })
                 })
+                if (res.status === 'Started') {
+                  get('/api/currentPromptCard', {gameID : this.state.gameID}).then((res) => {
+                    console.log(res)
+                    this.setState({
+                      displayCard : res.displayCard,
+                    })
+                  }).catch(
+                    (e) => console.log(e)
+                  )
+                  this.setState({
+                    currentState : 'player',
+                  })
+                }
               }
             });
           })
@@ -274,6 +288,7 @@ class Game extends Component {
                     displayPlayerError = {this.state.displayPlayerError}
                     displayDeckError = {this.state.displayDeckError}
                     host = {this.state.host}
+                    toBeAdded = {this.state.toBeAdded}
                     userID = {this.props.userID}
                     gameID = {this.state.gameID}
                     rounds = {this.state.rounds}

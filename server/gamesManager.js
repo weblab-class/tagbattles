@@ -119,7 +119,7 @@ const getJudge = (gameID) => {
   if (index !== -1) {
     return allGames[index].judgeID;
   }
-  return -1;
+  return null;
 }
 const addPlayerToGame = (gameID, player) => {
   // Checks if they are part of the game already
@@ -148,11 +148,19 @@ const addPlayerToGame = (gameID, player) => {
   return 0;
 }
 
+const getPromptCard = (gameID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    return allGames[index].promptCard;
+  }
+  return null;
+}
+
 const removePlayerFromGame = (gameID, playerID) => {
   // Set that player to inactive
   const index = getParticularGameIndex(gameID)
   console.log("REMOVING ", playerID, " from ", gameID);
-  if (index === -1) return;
+  if (index === -1) return false;
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
@@ -168,6 +176,40 @@ const removePlayerFromGame = (gameID, playerID) => {
   console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
   console.log('after', allGames[index]);
+  
+  // If the number of active players is now < 1 we want to send a gameOver screen
+  const numberOfActivePlayers = allGames[index].players.length;
+  if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
+    return ;
+  }
+
+
+  // If they are the judge then we want to reassign.
+  if (allGames[index].judgeID === playerID) {
+    // Now we have to do some fancy judge reassigning here
+    const newJudge = logic.updateJudge(allGames[index]);
+
+    // We also want to send this reassigned judge back to the players:
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "reset"});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": getLeaderboard(gameID)});
+  }
+
+
+  // Additionally we want to send back a numThinkingPlayers.
+  const numberOfThinkingPlayers = getNumberOfThinkingPlayers(gameID);
+  // We want to send a socket out of the number of thinking players
+  socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+
+  // Sends the player list out
+  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:allGames[index].players.map(player => {_id: player._id})});
+  
+  // Removes user from socket
+  const socketID = socketManager.getSocketFromUserID(playerID);
+  socketManager.removeUser({_id: playerID}, {_id: socketID});
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
@@ -175,8 +217,9 @@ const removePlayerFromGame = (gameID, playerID) => {
     console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
     console.log(allGames[index].host);
+    socketManager.getIo().to(gameID).emit("gameUpdate", {type:"updateHost", host:allGames[index].host})
   }
-  return 0;
+  return false;
 }
 
 const getHost = (gameID) => {
@@ -298,6 +341,15 @@ const getPlayerList = (gameID) => {
   return allGames[index].players;
 }
 
+const isStarted = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  return allGames[index].isActive;
+}
+
+
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
@@ -324,4 +376,9 @@ module.exports = {
   addToChat,
   getChat,
   getPlayerList,
+  isStarted,
+  getPromptCard,
 }
+
+
+const socketManager = require("./server-socket"); // This is only used in removePlayerFromGame. Fix later by sending to different file.

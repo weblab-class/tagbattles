@@ -1,4 +1,3 @@
-const gameManager = require('./gamesManager.js');
 let io;
 
 const userToSocketMap = {}; // maps user ID to socket object
@@ -45,7 +44,7 @@ const removeUser = (user, socket) => {
 module.exports = {
   init: (http) => {
     io = require("socket.io")(http);
-
+    
     io.on("connection", (socket) => {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
@@ -65,13 +64,15 @@ module.exports = {
       });
     });
   },
-
+  
   addUser: addUser,
   removeUser: removeUser,
   addUserToRoom: addUserToRoom,
-
+  
   getSocketFromUserID: getSocketFromUserID,
   getUserFromSocketID: getUserFromSocketID,
   getSocketFromSocketID: getSocketFromSocketID,
   getIo: () => io,
 };
+
+const gameManager = require('./gamesManager.js');
