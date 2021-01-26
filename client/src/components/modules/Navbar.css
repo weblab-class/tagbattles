@@ -52,17 +52,6 @@ nav{
 }
 
 @media (max-width: 800px){
-  .NavBar-nav-links{
-    /*display:none;*/
-    position:absolute;
-    top:60px;
-    left:0px;
-    width:100%;
-    animation: slide-down 0.8s ease;
-    background-color:#B9C6E1;
-    overflow:hidden;
-    z-index:2;
-  }
 
   .NavBar-nav-links-closed{
     display:none;
@@ -105,6 +94,30 @@ nav{
     justify-content:center;
     height:60px;
   }
+
+  .NavBar-nav-links{
+    /*display:none;*/
+    position:absolute;
+    top:60px;
+    left:0px;
+    width:100%;
+    animation: slide-down 0.8s ease;
+    background-color:#B9C6E1;
+    overflow:hidden;
+    z-index:2;
+  }
+
+  .NavBar-nav-links-part{
+    /*display:none;*/
+    position:absolute;
+    top:60px;
+    left:0px;
+    width:100%;
+    animation: slide-down-two 0.8s ease;
+    background-color:#B9C6E1;
+    overflow:hidden;
+    z-index:2;
+  }
   
   @keyframes slide-down{
     0%{
@@ -113,6 +126,17 @@ nav{
     }
     100%{
       height:223px;
+      opacity:1;
+    }
+  }
+
+  @keyframes slide-down-two{
+    0%{
+      height:0;
+      oopacity:0;
+    }
+    100%{
+      height:183px;
       opacity:1;
     }
   }

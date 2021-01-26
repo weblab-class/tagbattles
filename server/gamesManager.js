@@ -56,20 +56,27 @@ const getChosenResponse = (gameID, playerID) => {
   return {card: null};
 }
 
-const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
+const selectWinnerAndUpdateJudge = async (gameID, winnerID) => {
   const index = getParticularGameIndex(gameID)
-  if (index !== -1) {
-    logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
+  if (index === -1) {
+    return
   }
+  if(allGames[index].currentRound.length === 0){
+    allGames[index].round += 1;
+    await logic.beginNewRound(allGames[index]);
+  }
+  logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
   for(let i = 0 ;i<allGames[index].players.length; i++){
     allGames[index].players[i].chosenResponse = null;
   }
   allGames[index].promptCard = null;
+  console.log("Current Round Players: ", allGames[index].currentRound);
+  console.log("Current Round: ", allGames[index].round);
   return allGames[index].judgeID;
 }
 
 const selectFinalResponse = (gameID, playerID, cardIndex) => {
-  console.log(cardIndex, "index");
+  //console.log(cardIndex, "index");
   if (cardIndex > 10 || cardIndex <= 0) return 0;
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
@@ -81,7 +88,7 @@ const selectFinalResponse = (gameID, playerID, cardIndex) => {
 const getNumberOfThinkingPlayers = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if (index !== -1) {
-    console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
+    //console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
     return logic.getNumberOfThinkingPlayers(allGames[index]);
     
   }
@@ -89,12 +96,12 @@ const getNumberOfThinkingPlayers = (gameID) => {
 }
 
 const getPlayerCards = (gameID, playerID) => {
-  console.log(gameID);
+  //console.log(gameID);
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     return logic.getPlayerCards(allGames[index], playerID);
   }
-  console.log("did not find the game");
+  //console.log("did not find the game");
   return -1;
 }
 
@@ -109,7 +116,7 @@ const addSettingsAndStart = async (gameID, decks, rounds) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     await logic.addSettingsToGame(allGames[index], decks, rounds);
-    logic.startGame(allGames[index]);
+    await logic.startGame(allGames[index]);
   }
   return -1;
 }
@@ -119,7 +126,7 @@ const getJudge = (gameID) => {
   if (index !== -1) {
     return allGames[index].judgeID;
   }
-  return -1;
+  return null;
 }
 const addPlayerToGame = (gameID, player) => {
   // Checks if they are part of the game already
@@ -132,9 +139,8 @@ const addPlayerToGame = (gameID, player) => {
     if (player._id === _player._id) {
       // Set that player to active and remove them from the
       allGames[index].players.push(_player);
-      allGames[index].inactivePlayers.splice(i, 1);
+      allGames[index].currentRound.push(allGames[index].inactivePlayers.splice(i, 1));
       return 0;
-      break;
     }
   }
   // If not add them to the game
@@ -142,16 +148,24 @@ const addPlayerToGame = (gameID, player) => {
 
   // Set host if only one player
   if(allGames[index].players.length === 1){
-    console.log("Place 2: ",player._id);
+    //console.log("Place 2: ",player._id);
     allGames[index].host = player._id;
   }
   return 0;
 }
 
+const getPromptCard = (gameID) => {
+  const index = getParticularGameIndex(gameID)
+  if (index !== -1) {
+    return allGames[index].promptCard;
+  }
+  return null;
+}
+
 const removePlayerFromGame = (gameID, playerID) => {
   // Set that player to inactive
   const index = getParticularGameIndex(gameID)
-  console.log("REMOVING ", playerID, " from ", gameID);
+  //console.log("REMOVING ", playerID, " from ", gameID);
   if (index === -1) return;
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
@@ -163,20 +177,54 @@ const removePlayerFromGame = (gameID, playerID) => {
       break;
     }
   }
-  console.log('removed player')
+  //console.log('removed player')
   // Remove that player from the actives list.
-  console.log('before', allGames[index]);
+  //console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
   console.log('after', allGames[index]);
+  
+  // If the number of active players is now < 1 we want to send a gameOver screen
+  const numberOfActivePlayers = allGames[index].players.length;
+  if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
+    return ;
+  }
+
+
+  // If they are the judge then we want to reassign.
+  if (allGames[index].judgeID === playerID) {
+    // Now we have to do some fancy judge reassigning here
+    const newJudge = logic.updateJudge(allGames[index]);
+
+    // We also want to send this reassigned judge back to the players:
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "reset"});
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": getLeaderboard(gameID)});
+  }
+
+
+  // Additionally we want to send back a numThinkingPlayers.
+  const numberOfThinkingPlayers = getNumberOfThinkingPlayers(gameID);
+  // We want to send a socket out of the number of thinking players
+  socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+
+  // Sends the player list out
+  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:allGames[index].players.map(player => {_id: player._id})});
+  
+  // Removes user from socket
+  const socketID = socketManager.getSocketFromUserID(playerID);
+  socketManager.removeUser({_id: playerID}, {_id: socketID});
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
-    console.log("Going into if statement");
-    console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    //console.log("Going into if statement");
+    //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
-    console.log(allGames[index].host);
+    socketManager.getIo().to(gameID).emit("gameUpdate", {type:"updateHost", host:allGames[index].host})
   }
-  return 0;
+  return false;
 }
 
 const getHost = (gameID) => {
@@ -204,9 +252,9 @@ const checkMoreRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  console.log(allGames[index].rounds)
-  allGames[index].rounds--;
-  return allGames[index].rounds > 0;
+  console.log("Current Round: ", allGames[index].round);
+  console.log("Current Round Players: ",allGames[index].currentRound)
+  return !(allGames[index].round == allGames[index].rounds && allGames[index].currentRound.length === 1);
 }
 
 const getLeaderboard = (gameID) => {
@@ -229,10 +277,10 @@ const getLeaderboard = (gameID) => {
         maxIndex = j;
       }
     }
-    console.log(maxIndex, maxScore);
+    //console.log(maxIndex, maxScore);
     retList.push(playerCopy.splice(maxIndex,1)[0]);
-    console.log("retList: ", retList)
-    console.log("playerList: ", playerCopy, "\n")
+    //console.log("retList: ", retList)
+    //console.log("playerList: ", playerCopy, "\n")
   }
   return retList;
 }
@@ -243,7 +291,7 @@ const updateGameRounds = (gameID, numRounds) => {
     return;
   }
   allGames[index].rounds = numRounds;
-  console.log("gameIDadsgadsg:", gameID);
+  //console.log("gameIDadsgadsg:", gameID);
   return allGames[index].rounds;
 }
 
@@ -269,7 +317,7 @@ const getGameRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  console.log("gameIDASD a:", gameID)
+  //console.log("gameIDASD a:", gameID)
   return allGames[index].rounds;
 }
 
@@ -294,9 +342,17 @@ const getPlayerList = (gameID) => {
   if(index === -1){
     return;
   }
-  console.log(allGames[index].players);
   return allGames[index].players;
 }
+
+const isStarted = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  return allGames[index].isActive;
+}
+
 
 module.exports = {
   getNewPromptCard,
@@ -324,4 +380,9 @@ module.exports = {
   addToChat,
   getChat,
   getPlayerList,
+  isStarted,
+  getPromptCard,
 }
+
+
+const socketManager = require("./server-socket"); // This is only used in removePlayerFromGame. Fix later by sending to different file.

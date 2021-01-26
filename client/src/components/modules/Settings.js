@@ -32,13 +32,16 @@ class Settings extends Component {
       rounds: "3",
       selectedDecks: this.props.decks,
       decks: [],
+      decksLabels: [],
     }
   }
 
   componentDidMount(){
     get("/api/getDeckNames").then((data) => {
+      console.log("SATTE DATA:",data);
       this.setState({
         decks: data.map(cardPack => cardPack.name),
+        decksLabels: data.map(cardPack => cardPack.name + ` (Total ${cardPack.prompt_cards.length + cardPack.response_cards.length})`),
       });
     });
   }
@@ -93,8 +96,7 @@ class Settings extends Component {
               onChange = {this.onDeckChange}
               placeholder="Select Decks to Use"
               autoFocus
-              noOptionsMessage = {() => "Must select a deck!"}
-              options = {this.state.decks.map((deck) => {return {value: deck, label: deck}})}
+              options = {this.state.decks.map((deck,index) => {console.log("ADSGDSAGD:", this.state.decksLabels[index],", ", deck);return {value: deck, label: this.state.decksLabels[index]}})}
               className = "Settings-decks-selector"
             />
           :

@@ -19,7 +19,7 @@ import './Lobby.css';
  * @param {Number} rounds
  * @param {Array} decks
  * @param {String} userName
- * 
+ * @param {boolean} toBeAdded true when the game has started but the player is not yet a part of it.
  */
 class Lobby extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class Lobby extends Component {
           {/*<PlayerList players = {this.props.players} host = {this.props.host}/>*/}
           <Settings 
             joinedGame = {this.props.joinedGame} 
-            startGame = {this.props.startGame} 
+            startGame = {this.props.startGame}
             displayPlayerError = {this.props.displayPlayerError}
             displayDeckError = {this.props.displayDeckError}
             host = {this.props.host === this.props.userID}

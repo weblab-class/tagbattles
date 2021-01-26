@@ -1,14 +1,29 @@
-.PlayerChatButton-player-container{
+.PlayerChatButton-container-right{
+  border-radius:50%;
+  position:fixed;
   display:flex;
-  flex-direction:row;
+  z-index: 4;
+  flex-direction:column-reverse;
+  bottom:20px;
+  right:20px;
+}
+
+.PlayerChatButton-container-left{
+  border-radius:50%;
+  position:fixed;
+  z-index:4;
+  display:flex;
+  flex-direction:column-reverse;
+  bottom:20px;
+  left:20px;
+}
+
+.PlayerChatButton-button{
+  border-radius:50%;
+  width:50px;
+  height:50px;
+  display:flex;
+  flex-direction:column;
   align-items:center;
-  margin-bottom:10px;
-}
-
-.PlayerChatButton-player-image-container{
-
-}
-
-.PlayerChatButton-name-label{
-  margin:0;
+  justify-content:center;
 }
