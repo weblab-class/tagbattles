@@ -47,7 +47,7 @@ class Game extends Component {
     }
 
     startGame = (rounds, decks) => {
-      if(this.state.players.length > 1){
+      if(this.state.players.length > 2){
         if(decks.length > 0){
           post("/api/startGame", {
             'gameID' : this.state.gameID,
@@ -186,8 +186,6 @@ class Game extends Component {
             post("/api/addPlayer", {gameID: this.state.gameID, player : {_id : this.props.userID, name: this.props.userName}}).then((res) => {
               //console.log('made game');
               if(res.status === 'Game Full'){
-                console.log("THIS GMAE IS FULADGSADG");
-                console.log("THEREFORE:     ",this.state.currentState)
                 this.setState({
                   currentState: "fullGame",
                   joinedGame: false,
