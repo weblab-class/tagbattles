@@ -79,9 +79,6 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
       //console.log("INITGAMESOCKET USER: ",user);
       socketManager.addUserToRoom(user, req.body.gameID);
       
-      await socketManager.getIo().in(req.body.gameID).clients((error, clients) => {
-        socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type:"playerList", players: gameManager.getPlayerList(req.body.gameID)});
-      });
     });
   });
   res.send({});
