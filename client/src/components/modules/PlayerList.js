@@ -23,7 +23,7 @@ class PlayerList extends Component {
     if (this.props.players.length > 0) {
       console.log("LEADERBOARD: ", this.props.leaderboard);
       console.log("PLAYERS: ", this.props.players);
-      playerList = this.props.leaderboard ? this.props.leaderboard : this.props.players;
+      playerList = this.props.players ? this.props.players : this.props.leaderboard;
       playerList = playerList.map((player) => 
         <PlayerListItem 
           key = {player._id}

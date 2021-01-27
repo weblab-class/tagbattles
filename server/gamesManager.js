@@ -192,16 +192,19 @@ const removePlayerFromGame = (gameID, playerID) => {
   const socketID = socketManager.getSocketFromUserID(playerID);
   socketManager.removeUser({_id: playerID}, {_id: socketID});
 
-  //if (!allGames[index].isActive) return ;
-  // If the number of active players is now < 1 we want to send a gameOver screen
-  //const numberOfActivePlayers = allGames[index].players.length;
-  //if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
-  //  socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
-  //  return ;
-  //}
+  // if (!allGames[index].isActive) {
+  //   console.log("Well, if you read this, you are f'd up");
+  //   return;
+  // }
+  //If the number of active players is now < 1 we want to send a gameOver screen
+  if (allGames[index].isActive && allGames[index].players.length <= 1) {
+    console.log("Game ended. YAY!");
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
+   return ;
+  }
 
   // If they are the judge then we want to reassign.
-  if (allGames[index].judgeID == playerID) {
+  if (allGames[index].isActive && allGames[index].judgeID == playerID) {
     // Now we have to do some fancy judge reassigning here
     const newJudge = logic.updateJudge(allGames[index]);
 
@@ -213,14 +216,16 @@ const removePlayerFromGame = (gameID, playerID) => {
     socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": getLeaderboard(gameID)});
   }
 
-
-  // Additionally we want to send back a numThinkingPlayers.
-  const numberOfThinkingPlayers = getNumberOfThinkingPlayers(gameID);
-  // We want to send a socket out of the number of thinking players
-  socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+  if (allGames[index].isActive) {
+    // Additionally we want to send back a numThinkingPlayers.
+    const numberOfThinkingPlayers = getNumberOfThinkingPlayers(gameID);
+    // We want to send a socket out of the number of thinking players
+    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+  }
 
   // Sends the player list out
-  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:getPlayerList(gameID)});
+  console.log("IM ACTUALLY SENDING THE PLAYERLIST");
+  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:allGames[index].players});
 }
 
 const getHost = (gameID) => {

@@ -9,6 +9,7 @@ const roomToSocketsMap = [];
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
 const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
 const getSocketFromSocketID = (socketid) => io.sockets.connected[socketid];
+const getRoomFromSocketID = (socketid) => socketToRoomMap[socketid];
 
 const addUser = (user, socket) => {
   if (!socket) return;
@@ -27,10 +28,8 @@ const addUser = (user, socket) => {
   }
 };
 
-const addUserToRoom = (user, roomid) => {
-  if (user && getSocketFromUserID(user._id)) {
-    socketToRoomMap[getSocketFromUserID(user._id).id] = roomid;
-  }
+const addUserToRoom = (socketid, roomid) => {
+  socketToRoomMap[socketid] = roomid;
 }
 
 const removeUser = (user, socket) => {
@@ -49,8 +48,7 @@ module.exports = {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
         const user = getUserFromSocketID(socket.id), room = socketToRoomMap[socket.id];
-        // console.log(user.name);
-        io.in(room).clients(async (error, clients) => {
+        if (room) io.in(room).clients((error, clients) => {
           if (error) console.log(error);
           console.log("OMG HE GOT DCed");
           // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
@@ -73,6 +71,7 @@ module.exports = {
   getSocketFromUserID: getSocketFromUserID,
   getUserFromSocketID: getUserFromSocketID,
   getSocketFromSocketID: getSocketFromSocketID,
+  getRoomFromSocketID: getRoomFromSocketID,
   getIo: () => io,
 };
 

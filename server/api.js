@@ -71,13 +71,11 @@ router.get("/newGameID", (req, res) => {
 
 
 router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
-  //console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}`);
   const socket = await socketManager.getSocketFromSocketID(req.body.socketid);
-  if (socket) await socket.join(req.body.gameID, async () => {
-    User.findOne({_id: req.user._id}).then(async (user) => {
-      socketManager.addUserToRoom(user, req.body.gameID);
-      console.log(`${req.user.name} is in initGameSocket`);   
-    });
+  console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}. socket id is ${socket.id}`);
+  if (socket) await socket.join(req.body.gameID, () => {
+    socketManager.addUserToRoom(socket.id, req.body.gameID);
+    console.log(`${socket.id} ${req.user.name} is at ${socketManager.getRoomFromSocketID(socket.id)}`);   
   });
   res.send({});
 });
