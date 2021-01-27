@@ -84,7 +84,7 @@ class WinnerSelector extends Component{
               )
             ) : null}
           </div>
-          <button className="WinnerSelector-submitButton" hidden={!this.state.selectedPlayer && !this.state.submittedPlayer} onClick = {this.selectWinner}>Final Card</button>
+          <button className  ="WinnerSelector-submitButton" hidden={!this.state.selectedPlayer && !this.state.submittedPlayer} onClick = {this.selectWinner}>Final Card</button>
         </div>
 			)
 		}
