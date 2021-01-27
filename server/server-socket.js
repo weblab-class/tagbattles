@@ -52,9 +52,10 @@ module.exports = {
         // console.log(user.name);
         io.in(room).clients(async (error, clients) => {
           if (error) console.log(error);
+          console.log("OMG HE GOT DCed");
           // console.log(clients.map(socket => getUserFromSocketID(socket.id)));
           if (user) console.log("SOMEBODY GOT DISCONNECTED", user._id, room);
-          if (user) await gameManager.removePlayerFromGame(room, user._id);
+          if (user) gameManager.removePlayerFromGame(room, user._id);
           // await io.to(room).emit("gameUpdate", {type:"playerList",players:clients.map(socketid => getUserFromSocketID(socketid))});
           // await io.to(room).emit("gameUpdate", {type:"updateHost", host:gameManager.getHost(room)})
           removeUser(user, socket);

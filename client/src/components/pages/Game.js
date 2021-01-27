@@ -217,9 +217,10 @@ class Game extends Component {
                 })
                 if (res.status === 'Started') {
                   get('/api/displayCardRevealed', {gameID : this.state.gameID}).then((qqres) => {
+                    console.log("qqres", qqres.isRevealed);
                     if (qqres.isRevealed) {
                       get('/api/currentPromptCard', {gameID : this.state.gameID}).then((qres) => {
-                        console.log(qres)
+                        console.log(qres, "qres");
                         this.setState({
                           displayCard : qres.displayCard,
                         })

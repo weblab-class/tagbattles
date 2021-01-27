@@ -4,7 +4,7 @@ allGames = []
 
 const getParticularGameIndex = (gameID) => {
   for (let i = 0; i < allGames.length; i++) {
-    if (allGames[i].gameID === gameID) {
+    if (allGames[i].gameID == gameID) {
       return i;
     }
   }
@@ -34,7 +34,7 @@ const getChosenResponses = (gameID) => {
     let responses = []
     for (let i = 0; i < allGames[index].players.length; i++) {
       player = allGames[index].players[i]
-      if (player.chosenResponse && player._id !== allGames[index].judgeID) {
+      if (player.chosenResponse && player._id != allGames[index].judgeID) {
         responses.push({'playerID' : player._id, card:player.chosenResponse})
       }
     }
@@ -49,7 +49,7 @@ const getChosenResponse = (gameID, playerID) => {
   if (index !== -1) {
     for (let i = 0; i < allGames[index].players.length; i++) {
       player = allGames[index].players[i]
-      if (player.chosenResponse && player._id === playerID) {
+      if (player.chosenResponse && player._id == playerID) {
         return player.chosenResponse
       }
     }
@@ -131,7 +131,7 @@ const addPlayerToGame = (gameID, player) => {
   let i = -1;
   for (i = 0; i < allGames[index].inactivePlayers.length; ++i) {
     _player = allGames[index].inactivePlayers[i]
-    if (player._id === _player._id) {
+    if (player._id == _player._id) {
       // Set that player to active and remove them from the
       allGames[index].players.push(_player);
       allGames[index].inactivePlayers.splice(i, 1);
@@ -162,11 +162,11 @@ const removePlayerFromGame = (gameID, playerID) => {
   // Set that player to inactive
   const index = getParticularGameIndex(gameID)
   console.log("REMOVING ", playerID, " from ", gameID);
-  if (index === -1) return false;
+  if (index === -1) {return false;}
   let i;
   for (i = 0; i < allGames[index].players.length; ++i) {
     player = allGames[index].players[i]
-    if (playerID=== player._id) {
+    if (playerID== player._id) {
       player.chosenResponse = null;
       // Set that player to active
       allGames[index].inactivePlayers.push(player);
@@ -175,12 +175,13 @@ const removePlayerFromGame = (gameID, playerID) => {
   }
   //console.log('removed player')
   // Remove that player from the actives list.
-  //console.log('before', allGames[index]);
+  console.log('before', allGames[index].players.map(player => player.name));
+  console.log('index', i)
   allGames[index].players.splice(i, 1);
-  //console.log('after', allGames[index]);
+  console.log('after', allGames[index].players.map(player => player.name));
   
   //Assign new host if player was host and game is still going
-  if(allGames[index].players.length > 0 && playerID === allGames[index].host){
+  if(allGames[index].players.length > 0 && playerID == allGames[index].host){
     //console.log("Going into if statement");
     //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
@@ -191,16 +192,16 @@ const removePlayerFromGame = (gameID, playerID) => {
   const socketID = socketManager.getSocketFromUserID(playerID);
   socketManager.removeUser({_id: playerID}, {_id: socketID});
 
-  // if (!allGames[index].isActive) return ;
+  //if (!allGames[index].isActive) return ;
   // If the number of active players is now < 1 we want to send a gameOver screen
-  // const numberOfActivePlayers = allGames[index].players.length;
-  // if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
-  //   socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
-  //   return ;
-  // }
+  //const numberOfActivePlayers = allGames[index].players.length;
+  //if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
+  //  socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
+  //  return ;
+  //}
 
   // If they are the judge then we want to reassign.
-  if (allGames[index].judgeID === playerID) {
+  if (allGames[index].judgeID == playerID) {
     // Now we have to do some fancy judge reassigning here
     const newJudge = logic.updateJudge(allGames[index]);
 
@@ -235,7 +236,7 @@ const incrementPlayerPoints = (gameID, winnerID) => {
   if( index === -1) return;
   for(let i = 0; i<allGames[index].players.length; i++){
     player = allGames[index].players[i];
-    if(winnerID === player._id){
+    if(winnerID == player._id){
       allGames[index].players[i].score += 1;
     }
   }
@@ -344,14 +345,14 @@ const getPlayerList = (gameID) => {
 const isStarted = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
-    return;
+    return ;
   }
   return allGames[index].isActive;
 }
 
 const isDisplayCardRevealed = (gameID) => {
   const index = getParticularGameIndex(gameID);
-  if(index === -1){
+  if(index !== -1){
     return allGames[index].isPromptSelected;
   }
   return false;

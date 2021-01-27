@@ -82,7 +82,7 @@ class Player extends Component {
               </div>
             }
           </>
-          : <p>Loading</p>}
+          : <p>The judge is selecting a prompt card.</p>}
       </div>
     );
   }
