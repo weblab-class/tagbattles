@@ -2,8 +2,14 @@
   display:flex;
   flex-direction:column;
   align-items:center;
+  overflow:auto;
+  height:100%;
 }
 
 .Player-selected-card-display{
   text-align: center;
+}
+
+.Player-card-container{
+  display:flex;
 }

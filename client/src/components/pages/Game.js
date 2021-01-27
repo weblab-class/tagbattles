@@ -261,7 +261,7 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null}
+          {/*this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null*/}
           {this.state.currentState === 'fullGame' ? 
             <h1 className = "Game-game-full">Game is Full</h1>
           :

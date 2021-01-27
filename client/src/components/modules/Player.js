@@ -69,7 +69,7 @@ class Player extends Component {
                 userID = {this.props.userID}
               />
             :
-              <div className="Player-container">
+              <div className="Player-card-container">
               {(this.props.tentativeWinner ? 
               <Card 
                 text={this.props.tentativeWinner}
