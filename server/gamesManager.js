@@ -208,6 +208,10 @@ const removePlayerFromGame = (gameID, playerID) => {
     // Now we have to do some fancy judge reassigning here
     const newJudge = logic.updateJudge(allGames[index]);
 
+    for(let i = 0 ;i<allGames[index].players.length; i++){
+      allGames[index].players[i].chosenResponse = null;
+    }
+
     // We also want to send this reassigned judge back to the players:
     socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
     socketManager.getIo().to(gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
