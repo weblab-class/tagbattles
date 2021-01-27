@@ -111,41 +111,46 @@ router.post('/selectPromptCard', auth.ensureLoggedIn, async (req, res) => {
   res.send({});
 });
 
-router.get('/getSubmittedResponses', auth.ensureLoggedIn, async (req, res) => {
-  const responses = await gameManager.getChosenResponses(req.query.gameID);
+router.get('/getSubmittedResponses', auth.ensureLoggedIn, (req, res) => {
+  const responses = gameManager.getChosenResponses(req.query.gameID);
   res.send({'playerCards' : responses});
 });
 
-router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, async (req, res) => {
+router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, (req, res) => {
   //console.log("reached api");
+  console.log("we got this call");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
-    const newJudge = await gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "reset"});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
+    console.log("we have more rounds");
+    const newJudge = gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
+    console.log("new one ", newJudge);
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "reset"});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'leaderboard', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   }
   else{
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
   }
   res.send({})
 });
 
-router.post('/selectTentativeWinner', auth.ensureLoggedIn, async (req, res) => {
+router.post('/selectTentativeWinner', auth.ensureLoggedIn, (req, res) => {
   //console.log("reached api");
   const response = gameManager.getChosenResponse(req.body.gameID, req.body.playerID);
   socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": response});
+  res.send({})
 });
 
-router.post('/selectFinalResponse', auth.ensureLoggedIn, async (req, res) => {
-  //console.log('submitted card', req.body.cardIndex);
+router.post('/selectFinalResponse', auth.ensureLoggedIn, (req, res) => {
+
+  console.log('submitted card', req.user.name, req.body.cardIndex);
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.cardIndex);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
   //console.log("in server thinking players", numberOfThinkingPlayers);
   // We want to send a socket out of the number of thinking players
-  await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
+  socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
   res.send({});
 })
 
@@ -187,8 +192,8 @@ router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
   }
   if (req.user._id) {
     await gameManager.removePlayerFromGame(req.body.gameID, req.user._id);
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
-    await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
+    // await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "playerList", players:gameManager.getPlayerList(req.body.gameID)});
+    // await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {type: "updateHost", host:gameManager.getHost(req.body.gameID)});
   }
   res.send({});
 });

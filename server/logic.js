@@ -47,7 +47,6 @@ const startGame = (gameState) => {
 }
 
 const addPlayerToGame = (gameState, player) => {
-  console.log(`in logic.js the new number of players were ${gameState.players.length}`);
   gameState.players.push({
     '_id': player._id,
     'name' : player.name,
@@ -55,7 +54,6 @@ const addPlayerToGame = (gameState, player) => {
     'responseCards' : gameState.isActive ? getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS) : null,
     'chosenResponse' : null,
   });
-  console.log(`in logic.js the new number of players is ${gameState.players.length}`);
   // Set player to host if only 1 player in game
   if(gameState.players.length === 1){
     console.log("Place 1:", player._id);
@@ -130,7 +128,6 @@ const updateJudge = (gameState) => {
 }
 
 const getNumberOfThinkingPlayers = (gameState) => {
-  console.log("number of players is ", gameState.players.length)
   let numberOfThinkingPlayers = gameState.players.length - 1;
   for (let i = 0; i < gameState.players.length; i++) {
     //console.log(gameState.players[i].chosenResponse, gameState.players[i].name)

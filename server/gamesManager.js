@@ -179,13 +179,24 @@ const removePlayerFromGame = (gameID, playerID) => {
   allGames[index].players.splice(i, 1);
   //console.log('after', allGames[index]);
   
+  //Assign new host if player was host and game is still going
+  if(allGames[index].players.length > 0 && playerID === allGames[index].host){
+    //console.log("Going into if statement");
+    //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
+    //console.log(allGames[index].host);
+    socketManager.getIo().to(gameID).emit("gameUpdate", {type:"updateHost", host:allGames[index].host})
+  }
+  // Removes user from socket
+  const socketID = socketManager.getSocketFromUserID(playerID);
+  socketManager.removeUser({_id: playerID}, {_id: socketID});
+  if (!allGames[index].isActive) return ;
   // If the number of active players is now < 1 we want to send a gameOver screen
   const numberOfActivePlayers = allGames[index].players.length;
   if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
     socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
     return ;
   }
-
 
   // If they are the judge then we want to reassign.
   if (allGames[index].judgeID === playerID) {
@@ -207,20 +218,9 @@ const removePlayerFromGame = (gameID, playerID) => {
   socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'numThinkingPlayers', 'numThinkingPlayers' : numberOfThinkingPlayers});
 
   // Sends the player list out
-  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:allGames[index].players.map(player => {_id: player._id})});
+  socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:getPlayerList(gameID)});
   
-  // Removes user from socket
-  const socketID = socketManager.getSocketFromUserID(playerID);
-  socketManager.removeUser({_id: playerID}, {_id: socketID});
 
-  //Assign new host if player was host and game is still going
-  if(allGames[index].players.length > 0 && playerID === allGames[index].host){
-    //console.log("Going into if statement");
-    //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
-    allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
-    //console.log(allGames[index].host);
-    socketManager.getIo().to(gameID).emit("gameUpdate", {type:"updateHost", host:allGames[index].host})
-  }
   return false;
 }
 
@@ -337,10 +337,10 @@ const getChat = (gameID) => {
 const getPlayerList = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
-    return;
+    return [];
   }
-  //console.log(allGames[index].players);
-  return allGames[index].players;
+  //console.log("WTF IS GOING ON HERE MAN!!!", allGames[index].players);
+  return allGames[index].players || [];
 }
 
 const isStarted = (gameID) => {

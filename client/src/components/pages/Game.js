@@ -84,7 +84,7 @@ class Game extends Component {
             });
             break;
           case "judgeUpdate":
-            ////console.log(data.judgeID);
+            console.log("got a judge socket", data.judgeID);
             if (this.props.userID === data.judgeID) {
               this.setState({
                 currentState: 'judge',
@@ -98,7 +98,7 @@ class Game extends Component {
             }
             break;
           case "numThinkingPlayers":
-            //console.log("I think there are ", data.numThinkingPlayers)
+            console.log("I think there are ", data.numThinkingPlayers)
             this.setState({
               numThinkingPlayers: data.numThinkingPlayers
             });
