@@ -5,11 +5,18 @@ import Avatar from './Avatar.js';
 import FirstPlace from './icons/firstplace.js';
 import SecondPlace from './icons/secondplace.js';
 import ThirdPlace from './icons/thirdplace.js';
+import FourthPlace from './icons/fourthplace.js';
+import FifthPlace from './icons/fifthplace.js';
+import SixthPlace from './icons/sixthplace.js';
+import SeventhPlace from './icons/seventhplace.js';
+import EighthPlace from './icons/eighthplace.js';
+import NinthPlace from './icons/ninthplace.js';
+import TenthPlace from './icons/tenthplace.js';
 
 //Ranking SVGs
 
 
-const rankings = [<FirstPlace/>, <SecondPlace/>, <ThirdPlace/>];
+const rankings = [<FirstPlace/>, <SecondPlace/>, <ThirdPlace/>, <FourthPlace/>, <FifthPlace/>, <SixthPlace/>, <SeventhPlace/>, <EighthPlace/>, <NinthPlace/>, <TenthPlace/>];
 
 /**
  * props
