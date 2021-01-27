@@ -116,7 +116,7 @@ class Settings extends Component {
                 >
                   Enter Game
                 </button> 
-                <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 2 players to start</p>
+                <p className = "Settings-error" hidden = {!this.props.displayPlayerError}>Need at least 3 players to start</p>
                 <p className = "Settings-error" hidden = {!this.props.displayDeckError}>Need at least 1 deck to play</p>
               </>
             : 
