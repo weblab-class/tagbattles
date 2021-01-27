@@ -116,7 +116,7 @@ router.get('/getSubmittedResponses', auth.ensureLoggedIn, (req, res) => {
 
 router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, (req, res) => {
   //console.log("reached api");
-  console.log("we got this call");
+  //console.log("we got this call");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
     console.log("we have more rounds");
