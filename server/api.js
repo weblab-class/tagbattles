@@ -207,7 +207,7 @@ router.post('/startGame', auth.ensureLoggedIn, async (req, res) => {
 
 
 router.get('/getDeckNames', (req, res) => {
-  CardPack.find({}, {name:1, _id:0}).then((cardPackNames) => res.send(cardPackNames));
+  CardPack.find({}).then((cardPackNames) => res.send(cardPackNames));
 })
 
 router.get('/getGameID', (req,res) => {
@@ -386,6 +386,14 @@ router.post("/postNewName", auth.ensureLoggedIn, (req, res) => {
       res.send({newUser: user[0]});
     })
   })
+})
+
+router.get("/getGameStatus", (req, res) => {
+  res.send({status: gameManager.getGameStatus(req.query.gameID)});
+})
+
+router.get("/getPlayerStatus", (req, res) => {
+  res.send({status: gameManager.getPlayerStatus(req.query.gameID, req.query.playerID)});
 })
 
 // anything else falls to this "not found" case

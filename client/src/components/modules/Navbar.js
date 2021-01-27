@@ -60,7 +60,7 @@ class Navbar extends Component {
             <CloseButton func = {this.openNav} location = "nav"/>
           }
         </div>
-        <div className = {this.state.listClosed ? "NavBar-nav-links-closed NavBar-smooth" : "NavBar-smooth NavBar-nav-links"}>
+        <div className = {this.state.listClosed ? "NavBar-nav-links-closed NavBar-smooth" : (this.props.userId ? "NavBar-smooth NavBar-nav-links" : "NavBar-smooth NavBar-nav-links-part")}>
 					<ul className = "NavBar-nav-list">
 						<li className = "NavBar-nav-item"><Link to  = {"/play/" + this.props.gameID} className = "NavBar-link" onClick = {async ()=>{await this.closeNav();await this.props.setNewGameID();await window.location.reload(false);}}>New Game</Link></li>
 						<li className = "NavBar-nav-item"><Link to = "/play/" className = "NavBar-link" onClick = {this.closeNav}>Join Game</Link></li>

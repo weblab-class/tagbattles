@@ -1,51 +1,46 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './PlayerChatButton.css';
-import { get, post } from "../../utilities.js";
-import Avatar from './Avatar.js';
+import ChatIcon from './icons/chat.js';
+import PlayerChat from './PlayerChat.js';
 
 /**
  * Props:
- * @param {String} player
- * @param {Function} openChat
+ * @param {String} userID
+ * @param {String} location "left" or "right"
  */
 class PlayerChatButton extends Component {
   constructor(props){
     super(props);
     this.state = {
-      colorID: 0,
-      hatID: 0,
-      mouthID: 0,
-      eyeID: 0,
+      opened: false,
     }
   }
 
-  componentDidMount(){
-    get("/api/getPlayer", {userID: this.props.player._id}).then((data) => {
-      this.setState({
-        colorID: data.colorID,
-        hatID: data.hatID,
-        mouthID: data.mouthID,
-        eyeID: data.eyeID,
-      })
+  openChat = () => {
+    this.setState({
+      opened: true,
+    })
+  }
+
+  closeChat = () => {
+    this.setState({
+      opened: false,
     })
   }
 
   render(){
-    return (
-      <div className = "PlayerChatButton-player-container">
-        <div className = "PlayerChatButton-player-image-container">
-          <Avatar
-            colorID = {this.state.colorID}
-            hatID = {this.state.hatID}
-            mouthID = {this.state.mouthID}
-            eyeID = {this.state.eyeID}
-            width = "30px"
-            height = "30px"
-          />
-        </div> 
-        <h3 className = "PlayerChatButton-name-label">{this.props.player.name}</h3>
+    return(
+      <div className = {this.props.location === 'left' ? "PlayerChatButton-container-left" : "PlayerChatButton-container-right"}>
+        {this.state.opened ? 
+          <PlayerChat userID = {this.props.userID} closeChat = {this.closeChat}/>
+        :
+          <button className = "PlayerChatButton-button">
+            <ChatIcon func = {this.openChat} className = "PlayerChatButton-button"/>
+          </button>
+        }
       </div>
     )
   }
 }
+
 export default PlayerChatButton;

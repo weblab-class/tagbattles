@@ -57,15 +57,22 @@ const getChosenResponse = (gameID, playerID) => {
   return {card: null};
 }
 
-const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
+const selectWinnerAndUpdateJudge = async (gameID, winnerID) => {
   const index = getParticularGameIndex(gameID)
-  if (index !== -1) {
-    logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
+  if (index === -1) {
+    return
   }
+  if(allGames[index].currentRound.length === 0){
+    allGames[index].round += 1;
+    await logic.beginNewRound(allGames[index]);
+  }
+  await logic.assignWinnerAndUpdateJudge(allGames[index], winnerID);
   for(let i = 0 ;i<allGames[index].players.length; i++){
     allGames[index].players[i].chosenResponse = null;
   }
   allGames[index].promptCard = null;
+  console.log("Current Round Players: ", allGames[index].currentRound);
+  console.log("Current Round: ", allGames[index].round);
   return allGames[index].judgeID;
 }
 
@@ -111,7 +118,7 @@ const addSettingsAndStart = async (gameID, decks, rounds) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     await logic.addSettingsToGame(allGames[index], decks, rounds);
-    logic.startGame(allGames[index]);
+    await logic.startGame(allGames[index]);
   }
   return -1;
 }
@@ -133,10 +140,22 @@ const addPlayerToGame = (gameID, player) => {
     _player = allGames[index].inactivePlayers[i]
     if (player._id == _player._id) {
       // Set that player to active and remove them from the
+      if(_player.roundCounter === allGames[index].roundCounter){
+        // If the player has not chosen a card for this round before they left, reset their chosenResponse
+        _player.chosenResponse = null;
+      }
       allGames[index].players.push(_player);
-      allGames[index].inactivePlayers.splice(i, 1);
+      
+      let alreadyGone = false;
+      for(let j =0 ;j<allGames[index].currentRoundGone.length; j++){
+        if(player._id == allGames[index].currentRoundGone[j]){
+          alreadyGone = true;
+        }
+      }
+      if(!alreadyGone){
+        allGames[index].currentRound.push(allGames[index].inactivePlayers.splice(i, 1));
+      }
       return 0;
-      break;
     }
   }
   // If not add them to the game
@@ -226,6 +245,18 @@ const removePlayerFromGame = (gameID, playerID) => {
   // Sends the player list out
   console.log("IM ACTUALLY SENDING THE PLAYERLIST");
   socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:allGames[index].players});
+}
+
+const shouldReset = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  if(allGames[index].reset){
+    allGames[index].reset = false;
+    return true;
+  }
+  return false;
 }
 
 const getHost = (gameID) => {
@@ -322,6 +353,30 @@ const getGameRounds = (gameID) => {
   return allGames[index].rounds;
 }
 
+const getGameStatus = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return "Oh no";
+  }
+  if(allGames[index].status === "inSession"){
+    return "player";
+  }
+  return allGames[index].status;
+}
+
+const getPlayerStatus = (gameID, playerID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return;
+  }
+  for(let i = 0; i<allGames[index].players.length; i++){
+    if(allGames[index].players[i]._id === playerID){
+      return allGames[index].players[i].chosenResponse ? "submitted" : "selecting";
+    }
+  }
+  return "NA";
+}
+
 const addToChat = (gameID, userID, message, name) => {
   const index = getParticularGameIndex(gameID);
   if(index === -1){
@@ -367,6 +422,8 @@ const isDisplayCardRevealed = (gameID) => {
 module.exports = {
   getNewPromptCard,
   selectPromptCard,
+  getPlayerStatus,
+  getGameStatus,
   getChosenResponses,
   getChosenResponse,
   selectWinnerAndUpdateJudge,
@@ -384,6 +441,7 @@ module.exports = {
   getLeaderboard,
   getHost,
   updateGameRounds,
+  shouldReset,
   updateGameDecks,
   getGameDecks,
   getGameRounds,

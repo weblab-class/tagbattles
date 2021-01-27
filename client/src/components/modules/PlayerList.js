@@ -10,7 +10,6 @@ import './PlayerList.css';
  * @param {String} host
  * @param {String} stage (ingame or lobby)
  * @param {String} judgeID
- * @param {List} leaderboard
  * @param {String} playerID
  */
 class PlayerList extends Component {

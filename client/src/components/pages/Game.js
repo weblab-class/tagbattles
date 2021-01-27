@@ -7,7 +7,7 @@ import Leaderboard from "../modules/Leaderboard.js";
 import { get, post } from "../../utilities.js";
 import Player from "../modules/Player.js";
 import Judge from "../modules/Judge.js";
-import PlayerChatMenu from '../modules/PlayerChatMenu.js';
+import PlayerChatButton from '../modules/PlayerChatButton.js';
 import PlayerList from '../modules/PlayerList.js';
 import GameChat from '../modules/GameChat.js';
 
@@ -26,8 +26,8 @@ class Game extends Component {
         gameID: window.location.pathname.substring(6), 
         players: [],
         host: "",
-        currentState: null,
-        currentPlayerState: 0,
+        currentState: "lobby",
+        currentPlayerState: "selecting",
         judgeID: "",
         leaderboard: null,
         chats: [],
@@ -112,7 +112,7 @@ class Game extends Component {
             ////console.log("Game has ended");
             ////console.log("leaderboard: ", data.leaderboard);
             this.setState({
-              currentState: "gameEnd",
+              currentState: "leaderboard",
               leaderboard: data.leaderboard,
             })
             break;
@@ -133,7 +133,7 @@ class Game extends Component {
           case "reset":
             //console.log("reset state")
             this.setState({
-              currentPlayerState: 0,
+              currentPlayerState: "selecting",
             })
             break;
           case "tentativeWinner":
@@ -187,8 +187,6 @@ class Game extends Component {
               //console.log('made game');
               console.log(res)
               if(res.status === 'Game Full'){
-                console.log("THIS GMAE IS FULADGSADG");
-                console.log("THEREFORE:     ",this.state.currentState)
                 this.setState({
                   currentState: "fullGame",
                   joinedGame: false,
@@ -198,19 +196,32 @@ class Game extends Component {
                 this.setState({
                   joinedGame:true
                 });
-                get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
+                get("/api/getGameStatus", {gameID: this.state.gameID}).then((gameData) => {
+                  console.log("GAME STATUS: ",gameData.status);
                   this.setState({
-                    rounds: roundsData.rounds,
+                    currentState: gameData.status,
                   })
-                  get("/api/getDecks", {gameID: this.state.gameID}).then((deckData) => {
+                  get("/api/getRounds", {gameID: this.state.gameID}).then((roundsData) => {
                     this.setState({
-                      decks: deckData.decks.map(deck => deck.value),
+                      rounds: roundsData.rounds,
                     })
-                    console.log("Mounting Chat");
-                    get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
-                      console.log(data.chat);
+                    get("/api/getDecks", {gameID: this.state.gameID}).then((deckData) => {
                       this.setState({
-                        chats: chatData.chat,
+                        decks: deckData.decks.map(deck => deck.value),
+                      })
+                      console.log("Mounting Chat");
+                      get("/api/getChatMessages", {gameID: this.state.gameID}).then((chatData) => {
+                        console.log(data.chat);
+                        this.setState({
+                          chats: chatData.chat,
+                        })
+                        if(gameData.status === 'inSession'){
+                          get("/api/getPlayerStatus", {gameID: this.state.gameID, playerID: this.props.userID}).then((playerData) => {
+                            this.setState({
+                              currentPlayerState: playerData.status,
+                            })
+                          })
+                        }
                       })
                     })
                   })
@@ -261,33 +272,13 @@ class Game extends Component {
       }
       return (
         <div className = "Game-game-container">
-          {this.props.userID?<PlayerChatMenu userID = {this.props.userID} location = "left"/>:null}
+          {/*this.props.userID?<PlayerChatButton userID = {this.props.userID} location = "left"/>:null*/}
           {this.state.currentState === 'fullGame' ? 
             <h1 className = "Game-game-full">Game is Full</h1>
           :
             <>
               <div className = "Game-main-container">
-                {this.state.currentState ? 
-                  (this.state.currentState === "judge" ? 
-                    <Judge 
-                      numThinkingPlayers = {this.state.numThinkingPlayers} 
-                      gameID = {this.state.gameID} 
-                      userID = {this.props.userID}
-                    />
-                  : 
-                    (this.state.currentState === "gameEnd" ? 
-                      <Leaderboard leaderboard = {this.state.leaderboard}/>
-                    : 
-                      <Player 
-                        gameID = {this.state.gameID} 
-                        currentState = {this.state.currentPlayerState}
-                        setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
-                        displayCard = {this.state.displayCard} 
-                        tentativeWinner={this.state.tentativeWinner}
-                        userID = {this.props.userID}/>
-                    )
-                  ) 
-                : 
+                {this.state.currentState === 'lobby' ? 
                   <Lobby 
                     players = {this.state.players} 
                     startGame = {this.startGame} 
@@ -302,6 +293,27 @@ class Game extends Component {
                     decks = {this.state.decks}
                     userName = {this.props.userName}
                   />
+                : 
+                  (this.state.currentState === 'leaderboard' ? 
+                    <Leaderboard leaderboard = {this.state.leaderboard}/>
+                  :
+                    (this.state.currentState === "player" ? 
+                      <Player 
+                        gameID = {this.state.gameID} 
+                        currentState = {this.state.currentPlayerState}
+                        setCurrentState = {(newState) => {this.setState({currentPlayerState : newState})}}
+                        displayCard = {this.state.displayCard} 
+                        tentativeWinner={this.state.tentativeWinner}
+                        userID = {this.props.userID}
+                      />
+                    : 
+                      <Judge 
+                        numThinkingPlayers = {this.state.numThinkingPlayers} 
+                        gameID = {this.state.gameID} 
+                        userID = {this.props.userID}
+                      />
+                    )
+                  )
                 }
               </div>
               <div className = "Game-rightBar">
@@ -310,7 +322,6 @@ class Game extends Component {
                   host = {this.state.host}
                   stage = {this.state.currentState}
                   judgeID = {this.state.judgeID}
-                  leaderboard = {this.state.leaderboard}
                   playerID = {this.props.userID}
                 />
                 <GameChat

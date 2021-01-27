@@ -46,7 +46,7 @@ class Player extends Component {
   // Figuring out the black card code
   selectedResponse = (selectedCard) => {
     console.log("got here and selected a response");
-    this.props.setCurrentState(1);
+    this.props.setCurrentState("submitted");
     this.setState({
       currentCard: selectedCard,
     })
@@ -61,7 +61,7 @@ class Player extends Component {
         {this.props.displayCard ? 
           <>
             <DisplayCard text = {this.props.displayCard} type = {0}/>
-            {this.props.currentState === 0 ?
+            {this.props.currentState === "selecting" ?
               <ResponseSelector 
                 displayingCard = {this.props.displayCard} 
                 submitResponse= {(card) => this.selectedResponse(card)} 

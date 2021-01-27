@@ -21,15 +21,21 @@ const addSettingsToGame = async (gameState, cardPackNames, rounds) => {
 const createGame = (gameID) => {
   return {
     'gameID': gameID,
-    'players' : [],
-    'inactivePlayers' : [],
+    'players' : [], // List of all active players in the game
+    'inactivePlayers' : [], // List of inactive players and their data
+    'currentRound': [], // List of players yet to go in the round
+    'currentRoundGone': [], // List of playerIDs that have already gone in the current round
     'host' : '',
     'rounds' : 3,
+    'round': 0,
     'decks': [],
+    'reset': false,
+    'status': "lobby", // lobby, inSession, or leaderboard
     'promptCard' : null,
     'responseCards' : null,
     'isActive' : false,
     'promptCards' : null,
+    'judgeID': "",
     'chat': [],
     'isPromptSelected' : false,
   }
@@ -39,10 +45,12 @@ const startGame = (gameState) => {
   gameState.isActive = true;
   let players = [...gameState.players]
   gameState.players = []
+  gameState.currentRound = []
+  gameState.status = "inSession";
   for (let i = 0; i < players.length; i++) {
     addPlayerToGame(gameState, players[i]);
   }
-
+  gameState.round = 1;
   gameState.judgeID = players[0]._id;
 }
 
@@ -53,10 +61,16 @@ const addPlayerToGame = (gameState, player) => {
     'score' : 0,
     'responseCards' : gameState.isActive ? getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS) : null,
     'chosenResponse' : null,
+    'roundCounter': 0,
   });
+  // Add player into the current round if game active
+  if(gameState.isActive){
+    gameState.currentRound.push(gameState.players[gameState.players.length-1]);
+  }
+
   // Set player to host if only 1 player in game
   if(gameState.players.length === 1){
-    console.log("Place 1:", player._id);
+    //console.log("Place 1:", player._id);
     gameState.host = player._id;
   }
   return gameState;
@@ -64,8 +78,16 @@ const addPlayerToGame = (gameState, player) => {
 
 const getRandomElementsFromArray = (arr, numberOfElementsToGet) => {
   let randomElements = [];
+  let randomIndices = [];
+  for(let i = 0; i<numberOfElementsToGet; i++){
+    let num = Math.floor(Math.random() * arr.length);
+    while(randomIndices.includes(num)){
+      num = Math.floor(Math.random() * arr.length);
+    }
+    randomIndices.push(num);
+  }
   for (let i = 0; i < numberOfElementsToGet; i++) {
-    randomElements.push(arr[Math.floor(Math.random() * arr.length)]);
+    randomElements.push(arr[randomIndices[i]]);
   }
   return randomElements;
 };
@@ -108,13 +130,39 @@ const selectResponseCard = (gameState, playerID, cardIndex) => {
   //console.log(cardIndex)
   //console.log("gameState.players[playerIndex].responseCards[cardIndex]", gameState.players[playerIndex].responseCards[cardIndex])
   gameState.players[playerIndex].chosenResponse = gameState.players[playerIndex].responseCards[cardIndex];
+  gameState.players[playerIndex].roundCounter = gameState.roundCounter;
   replaceResponseCard(gameState, playerID, cardIndex);
+}
+
+const removePlayerFromGame = (gameState, playerID)=>{
+  let i;
+  for (i = 0; i < gameState.players.length; ++i) {
+    player = gameState.players[i]
+    if (playerID=== player._id) {
+      // Set that player to active
+      gameState.inactivePlayers.push(gameState.players.splice(i, 1));
+      break;
+    }
+  }
+}
+
+const beginNewRound = (gameState) => {
+  _players = [...gameState.players];
+  gameState.currentRound = []
+  gameState.currentRoundGone = [];
+  for(let i =0 ; i<gameState.players.length; i++){
+    gameState.currentRound.push(_players[i])
+  }
+  return gameState;
 }
 
 const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
   // find the winner by id and increase his score
+  console.log("In assigning winner and updating judge")
+  console.log("Updating judge for gameID ", gameState.gameID);
   for(let i = 0; i < gameState.players.length; i++) {
     gameState.players[i].chosenResponse = null;
+    gameState.players[i].responseCards = getRandomElementsFromArray(gameState.responseCards, NUMBER_OF_CARDS);
   }
   gameState.promptCard = null;
   // find the judge by id and switch to the next player (note that we need to take the module)

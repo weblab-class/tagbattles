@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './PlayerChat.css';
 import BackArrow from './icons/fatback.js';
+import PlayerChatPlayer from './PlayerChatPlayer.js';
 import { get, post } from "../../utilities.js";
 import CloseButton from './icons/close.js';
 import EditIcon from './icons/edit.js';
@@ -64,7 +65,7 @@ class PlayerChat extends Component {
           <div className = "PlayerChat-player-names">
             {this.state.messageHistory.map((chat) => {
               return (
-                <PlayerChatButton player = {chat.player} openChat = {this.openChat} />
+                <PlayerChatPlayer player = {chat.player} openChat = {this.openChat} />
               )
             })}
           </div>
