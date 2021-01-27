@@ -12,7 +12,7 @@ const addSettingsToGame = async (gameState, cardPackNames, rounds) => {
   const promptCards = allCards['promptCards'];
   const responseCards = allCards['responseCards'];
 	
-  gameState.rounds = rounds
+  gameState.rounds = rounds * gameState.players.length
   gameState.responseCards = responseCards
   gameState.promptCards = promptCards
   return gameState 
