@@ -21,7 +21,7 @@ class Skeleton extends Component {
 
   render() {
     return (
-      <>
+      <div className = "Skeleton-container">
           {/*{this.props.userId ? (
             <GoogleLogout
               clientId={GOOGLE_CLIENT_ID}
@@ -40,7 +40,10 @@ class Skeleton extends Component {
             />
           )}
         <HomePage userID={this.props.userId} />*/}
-      </>
+        <h1 className = "Skeleton-title">#TagBattles</h1>
+        <p className = "Skeleton-description">Imagine card games like Cards Against Humanity, Apples to Apples, Game of Phones, but all of them are in one website! Join #TagBattles, invite your friends, and #TagYourCards!</p>
+        <p className  ="Skeleton-description">Sign in with your Google account and play today!</p>
+      </div>
     );
   }
 }
