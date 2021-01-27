@@ -190,13 +190,14 @@ const removePlayerFromGame = (gameID, playerID) => {
   // Removes user from socket
   const socketID = socketManager.getSocketFromUserID(playerID);
   socketManager.removeUser({_id: playerID}, {_id: socketID});
-  if (!allGames[index].isActive) return ;
+
+  // if (!allGames[index].isActive) return ;
   // If the number of active players is now < 1 we want to send a gameOver screen
-  const numberOfActivePlayers = allGames[index].players.length;
-  if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
-    socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
-    return ;
-  }
+  // const numberOfActivePlayers = allGames[index].players.length;
+  // if (numberOfActivePlayers <= 1 && allGames[index].isActive) {
+  //   socketManager.getIo().to(gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": getLeaderboard(gameID)});
+  //   return ;
+  // }
 
   // If they are the judge then we want to reassign.
   if (allGames[index].judgeID === playerID) {
@@ -219,9 +220,6 @@ const removePlayerFromGame = (gameID, playerID) => {
 
   // Sends the player list out
   socketManager.getIo().to(gameID).emit("gameUpdate", {type:"playerList",players:getPlayerList(gameID)});
-  
-
-  return false;
 }
 
 const getHost = (gameID) => {
