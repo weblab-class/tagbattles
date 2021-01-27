@@ -216,11 +216,17 @@ class Game extends Component {
                   })
                 })
                 if (res.status === 'Started') {
-                  get('/api/currentPromptCard', {gameID : this.state.gameID}).then((res) => {
-                    console.log(res)
-                    this.setState({
-                      displayCard : res.displayCard,
-                    })
+                  get('/api/displayCardRevealed', {gameID : this.state.gameID}).then((res) => {
+                    if (res.isRevealed) {
+                      get('/api/currentPromptCard', {gameID : this.state.gameID}).then((res) => {
+                        console.log(res)
+                        this.setState({
+                          displayCard : res.displayCard,
+                        })
+                      }).catch(
+                        (e) => console.log(e)
+                      )
+                    }
                   }).catch(
                     (e) => console.log(e)
                   )
