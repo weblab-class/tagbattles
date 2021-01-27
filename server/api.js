@@ -72,10 +72,10 @@ router.get("/newGameID", (req, res) => {
 
 router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
   const socket = await socketManager.getSocketFromSocketID(req.body.socketid);
-  console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}. socket id is ${socket.id}`);
+  //console.log(`initing the socket for ${req.body.socketid}, ${req.body.gameID}. socket id is ${socket.id}`);
   if (socket) await socket.join(req.body.gameID, () => {
     socketManager.addUserToRoom(socket.id, req.body.gameID);
-    console.log(`${socket.id} ${req.user.name} is at ${socketManager.getRoomFromSocketID(socket.id)}`);   
+    //console.log(`${socket.id} ${req.user.name} is at ${socketManager.getRoomFromSocketID(socket.id)}`);   
   });
   res.send({});
 });
@@ -116,12 +116,12 @@ router.get('/getSubmittedResponses', auth.ensureLoggedIn, (req, res) => {
 
 router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, (req, res) => {
   //console.log("reached api");
-  console.log("we got this call");
+  //console.log("we got this call");
   gameManager.incrementPlayerPoints(req.body.gameID, req.body.winnerID);
   if(gameManager.checkMoreRounds(req.body.gameID)){
-    console.log("we have more rounds");
+    //console.log("we have more rounds");
     const newJudge = gameManager.selectWinnerAndUpdateJudge(req.body.gameID, req.body.winnerID);
-    console.log("new one ", newJudge);
+    //console.log("new one ", newJudge);
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'judgeUpdate', 'judgeID' : newJudge});
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "displayCard", 'displayCard' : null});
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': "tentativeWinner", "card": null});
@@ -145,7 +145,7 @@ router.post('/selectTentativeWinner', auth.ensureLoggedIn, (req, res) => {
 
 router.post('/selectFinalResponse', auth.ensureLoggedIn, (req, res) => {
 
-  console.log('submitted card', req.user.name, req.body.cardIndex);
+  //console.log('submitted card', req.user.name, req.body.cardIndex);
   gameManager.selectFinalResponse(req.body.gameID, req.body.playerID, req.body.cardIndex);
   const numberOfThinkingPlayers = gameManager.getNumberOfThinkingPlayers(req.body.gameID);
   //console.log("in server thinking players", numberOfThinkingPlayers);
@@ -160,7 +160,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   //console.log('started game creation')
   await gameManager.createGameIfNonExistant(req.body.gameID);
   //console.log(`created game for ${req.body.player.name}`)
-  console.log(`the player ${req.user.name} has joined to ${req.body.gameID} which had ${gameManager.getPlayerList(req.body.gameID).length} players`);
+  //console.log(`the player ${req.user.name} has joined to ${req.body.gameID} which had ${gameManager.getPlayerList(req.body.gameID).length} players`);
   if(gameManager.getPlayerList(req.body.gameID).length < 10){
     await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
@@ -186,7 +186,7 @@ router.get('/currentPromptCard', (req, res) => {
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
-  console.log("I GOT A DISCONNECT CALL FOR ", req.body.gameID, req.user._id);
+  //console.log("I GOT A DISCONNECT CALL FOR ", req.body.gameID, req.user._id);
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }
