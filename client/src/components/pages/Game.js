@@ -77,7 +77,7 @@ class Game extends Component {
         ////console.log(data);
         switch(data.type) {
           case "playerList":
-            //console.log("RECEIVED PLAYERS: ", data.players);
+            console.log("RECEIVED PLAYERS: ", data.players);
             this.setState({
               players: data.players,
               displayPlayerError: false,
@@ -246,7 +246,7 @@ class Game extends Component {
     componentWillUnmount() {
       // window.location.reload(true);
       console.error("COMPONENT IS BEING UNMOUNTED");
-      post("/api/disIconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: this.state.socketID});
+      post("/api/disconnectUser", {gameID: this.state.gameID, userID: this.state.userID, socketID: this.state.socketID});
     }
     render() {
       //console.log("USER ID IS ", this.props.userID);
@@ -295,7 +295,6 @@ class Game extends Component {
                     displayPlayerError = {this.state.displayPlayerError}
                     displayDeckError = {this.state.displayDeckError}
                     host = {this.state.host}
-                    toBeAdded = {this.state.toBeAdded}
                     userID = {this.props.userID}
                     gameID = {this.state.gameID}
                     rounds = {this.state.rounds}

@@ -19,7 +19,6 @@ import './Lobby.css';
  * @param {Number} rounds
  * @param {Array} decks
  * @param {String} userName
- * @param {boolean} toBeAdded true when the game has started but the player is not yet a part of it.
  */
 class Lobby extends Component {
   constructor(props) {
