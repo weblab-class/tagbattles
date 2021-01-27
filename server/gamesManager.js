@@ -69,7 +69,7 @@ const selectWinnerAndUpdateJudge = (gameID, winnerID) => {
 }
 
 const selectFinalResponse = (gameID, playerID, cardIndex) => {
-  console.log(cardIndex, "index");
+  //console.log(cardIndex, "index");
   if (cardIndex > 10 || cardIndex <= 0) return 0;
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
@@ -81,7 +81,7 @@ const selectFinalResponse = (gameID, playerID, cardIndex) => {
 const getNumberOfThinkingPlayers = (gameID) => {
   const index = getParticularGameIndex(gameID);
   if (index !== -1) {
-    console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
+    //console.log("NOW NUMBER OF THINKING PLAYERS IS ", logic.getNumberOfThinkingPlayers(allGames[index]));
     return logic.getNumberOfThinkingPlayers(allGames[index]);
     
   }
@@ -89,18 +89,19 @@ const getNumberOfThinkingPlayers = (gameID) => {
 }
 
 const getPlayerCards = (gameID, playerID) => {
-  console.log(gameID);
+  //console.log(gameID);
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
     return logic.getPlayerCards(allGames[index], playerID);
   }
-  console.log("did not find the game");
+  //console.log("did not find the game");
   return -1;
 }
 
 const createGameIfNonExistant = (gameID) => {
   const index = getParticularGameIndex(gameID)
   if (index === -1) {
+    console.log("wowow game didn't exists. created one");
     allGames.push(logic.createGame(gameID));
   }
 }
@@ -139,10 +140,10 @@ const addPlayerToGame = (gameID, player) => {
   }
   // If not add them to the game
   logic.addPlayerToGame(allGames[index], player)
-
+  console.log(`added player ${player.name} to the game. now the game has ${allGames[index].players.length} players`);
   // Set host if only one player
   if(allGames[index].players.length === 1){
-    console.log("Place 2: ",player._id);
+    //console.log("Place 2: ",player._id);
     allGames[index].host = player._id;
   }
   return 0;
@@ -171,11 +172,11 @@ const removePlayerFromGame = (gameID, playerID) => {
       break;
     }
   }
-  console.log('removed player')
+  //console.log('removed player')
   // Remove that player from the actives list.
-  console.log('before', allGames[index]);
+  //console.log('before', allGames[index]);
   allGames[index].players.splice(i, 1);
-  console.log('after', allGames[index]);
+  //console.log('after', allGames[index]);
   
   // If the number of active players is now < 1 we want to send a gameOver screen
   const numberOfActivePlayers = allGames[index].players.length;
@@ -213,10 +214,10 @@ const removePlayerFromGame = (gameID, playerID) => {
 
   //Assign new host if player was host and game is still going
   if(allGames[index].players.length > 0 && playerID === allGames[index].host){
-    console.log("Going into if statement");
-    console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
+    //console.log("Going into if statement");
+    //console.log(allGames[index].players, Math.floor(allGames[index].players.length * Math.random()));
     allGames[index].host = allGames[index].players[Math.floor(allGames[index].players.length * Math.random())]._id;
-    console.log(allGames[index].host);
+    //console.log(allGames[index].host);
     socketManager.getIo().to(gameID).emit("gameUpdate", {type:"updateHost", host:allGames[index].host})
   }
   return false;
@@ -247,7 +248,7 @@ const checkMoreRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  console.log(allGames[index].rounds)
+  //console.log(allGames[index].rounds)
   allGames[index].rounds--;
   return allGames[index].rounds > 0;
 }
@@ -272,10 +273,10 @@ const getLeaderboard = (gameID) => {
         maxIndex = j;
       }
     }
-    console.log(maxIndex, maxScore);
+    //console.log(maxIndex, maxScore);
     retList.push(playerCopy.splice(maxIndex,1)[0]);
-    console.log("retList: ", retList)
-    console.log("playerList: ", playerCopy, "\n")
+    //console.log("retList: ", retList)
+    //console.log("playerList: ", playerCopy, "\n")
   }
   return retList;
 }
@@ -286,7 +287,7 @@ const updateGameRounds = (gameID, numRounds) => {
     return;
   }
   allGames[index].rounds = numRounds;
-  console.log("gameIDadsgadsg:", gameID);
+  //console.log("gameIDadsgadsg:", gameID);
   return allGames[index].rounds;
 }
 
@@ -312,7 +313,7 @@ const getGameRounds = (gameID) => {
   if(index===-1){
     return;
   }
-  console.log("gameIDASD a:", gameID)
+  //console.log("gameIDASD a:", gameID)
   return allGames[index].rounds;
 }
 
@@ -337,7 +338,7 @@ const getPlayerList = (gameID) => {
   if(index === -1){
     return;
   }
-  console.log(allGames[index].players);
+  //console.log(allGames[index].players);
   return allGames[index].players;
 }
 

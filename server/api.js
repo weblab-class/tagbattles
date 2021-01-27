@@ -75,10 +75,8 @@ router.post("/initGameSocket", auth.ensureLoggedIn, async (req, res) => {
   const socket = await socketManager.getSocketFromSocketID(req.body.socketid);
   if (socket) await socket.join(req.body.gameID, async () => {
     User.findOne({_id: req.user._id}).then(async (user) => {
-      await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"msg": `${user.name} has joined!`, "type":"playerJoined"});
-      //console.log("INITGAMESOCKET USER: ",user);
       socketManager.addUserToRoom(user, req.body.gameID);
-      
+      console.log(`${req.user.name} is in initGameSocket`);   
     });
   });
   res.send({});
@@ -157,7 +155,7 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
   //console.log('started game creation')
   await gameManager.createGameIfNonExistant(req.body.gameID);
   //console.log(`created game for ${req.body.player.name}`)
-  
+  console.log(`the player ${req.user.name} has joined to ${req.body.gameID} which had ${gameManager.getPlayerList(req.body.gameID).length} players`);
   if(gameManager.getPlayerList(req.body.gameID).length < 10){
     await gameManager.addPlayerToGame(req.body.gameID, {'_id' : req.body.player._id, 'name' : req.body.player.name});
     await socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
@@ -176,14 +174,14 @@ router.post('/addPlayer', auth.ensureLoggedIn, async (req, res) => {
 })
 
 router.get('/currentPromptCard', (req, res) => {
-  console.log('=======================================================')
+  //console.log('=======================================================')
   const gc = gameManager.getPromptCard(req.query.gameID)
-  console.log("prompt card", gc);
+  //console.log("prompt card", gc);
   res.send({displayCard : gc});
 })
 
 router.post('/disconnectUser', auth.ensureLoggedIn, async (req, res) => {
-  console.log(req.body.gameID, req.user._id);
+  console.log("I GOT A DISCONNECT CALL FOR ", req.body.gameID, req.user._id);
   if (req.body.socketID) {
     await socketManager.getSocketFromSocketID(socketID).leave(req.body.gameID);
   }

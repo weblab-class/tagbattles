@@ -59,7 +59,7 @@ module.exports = {
           await io.to(room).emit("gameUpdate", {type:"updateHost", host:gameManager.getHost(room)})
           removeUser(user, socket);
         });
-        console.log(`player has disconnected from room ${room}`);
+        //console.log(`player has disconnected from room ${room}`);
         
       });
     });
