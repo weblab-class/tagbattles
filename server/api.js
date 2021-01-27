@@ -131,6 +131,7 @@ router.post('/selectWinnerAndUpdateJudge', auth.ensureLoggedIn, (req, res) => {
   }
   else{
     socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {'type': 'gameEnded', "leaderboard": gameManager.getLeaderboard(req.body.gameID)});
+    socketManager.getIo().to(req.body.gameID).emit("gameUpdate", {"type": "playerList", players:gameManager.getPlayerList(req.body.gameID)});
   }
   res.send({})
 });
