@@ -371,6 +371,11 @@ router.get("/getBio", auth.ensureLoggedIn, (req, res) => {
   }))
 })*/
 
+router.get('/displayCardRevealed', (req, res) => {
+  const isRevealed = gameManager.isDisplayCardRevealed(req.query.gameID);
+  res.send({isRevealed : isRevealed});
+})
+
 router.post("/postNewName", auth.ensureLoggedIn, (req, res) => {
   //console.log("ASDGDASGAD:", req.body.name, req.user._id);
   User.updateOne({_id: req.user._id}, {name: req.body.name}).then((a) => {

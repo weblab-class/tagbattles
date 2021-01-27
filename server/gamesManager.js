@@ -22,6 +22,7 @@ const getNewPromptCard = (gameID) => {
 const selectPromptCard = (gameID, card) => {
   const index = getParticularGameIndex(gameID)
   if (index !== -1) {
+    allGames[index].isPromptSelected = true;
     return allGames[index].promptCard;
   }
   return 0;
@@ -350,6 +351,14 @@ const isStarted = (gameID) => {
   return allGames[index].isActive;
 }
 
+const isDisplayCardRevealed = (gameID) => {
+  const index = getParticularGameIndex(gameID);
+  if(index === -1){
+    return allGames[index].isPromptSelected;
+  }
+  return false;
+}
+
 
 module.exports = {
   getNewPromptCard,
@@ -379,6 +388,7 @@ module.exports = {
   getPlayerList,
   isStarted,
   getPromptCard,
+  isDisplayCardRevealed
 }
 
 

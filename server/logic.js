@@ -31,6 +31,7 @@ const createGame = (gameID) => {
     'isActive' : false,
     'promptCards' : null,
     'chat': [],
+    'isPromptSelected' : false,
   }
 } 
 
@@ -123,6 +124,7 @@ const assignWinnerAndUpdateJudge = (gameState, winnerID) => {
 }
 
 const updateJudge = (gameState) => {
+  gameState.isPromptSelected = false;
   gameState.judgeID = gameState.players[(getPlayerByID(gameState, gameState.judgeID) + 1) % gameState.players.length]._id;
   return gameState.judgeID;
 }
